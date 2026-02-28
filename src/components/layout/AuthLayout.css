@@ -1,0 +1,121 @@
+/* Auth Layout Styles */
+.auth-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #0a1929 0%, #1a2332 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background pattern */
+.auth-layout::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(15, 50, 82, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(15, 50, 82, 0.2) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(20, 30, 40, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #ffd700 0%, #d4af37 50%, #ffa500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  letter-spacing: 0.5px;
+}
+
+.auth-subtitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.auth-description {
+  font-size: 0.9375rem;
+  color: rgba(180, 180, 180, 1);
+  margin: 0;
+}
+
+.auth-content {
+  margin-top: 1.5rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .auth-layout {
+    padding: 1rem;
+  }
+
+  .auth-container {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+  }
+
+  .auth-title {
+    font-size: 1.75rem;
+  }
+
+  .auth-subtitle {
+    font-size: 1.25rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 380px) {
+  .auth-container {
+    padding: 1.5rem 1rem;
+  }
+}

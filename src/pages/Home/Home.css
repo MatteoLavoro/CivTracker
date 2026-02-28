@@ -1,0 +1,239 @@
+/* Home Page Styles */
+.home-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a1929 0%, #1a2332 100%);
+  color: white;
+}
+
+.home-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.home-logo h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #ffd700 0%, #d4af37 50%, #ffa500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  letter-spacing: 0.5px;
+}
+
+.home-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.home-username {
+  font-size: 0.9375rem;
+  color: rgba(200, 200, 200, 1);
+  display: none;
+}
+
+/* Content */
+.home-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.home-wip {
+  text-align: center;
+  max-width: 600px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-wip-icon {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.home-wip-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.home-wip-text {
+  font-size: 1.125rem;
+  color: rgba(180, 180, 180, 1);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+.home-wip-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.home-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(30, 40, 50, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.home-feature:hover {
+  background: rgba(15, 50, 82, 0.3);
+  border-color: rgba(15, 50, 82, 0.5);
+  transform: translateY(-4px);
+}
+
+.home-feature-icon {
+  color: #d4af37;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.home-feature:hover .home-feature-icon {
+  color: #ffd700;
+  transform: scale(1.1);
+}
+
+.home-feature-text {
+  font-size: 0.9375rem;
+  color: rgba(200, 200, 200, 1);
+  font-weight: 500;
+}
+
+/* Footer */
+.home-footer {
+  padding: 2rem 0;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(150, 150, 150, 1);
+  font-size: 0.875rem;
+}
+
+/* Loading State */
+.home-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a1929 0%, #1a2332 100%);
+  color: white;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(15, 50, 82, 1);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .home-header {
+    padding: 1rem 0;
+  }
+
+  .home-logo h1 {
+    font-size: 1.5rem;
+  }
+
+  .home-username {
+    display: none;
+  }
+
+  .home-wip-title {
+    font-size: 2rem;
+  }
+
+  .home-wip-text {
+    font-size: 1rem;
+  }
+
+  .home-wip-features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .home-feature {
+    padding: 1.25rem;
+  }
+
+  .home-content {
+    padding: 2rem 0;
+  }
+}
+
+/* Desktop - Show username */
+@media (min-width: 769px) {
+  .home-username {
+    display: block;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 380px) {
+  .home-container {
+    padding: 0 1rem;
+  }
+
+  .home-wip-icon {
+    font-size: 4rem;
+  }
+
+  .home-wip-title {
+    font-size: 1.75rem;
+  }
+}

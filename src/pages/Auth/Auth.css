@@ -1,0 +1,80 @@
+/* Auth Page Styles */
+.auth-form {
+  width: 100%;
+}
+
+.auth-error {
+  padding: 0.875rem;
+  background: rgba(255, 68, 68, 0.15);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.auth-divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(80, 80, 80, 0.3);
+}
+
+.auth-divider span {
+  position: relative;
+  padding: 0 1rem;
+  background: rgba(20, 30, 40, 0.95);
+  color: rgba(150, 150, 150, 1);
+  font-size: 0.875rem;
+}
+
+.auth-toggle {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  color: rgba(180, 180, 180, 1);
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.auth-toggle:hover:not(:disabled) {
+  background: rgba(15, 50, 82, 0.1);
+}
+
+.auth-toggle-link {
+  color: #d4af37;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.auth-toggle:hover:not(:disabled) .auth-toggle-link {
+  color: #ffd700;
+  text-decoration: underline;
+}
+
+.auth-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .auth-error {
+    font-size: 0.8125rem;
+  }
+}
