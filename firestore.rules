@@ -34,7 +34,7 @@ service cloud.firestore {
       // Allow update if user is a member OR user is adding themselves
       allow update: if isSignedIn() && 
                        (
-                         // Case 1: User is already a member - can update name or remove themselves
+                         // Case 1: User is already a member - can update name, remove themselves, or update draft
                          (request.auth.uid in resource.data.members &&
                           (
                             // Allow name updates
@@ -42,7 +42,10 @@ service cloud.firestore {
                             // Allow removing themselves
                             (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberDetails', 'updatedAt']) &&
                              request.resource.data.members.size() < resource.data.members.size() &&
-                             !(request.auth.uid in request.resource.data.members))
+                             !(request.auth.uid in request.resource.data.members)) ||
+                            // Allow draft updates (members can update draft state)
+                            (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['draft', 'updatedAt']) ||
+                             request.resource.data.diff(resource.data).affectedKeys().hasOnly(['draft']))
                           )) ||
                          // Case 2: User is adding themselves to the campaign (not yet a member)
                          (!(request.auth.uid in resource.data.members) &&

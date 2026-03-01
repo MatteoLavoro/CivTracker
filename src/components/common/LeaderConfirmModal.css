@@ -1,0 +1,124 @@
+/* Leader Confirm Modal Styles */
+
+.leader-confirm-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0;
+  gap: 1.5rem;
+}
+
+.leader-confirm-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.leader-confirm-leader-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(212, 175, 55, 0.5);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+}
+
+.leader-confirm-civ-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.leader-confirm-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leader-confirm-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.leader-confirm-variant {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(212, 175, 55, 0.9);
+  font-style: italic;
+}
+
+.leader-confirm-civ {
+  font-size: 1rem;
+  color: rgba(200, 200, 200, 0.9);
+  margin: 0;
+}
+
+.leader-confirm-message {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+/* Gold button variant */
+.leader-confirm-modal .modal-confirm-btn {
+  background: rgba(212, 175, 55, 1);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.leader-confirm-modal .modal-confirm-btn:hover:not(:disabled) {
+  background: rgba(184, 134, 11, 1);
+  border-color: rgba(212, 175, 55, 0.7);
+  box-shadow:
+    0 4px 12px rgba(212, 175, 55, 0.4),
+    0 0 16px rgba(212, 175, 55, 0.3);
+}
+
+.leader-confirm-modal .modal-fab {
+  background: rgba(212, 175, 55, 1);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.leader-confirm-modal .modal-fab:hover:not(:disabled) {
+  background: rgba(184, 134, 11, 1);
+  box-shadow:
+    0 6px 16px rgba(212, 175, 55, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .leader-confirm-leader-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .leader-confirm-civ-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .leader-confirm-name {
+    font-size: 1.125rem;
+  }
+
+  .leader-confirm-variant {
+    font-size: 0.9375rem;
+  }
+
+  .leader-confirm-civ {
+    font-size: 0.9375rem;
+  }
+
+  .leader-confirm-message {
+    font-size: 0.9375rem;
+  }
+}
