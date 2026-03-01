@@ -301,6 +301,13 @@ export function Home() {
         maxLength={8}
         minLength={8}
         confirmLabel="Unisciti"
+        customValidation={(code) => {
+          // Check if code doesn't match any existing campaign
+          const existingCampaign = campaigns.find(
+            (c) => c.code?.toUpperCase() === code.toUpperCase(),
+          );
+          return !existingCampaign;
+        }}
       />
 
       {/* Campaign Info Modal */}

@@ -137,3 +137,10 @@ img {
     font-size: 15px;
   }
 }
+
+/* Modal Open State - Prevent body scroll when modals are open */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}

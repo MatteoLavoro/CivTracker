@@ -1,28 +1,23 @@
-// Modal Component - Generic reusable modal with history management
+// Modal Component - Generic reusable modal with centralized history management
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { X, ChevronLeft, Check, AlertTriangle } from "lucide-react";
+import { useModal } from "../../contexts";
 import "./Modal.css";
-
-// Counter for unique modal IDs
-let modalCounter = 0;
 
 /**
  * Generic Modal Component
  *
  * HISTORY MANAGEMENT:
- * This modal uses browser history API for navigation management.
- * - When opened: Adds an entry to history with a unique modalId
- * - When closed: Goes back in history (window.history.back())
- * - The popstate listener detects history changes and calls onClose
- * - Nested modals: Each modal has its own history entry, closing one at a time
- *
- * IMPORTANT: Always close modals via window.history.back(), never call onClose directly
- * This ensures consistent behavior with browser back button and nested modals.
+ * This modal uses centralized ModalContext for navigation management.
+ * - Registers with ModalContext as a nested modal
+ * - Browser back button handled by ModalContext
+ * - Escape key handled by ModalContext
+ * - Supports nested modals automatically
  *
  * @param {Object} props
  * @param {boolean} props.isOpen - Modal open state
- * @param {Function} props.onClose - Close handler (called by popstate listener)
+ * @param {Function} props.onClose - Close handler
  * @param {string} props.title - Modal title
  * @param {React.ReactNode} props.children - Modal body content
  * @param {Object} props.footer - Footer configuration (optional)
@@ -45,10 +40,9 @@ export function Modal({
   const [isMobile, setIsMobile] = useState(false);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const modalIdRef = useRef(`modal-${++modalCounter}`);
   const initialScrollY = useRef(0);
-  const hasPushedStateRef = useRef(false);
   const onCloseRef = useRef(onClose);
+  const { registerNestedClose, modalDepth, hasNestedModals } = useModal();
 
   // Update onClose ref when it changes
   useEffect(() => {
@@ -90,21 +84,17 @@ export function Modal({
     }
   }, [isMobile, isOpen]);
 
-  // History management
+  // Register with ModalContext for centralized history management
   useEffect(() => {
-    if (!isOpen) {
-      hasPushedStateRef.current = false;
-      return;
-    }
+    if (!isOpen) return;
 
-    // Prevent multiple pushState calls for the same modal open
-    if (hasPushedStateRef.current) return;
-    hasPushedStateRef.current = true;
-
-    const modalId = modalIdRef.current;
+    // Register close callback with ModalContext
+    const unregister = registerNestedClose(() => {
+      onCloseRef.current();
+    });
 
     // Add history entry when modal opens
-    window.history.pushState({ modalId }, "");
+    window.history.pushState({ nestedModal: true }, "");
 
     // Prevent body scroll
     initialScrollY.current = window.scrollY;
@@ -113,20 +103,9 @@ export function Modal({
     document.body.style.top = `-${initialScrollY.current}px`;
     document.body.style.width = "100%";
 
-    // Handle browser back button
-    const handlePopState = (event) => {
-      // If current state doesn't have my modalId, it means we went back
-      // So we should close this modal
-      if (!event.state || event.state.modalId !== modalId) {
-        onCloseRef.current();
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
     // Cleanup
     return () => {
-      window.removeEventListener("popstate", handlePopState);
+      unregister();
 
       // Restore body scroll
       document.body.style.overflow = "";
@@ -135,30 +114,24 @@ export function Modal({
       document.body.style.width = "";
       window.scrollTo(0, initialScrollY.current);
     };
-  }, [isOpen]);
+  }, [isOpen, registerNestedClose]);
 
   // History management for nested confirmation modal
   useEffect(() => {
     if (!showConfirmModal) return;
 
-    const confirmModalId = `${modalIdRef.current}-confirm`;
+    // Register confirmation modal with ModalContext
+    const unregister = registerNestedClose(() => {
+      setShowConfirmModal(false);
+    });
 
     // Add history entry for confirmation modal
-    window.history.pushState({ modalId: confirmModalId }, "");
-
-    const handlePopState = (event) => {
-      // If state doesn't have confirm modal ID, close it
-      if (!event.state || event.state.modalId !== confirmModalId) {
-        setShowConfirmModal(false);
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
+    window.history.pushState({ confirmationModal: true }, "");
 
     return () => {
-      window.removeEventListener("popstate", handlePopState);
+      unregister();
     };
-  }, [showConfirmModal]);
+  }, [showConfirmModal, registerNestedClose]);
 
   // Handle close (go back in history)
   const handleClose = useCallback(() => {
@@ -185,8 +158,13 @@ export function Modal({
 
   if (!isOpen) return null;
 
+  // Calculate z-index based on modal depth
+  // Base z-index: 1000, each nested level adds 10
+  const nestedCount = hasNestedModals() ? 1 : 0;
+  const baseZIndex = 1000 + (modalDepth + nestedCount) * 10;
+
   const modalContent = (
-    <div className="modal-overlay">
+    <div className="modal-overlay" style={{ zIndex: baseZIndex }}>
       <div
         className={`modal-container ${isMobile ? "modal-mobile" : "modal-desktop"} ${className}`}
       >
@@ -274,7 +252,7 @@ export function Modal({
 
   // Confirmation modal for dangerous actions
   const confirmationModal = showConfirmModal && (
-    <div className="modal-overlay">
+    <div className="modal-overlay" style={{ zIndex: baseZIndex + 10 }}>
       <div
         className={`modal-container ${isMobile ? "modal-mobile" : "modal-desktop"} confirm-modal-danger`}
       >

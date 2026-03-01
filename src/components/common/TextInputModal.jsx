@@ -21,6 +21,7 @@ import "./TextInputModal.css";
  * @param {string} props.confirmLabel - Confirm button label (default: "Conferma")
  * @param {React.ReactNode} props.confirmIcon - Confirm button icon
  * @param {boolean} props.multiline - Use textarea instead of input (default: false)
+ * @param {Function} props.customValidation - Custom validation function (text) => boolean
  */
 export function TextInputModal({
   isOpen,
@@ -36,6 +37,7 @@ export function TextInputModal({
   confirmLabel = "Conferma",
   confirmIcon = <Check size={24} />,
   multiline = false,
+  customValidation = null,
 }) {
   const [text, setText] = useState(defaultValue);
   const [isFocused, setIsFocused] = useState(false);
@@ -52,14 +54,17 @@ export function TextInputModal({
     if (required && text.trim().length === 0) return false;
     if (minLength && text.trim().length < minLength) return false;
     if (maxLength && text.length > maxLength) return false;
+    // Custom validation if provided
+    if (customValidation && !customValidation(text.trim())) return false;
     return true;
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (isValid()) {
-      onConfirm(text.trim());
-      // Close modal via history (goes back one step)
+      // Close modal via history first for immediate feedback
       window.history.back();
+      // Then call onConfirm (could be async)
+      await onConfirm(text.trim());
     }
   };
 

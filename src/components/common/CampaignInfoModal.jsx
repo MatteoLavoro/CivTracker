@@ -40,6 +40,9 @@ export function CampaignInfoModal({
     membersCount === 1 ? "1 membro" : `${membersCount} membri`;
 
   const handleNameSubmit = async (newName) => {
+    // Close edit modal immediately
+    setEditNameOpen(false);
+
     // Optimistic update: show immediately in UI
     setOptimisticName(newName);
 
@@ -61,6 +64,8 @@ export function CampaignInfoModal({
     if (onLeaveCampaign) {
       onLeaveCampaign();
     }
+    // Close modal via history after leave action
+    window.history.back();
   };
 
   if (!campaign) return null;

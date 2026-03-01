@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { AuthProvider } from "./contexts";
+import { AuthProvider, ModalProvider } from "./contexts";
 import "./index.css";
 import App from "./App.jsx";
 
@@ -29,7 +29,9 @@ if ("serviceWorker" in navigator) {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <App />
+      <ModalProvider>
+        <App />
+      </ModalProvider>
     </AuthProvider>
   </StrictMode>,
 );
