@@ -43,8 +43,20 @@ export function MatchRow({
     });
   };
 
-  const participants = Object.entries(match.participants || {});
+  const participants = Object.entries(match.participants || {}).sort((a, b) => {
+    const nameA = a[1].username?.toLowerCase() || "";
+    const nameB = b[1].username?.toLowerCase() || "";
+    return nameA.localeCompare(nameB);
+  });
   const isCompleted = match.status === "completed";
+
+  // Find winner (highest score)
+  const winner =
+    isCompleted && participants.length > 0
+      ? participants.reduce((max, current) =>
+          current[1].score > max[1].score ? current : max,
+        )
+      : null;
 
   return (
     <div className={`match-row ${isCompleted ? "completed" : ""}`}>
@@ -60,20 +72,7 @@ export function MatchRow({
         )}
       </div>
 
-      {/* Column 2: Turns */}
-      <div className="match-col match-col-turns">
-        <div className="match-turns-label">Turni</div>
-        <button
-          className="match-turns-value"
-          onClick={() => onUpdateTurns(match.id, match.turns)}
-          disabled={isCompleted}
-          type="button"
-        >
-          {match.turns > 0 ? match.turns : "Imposta"}
-        </button>
-      </div>
-
-      {/* Column 3: Participants */}
+      {/* Column 2: Participants */}
       <div className="match-col match-col-participants">
         {participants.map(([userId, participant]) => {
           // Check for leader from match OR from draft real-time
@@ -129,6 +128,19 @@ export function MatchRow({
         })}
       </div>
 
+      {/* Column 3: Turns */}
+      <div className="match-col match-col-turns">
+        <div className="match-turns-label">Turni Vittoria</div>
+        <button
+          className="match-turns-value"
+          onClick={() => onUpdateTurns(match.id, match.turns)}
+          disabled={isCompleted}
+          type="button"
+        >
+          {match.turns > 0 ? match.turns : "Imposta"}
+        </button>
+      </div>
+
       {/* Column 4: Scores */}
       <div className="match-col match-col-scores">
         <div className="match-scores-label">Punteggi</div>
@@ -145,9 +157,17 @@ export function MatchRow({
         ))}
       </div>
 
-      {/* Column 5: Reserved */}
-      <div className="match-col match-col-reserved">
-        {/* Future features */}
+      {/* Column 5: Winner */}
+      <div className="match-col match-col-winner">
+        {isCompleted && winner ? (
+          <>
+            <div className="match-winner-label">Vincitore</div>
+            <div className="match-winner-info">
+              <span className="match-winner-trophy">🏆</span>
+              <span className="match-winner-name">{winner[1].username}</span>
+            </div>
+          </>
+        ) : null}
       </div>
 
       {/* Column 6: Actions */}
