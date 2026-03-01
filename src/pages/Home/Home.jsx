@@ -1,7 +1,7 @@
 // Home Page - Campaign Management
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Info, UserPlus } from "lucide-react";
+import { Plus, Info, UserPlus, Trophy } from "lucide-react";
 import { useAuthContext } from "../../contexts";
 import { useCollection } from "../../hooks";
 import {
@@ -195,21 +195,19 @@ export function Home() {
                   className="campaign-card"
                   role="button"
                   tabIndex={0}
-                  onClick={() =>
-                    console.log("Campagna cliccata:", campaign.name)
-                  }
+                  onClick={() => navigate(`/campaign/${campaign.id}`)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      console.log("Campagna cliccata:", campaign.name);
+                      navigate(`/campaign/${campaign.id}`);
                     }
                   }}
                 >
                   {/* Header Section */}
-                  <div className="campaign-header">
-                    <h3 className="campaign-title">{campaign.name}</h3>
+                  <div className="campaign-card-header">
+                    <h3 className="campaign-card-title">{campaign.name}</h3>
                     <button
-                      className="campaign-info-btn"
+                      className="campaign-card-info-btn"
                       type="button"
                       onClick={(e) => handleCampaignInfo(campaign, e)}
                       aria-label="Informazioni campagna"
@@ -218,18 +216,34 @@ export function Home() {
                     </button>
                   </div>
 
-                  {/* Members Section */}
+                  {/* Ranking Section */}
                   <div className="campaign-members">
-                    <div className="campaign-members-label">Membri</div>
+                    <div className="campaign-members-label">Classifica</div>
                     <div className="campaign-members-list">
-                      {membersList.map((member, index) => (
-                        <div key={index} className="campaign-member">
-                          <div className="campaign-member-avatar">
-                            {member.substring(0, 2).toUpperCase()}
+                      {membersList
+                        .sort((a, b) => a.localeCompare(b))
+                        .map((member, index) => (
+                          <div key={index} className="campaign-member">
+                            <div
+                              className={`campaign-member-rank ${
+                                index === 0 ? "trophy" : ""
+                              }`}
+                            >
+                              {index === 0 ? (
+                                <Trophy size={16} />
+                              ) : (
+                                `${index + 1}`
+                              )}
+                            </div>
+                            <span className="campaign-member-divider">|</span>
+                            <div className="campaign-member-avatar">
+                              {member.substring(0, 2).toUpperCase()}
+                            </div>
+                            <span className="campaign-member-name">
+                              {member}
+                            </span>
                           </div>
-                          <span className="campaign-member-name">{member}</span>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </div>
 

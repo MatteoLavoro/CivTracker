@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthContext } from "./contexts";
-import { Auth, Home } from "./pages";
+import { Auth, Home, Campaign } from "./pages";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { InstallPrompt } from "./components/common";
 import "./App.css";
@@ -33,6 +33,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Campaign Route */}
+          <Route
+            path="/campaign/:campaignId"
+            element={
+              <ProtectedRoute>
+                <Campaign />
               </ProtectedRoute>
             }
           />

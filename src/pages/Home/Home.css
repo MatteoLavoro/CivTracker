@@ -177,41 +177,47 @@
   transform: translateY(-3px);
 }
 
-/* Campaign Header Section */
-.campaign-header {
+/* Campaign Card Header Section */
+.campaign-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1rem 0.75rem 1rem;
-  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  gap: 0.75rem;
   border-bottom: 1px solid rgba(212, 175, 55, 0.08);
   background: linear-gradient(
     180deg,
     rgba(212, 175, 55, 0.02) 0%,
     transparent 100%
   );
+  min-height: 54px;
+  flex-shrink: 0;
 }
 
-.campaign-title {
+.campaign-card-title {
   flex: 1;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: white;
   text-align: left;
   margin: 0;
   line-height: 1.3;
-  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   letter-spacing: 0.3px;
   text-shadow:
     0 1px 2px rgba(0, 0, 0, 0.5),
     0 0 8px rgba(212, 175, 55, 0.15);
 }
 
-.campaign-info-btn {
+.campaign-card-info-btn {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
   background: rgba(212, 175, 55, 0.1);
   border: 1px solid rgba(212, 175, 55, 0.2);
   display: flex;
@@ -220,9 +226,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
   color: rgba(212, 175, 55, 0.7);
+  margin-left: 0.5rem;
 }
 
-.campaign-info-btn:hover {
+.campaign-card-info-btn:hover {
   background: rgba(212, 175, 55, 0.25);
   border-color: rgba(212, 175, 55, 0.6);
   color: rgba(212, 175, 55, 1);
@@ -230,7 +237,7 @@
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
 }
 
-.campaign-info-btn:active {
+.campaign-card-info-btn:active {
   transform: scale(0.95);
 }
 
@@ -239,8 +246,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  gap: 0.75rem;
+  padding: 0.875rem;
+  gap: 0.625rem;
   overflow-y: auto;
 }
 
@@ -250,7 +257,7 @@
   color: rgba(150, 150, 150, 1);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  text-align: left;
+  text-align: center;
 }
 
 .campaign-members-list {
@@ -262,15 +269,40 @@
 .campaign-member {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.25rem;
   padding: 0.5rem;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   transition: background 0.2s ease;
+  position: relative;
 }
 
 .campaign-member:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+.campaign-member-rank {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(180, 180, 180, 1);
+  min-width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.campaign-member-rank.trophy {
+  color: rgba(212, 175, 55, 1);
+}
+
+.campaign-member-divider {
+  color: rgba(212, 175, 55, 0.3);
+  font-size: 1rem;
+  font-weight: 300;
+  margin: 0 0.125rem;
+  flex-shrink: 0;
 }
 
 .campaign-member-avatar {
@@ -311,7 +343,8 @@
     rgba(212, 175, 55, 0.05) 0%,
     transparent 100%
   );
-  min-height: 50px;
+  min-height: 54px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
