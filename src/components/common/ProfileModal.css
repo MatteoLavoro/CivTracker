@@ -1,0 +1,120 @@
+/* Profile Modal Content */
+.profile-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+/* Profile Field */
+.profile-field {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.profile-field:hover {
+  background: rgba(15, 50, 82, 0.4);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* Field Icon */
+.profile-field-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(212, 175, 55, 1);
+  flex-shrink: 0;
+}
+
+/* Field Content */
+.profile-field-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-field-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(212, 175, 55, 0.8);
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.profile-field-value {
+  font-size: 1rem;
+  color: white;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Edit Button */
+.profile-edit-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: rgba(212, 175, 55, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.profile-edit-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: scale(1.05);
+}
+
+.profile-edit-btn:active {
+  transform: scale(0.95);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .profile-modal-content {
+    gap: 1rem;
+  }
+
+  .profile-field {
+    padding: 0.875rem;
+  }
+
+  .profile-field-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .profile-field-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .profile-edit-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .profile-edit-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+}

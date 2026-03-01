@@ -1,18 +1,15 @@
 // Home Page - Work in Progress
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  BarChart,
-  Map,
-  TrendingUp,
-  Users,
-  LogOut,
-  Trash2,
-  Type,
-} from "lucide-react";
+import { BarChart, Map, TrendingUp, Users, Trash2, Type } from "lucide-react";
 import { useAuthContext } from "../../contexts";
-import { logOut } from "../../services/firebase";
-import { Button, Modal, TextInputModal } from "../../components/common";
+import { logOut, updateUserProfile } from "../../services/firebase";
+import {
+  Button,
+  Modal,
+  TextInputModal,
+  ProfileModal,
+} from "../../components/common";
 import "./Home.css";
 
 /**
@@ -22,6 +19,7 @@ import "./Home.css";
 export function Home() {
   const navigate = useNavigate();
   const { user, loading } = useAuthContext();
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [textInputModalOpen, setTextInputModalOpen] = useState(false);
   const [textAreaModalOpen, setTextAreaModalOpen] = useState(false);
@@ -51,6 +49,29 @@ export function Home() {
     // Qui andrà la logica di salvataggio della nota
   };
 
+  const handleUpdateUsername = async (newUsername) => {
+    const { error } = await updateUserProfile(newUsername);
+    if (error) {
+      console.error("Errore aggiornamento username:", error);
+    } else {
+      console.log("Username aggiornato con successo:", newUsername);
+    }
+  };
+
+  const getUserInitials = () => {
+    if (user?.displayName) {
+      const names = user.displayName.split(" ");
+      if (names.length >= 2) {
+        return (names[0][0] + names[1][0]).toUpperCase();
+      }
+      return user.displayName.substring(0, 2).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.substring(0, 2).toUpperCase();
+    }
+    return "U";
+  };
+
   if (loading) {
     return (
       <div className="home-loading">
@@ -67,15 +88,14 @@ export function Home() {
           <div className="home-logo">
             <h1>CivTracker</h1>
           </div>
-          <div className="home-user">
-            <span className="home-username">
-              {user?.displayName || user?.email}
-            </span>
-            <Button onClick={handleLogout} variant="secondary">
-              <LogOut size={18} style={{ marginRight: "0.5rem" }} />
-              Esci
-            </Button>
-          </div>
+          <button
+            className="profile-avatar-btn"
+            onClick={() => setProfileModalOpen(true)}
+            aria-label="Apri profilo"
+            type="button"
+          >
+            <div className="profile-avatar-initials">{getUserInitials()}</div>
+          </button>
         </header>
 
         <main className="home-content">
@@ -225,6 +245,15 @@ export function Home() {
         placeholder="Scrivi qui la tua nota o descrizione..."
         maxLength={200}
         multiline
+      />
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+        user={user}
+        onUpdateUsername={handleUpdateUsername}
+        onLogout={handleLogout}
       />
     </div>
   );

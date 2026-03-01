@@ -26,7 +26,8 @@ export function ConfirmModal({
 }) {
   const handleConfirm = () => {
     onConfirm();
-    onClose();
+    // Close modal via history (goes back one step)
+    window.history.back();
   };
 
   return (

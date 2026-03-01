@@ -9,9 +9,20 @@ let modalCounter = 0;
 
 /**
  * Generic Modal Component
+ *
+ * HISTORY MANAGEMENT:
+ * This modal uses browser history API for navigation management.
+ * - When opened: Adds an entry to history with a unique modalId
+ * - When closed: Goes back in history (window.history.back())
+ * - The popstate listener detects history changes and calls onClose
+ * - Nested modals: Each modal has its own history entry, closing one at a time
+ *
+ * IMPORTANT: Always close modals via window.history.back(), never call onClose directly
+ * This ensures consistent behavior with browser back button and nested modals.
+ *
  * @param {Object} props
  * @param {boolean} props.isOpen - Modal open state
- * @param {Function} props.onClose - Close handler
+ * @param {Function} props.onClose - Close handler (called by popstate listener)
  * @param {string} props.title - Modal title
  * @param {React.ReactNode} props.children - Modal body content
  * @param {Object} props.footer - Footer configuration (optional)
@@ -154,7 +165,8 @@ export function Modal({
   // Handle dangerous action confirmation
   const handleDangerousConfirm = useCallback(() => {
     footer?.onConfirm?.();
-    setShowConfirmModal(false);
+    // Close confirmation modal via history (goes back one step)
+    window.history.back();
   }, [footer]);
 
   if (!isOpen) return null;
@@ -218,7 +230,15 @@ export function Modal({
                   aria-label={footer.label || "Conferma"}
                   type="button"
                 >
-                  {footer.icon || <Check size={24} />}
+                  {footer.icon ? (
+                    typeof footer.icon === "function" ? (
+                      <footer.icon size={footer.iconSize || 24} />
+                    ) : (
+                      footer.icon
+                    )
+                  ) : (
+                    <Check size={24} />
+                  )}
                 </button>
               ) : (
                 // Desktop: Full-width button

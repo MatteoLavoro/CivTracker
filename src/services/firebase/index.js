@@ -14,6 +14,7 @@ export {
   resetPassword,
   onAuthChange,
   getCurrentUser,
+  updateUserProfile,
 } from "./auth";
 
 // Firestore Database

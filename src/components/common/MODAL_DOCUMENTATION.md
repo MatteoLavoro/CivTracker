@@ -267,6 +267,77 @@ Le animazioni sono fluide con cubic-bezier per un'esperienza moderna.
 </Modal>
 ```
 
+## ⚡ Optimistic Updates Pattern
+
+**IMPORTANTE**: Tutti i modali che effettuano mutazioni di dati devono usare il pattern degli **aggiornamenti ottimistici** per evitare lag nell'interfaccia.
+
+### Perché gli aggiornamenti ottimistici?
+
+Quando l'utente modifica dei dati (es. cambia username), non deve aspettare che Firebase completi l'operazione prima di vedere il cambiamento. L'UI deve rispondere immediatamente mentre l'aggiornamento avviene in background.
+
+### Come implementare
+
+```jsx
+function MyModal({ isOpen, onClose, user, onUpdateData }) {
+  // Stato ottimistico: null = usa dati reali, valore = mostra override temporaneo
+  const [optimisticOverride, setOptimisticOverride] = useState(null);
+
+  // Mostra l'override se presente, altrimenti i dati reali
+  const displayValue = optimisticOverride ?? user?.realValue ?? "Default";
+
+  const handleSubmit = async (newValue) => {
+    // 1. Aggiorna UI immediatamente (ottimistico)
+    setOptimisticOverride(newValue);
+
+    // 2. Aggiorna Firebase in background
+    if (onUpdateData) {
+      try {
+        await onUpdateData(newValue);
+        // 3. Successo: rimuovi override, usa dati Firebase aggiornati
+        setOptimisticOverride(null);
+      } catch (error) {
+        // 4. Errore: ripristina valore originale
+        setOptimisticOverride(null);
+        console.error("Update failed:", error);
+        // Opzionale: mostra messaggio di errore all'utente
+      }
+    }
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Modifica">
+      <p>Valore attuale: {displayValue}</p>
+      <button onClick={() => handleSubmit("nuovo valore")}>Aggiorna</button>
+    </Modal>
+  );
+}
+```
+
+### Esempio reale: ProfileModal
+
+Vedi `ProfileModal.jsx` per un'implementazione completa del pattern ottimistico per l'aggiornamento del nome utente.
+
+**Flusso**:
+
+1. Utente clicca "Salva" → UI mostra nuovo nome immediatamente
+2. Firebase lavora in background
+3. Se successo → cancella override, Firebase ha i nuovi dati
+4. Se errore → cancella override, ripristina nome originale
+
+**Vantaggi**:
+
+- ✅ Nessun lag percepito dall'utente
+- ✅ UI sempre reattiva
+- ✅ Rollback automatico in caso di errore
+- ✅ Migliore UX complessiva
+
+**Best Practices**:
+
+- Usa `null` per indicare "nessun override" invece di duplicare il valore reale
+- Sempre gestire il caso di errore con revert
+- Mostra un messaggio di errore all'utente se l'operazione fallisce
+- Non bloccare l'UI durante operazioni asincrone
+
 ## Future Enhancements
 
 Possibili miglioramenti futuri:

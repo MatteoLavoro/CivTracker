@@ -48,8 +48,10 @@ export function Auth() {
     // Username validation (only for register)
     if (!isLogin && !formData.username) {
       errors.username = "Il nome utente è obbligatorio";
-    } else if (!isLogin && formData.username.length < 3) {
-      errors.username = "Il nome utente deve avere almeno 3 caratteri";
+    } else if (!isLogin && formData.username.length < 1) {
+      errors.username = "Il nome utente deve avere almeno 1 carattere";
+    } else if (!isLogin && formData.username.length > 30) {
+      errors.username = "Il nome utente non può superare i 30 caratteri";
     }
 
     // Password validation
@@ -149,6 +151,7 @@ export function Auth() {
             placeholder="Scegli un nome utente"
             error={validationErrors.username}
             required
+            maxLength={30}
             icon={<User size={18} />}
           />
         )}

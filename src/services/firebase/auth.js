@@ -89,4 +89,20 @@ export const getCurrentUser = () => {
   return auth.currentUser;
 };
 
+// Update user profile (displayName)
+// LIMIT: Maximum 30 characters for displayName (validated in UI)
+export const updateUserProfile = async (displayName) => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      return { error: "No user logged in" };
+    }
+
+    await updateProfile(user, { displayName });
+    return { error: null };
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
 export { auth };

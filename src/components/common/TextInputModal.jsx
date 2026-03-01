@@ -58,7 +58,8 @@ export function TextInputModal({
   const handleConfirm = () => {
     if (isValid()) {
       onConfirm(text.trim());
-      onClose();
+      // Close modal via history (goes back one step)
+      window.history.back();
     }
   };
 
@@ -138,10 +139,6 @@ export function TextInputModal({
             </div>
           )}
         </div>
-
-        {required && text.trim().length === 0 && (
-          <p className="text-input-validation">Questo campo è obbligatorio</p>
-        )}
       </div>
     </Modal>
   );
