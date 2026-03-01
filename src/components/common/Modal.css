@@ -1,0 +1,429 @@
+/* Modal Styles */
+
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: modal-fade-in 0.2s ease-out;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Container */
+.modal-container {
+  background: rgba(20, 30, 40, 0.98);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  position: relative;
+  animation: modal-slide-in 0.3s ease-out;
+}
+
+@keyframes modal-slide-in {
+  from {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Desktop Modal */
+.modal-desktop {
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Mobile Modal - Fullscreen */
+.modal-mobile {
+  border-radius: 0;
+  width: 100%;
+  height: 100%;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+.modal-header {
+  padding: 1.5rem;
+  flex-shrink: 0;
+}
+
+.modal-header-content {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-spacer {
+  width: 40px;
+}
+
+/* Close Button */
+.modal-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(15, 50, 82, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+  background: rgba(15, 50, 82, 0.5);
+  border-color: rgba(212, 175, 55, 0.4);
+  transform: scale(1.05);
+}
+
+.modal-close-btn:active {
+  transform: scale(0.95);
+}
+
+/* Divider */
+.modal-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.3) 50%,
+    transparent 100%
+  );
+  flex-shrink: 0;
+}
+
+/* Body */
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Custom scrollbar for modal body */
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: rgba(20, 30, 40, 0.5);
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(15, 50, 82, 0.8);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 50, 82, 1);
+}
+
+/* Footer */
+.modal-footer {
+  padding: 1.5rem;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Desktop Confirm Button */
+.modal-confirm-btn {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(15, 50, 82, 1);
+  color: white;
+  box-shadow:
+    0 2px 8px rgba(15, 50, 82, 0.3),
+    0 0 0 1px rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.modal-confirm-btn:hover:not(:disabled) {
+  background: rgba(20, 65, 105, 1);
+  box-shadow:
+    0 4px 12px rgba(15, 50, 82, 0.4),
+    0 0 16px rgba(255, 215, 0, 0.2);
+  transform: translateY(-1px);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.modal-confirm-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.modal-confirm-disabled {
+  background: rgba(15, 50, 82, 0.4) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  border-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Mobile FAB (Floating Action Button) */
+.modal-fab {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(15, 50, 82, 1);
+  color: white;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow:
+    0 4px 12px rgba(15, 50, 82, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1001;
+}
+
+.modal-fab:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.modal-fab:hover:not(:disabled) {
+  background: rgba(20, 65, 105, 1);
+  box-shadow:
+    0 6px 16px rgba(15, 50, 82, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.4);
+  transform: scale(1.05);
+}
+
+/* FAB position when keyboard is open */
+.modal-fab-keyboard-open {
+  bottom: calc(1.5rem);
+  transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* FAB disabled state */
+.modal-fab-disabled {
+  background: rgba(15, 50, 82, 0.4) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  cursor: not-allowed !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+.modal-fab-disabled:hover {
+  transform: none !important;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 767px) {
+  .modal-overlay {
+    padding: 0;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    padding: 0;
+    /* Footer is hidden on mobile, FAB is used instead */
+  }
+
+  .modal-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .modal-desktop {
+    max-width: 540px;
+  }
+}
+
+/* Animation for nested modals */
+.modal-container[data-nested="true"] {
+  animation: modal-slide-in-nested 0.2s ease-out;
+}
+
+@keyframes modal-slide-in-nested {
+  from {
+    transform: scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Accessibility */
+.modal-overlay:focus {
+  outline: none;
+}
+
+.modal-close-btn:focus-visible,
+.modal-confirm-btn:focus-visible,
+.modal-fab:focus-visible {
+  outline: 2px solid rgba(212, 175, 55, 0.8);
+  outline-offset: 2px;
+}
+
+/* Dangerous Confirmation Modal Styles */
+.confirm-modal-danger {
+  z-index: 1001;
+  max-width: 360px;
+}
+
+.confirm-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.confirm-modal-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(220, 38, 38, 0.1);
+  border: 2px solid rgba(220, 38, 38, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(239, 68, 68, 1);
+  margin-bottom: 1rem;
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+.confirm-modal-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+@keyframes pulse-warning {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+.confirm-modal-message {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.75rem;
+}
+
+.confirm-modal-warning {
+  font-size: 0.8125rem;
+  color: rgba(239, 68, 68, 0.8);
+  font-weight: 500;
+}
+
+/* Dangerous action buttons */
+.modal-confirm-danger {
+  background: rgba(220, 38, 38, 1) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+.modal-confirm-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 1) !important;
+  border-color: rgba(248, 113, 113, 0.7) !important;
+  box-shadow:
+    0 4px 12px rgba(220, 38, 38, 0.4),
+    0 0 16px rgba(239, 68, 68, 0.3) !important;
+}
+
+.modal-fab-danger {
+  background: rgba(220, 38, 38, 1) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+.modal-fab-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 1) !important;
+  box-shadow:
+    0 6px 16px rgba(220, 38, 38, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Mobile adjustments for confirm modal */
+@media (max-width: 767px) {
+  .confirm-modal-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.875rem;
+  }
+
+  .confirm-modal-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .confirm-modal-message {
+    font-size: 0.875rem;
+  }
+
+  .confirm-modal-warning {
+    font-size: 0.75rem;
+  }
+}
