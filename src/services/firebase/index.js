@@ -40,3 +40,13 @@ export {
   deleteFile,
   listFiles,
 } from "./storage";
+
+// Campaigns
+export {
+  createCampaign,
+  getCampaignByCode,
+  joinCampaign,
+  leaveCampaign,
+  updateCampaignName,
+  getUserCampaigns,
+} from "./campaigns";

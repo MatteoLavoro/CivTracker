@@ -1,52 +1,130 @@
-// Home Page - Work in Progress
-import { useState } from "react";
+// Home Page - Campaign Management
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BarChart, Map, TrendingUp, Users, Trash2, Type } from "lucide-react";
+import { Plus, Info, UserPlus } from "lucide-react";
 import { useAuthContext } from "../../contexts";
-import { logOut, updateUserProfile } from "../../services/firebase";
+import { useCollection } from "../../hooks";
 import {
-  Button,
-  Modal,
+  logOut,
+  updateUserProfile,
+  createCampaign,
+  joinCampaign,
+  leaveCampaign,
+  updateCampaignName,
+} from "../../services/firebase";
+import {
   TextInputModal,
   ProfileModal,
+  CampaignInfoModal,
 } from "../../components/common";
 import "./Home.css";
 
 /**
  * Home Page
- * Main dashboard after authentication
+ * Main dashboard for managing campaigns
  */
 export function Home() {
   const navigate = useNavigate();
-  const { user, loading } = useAuthContext();
+  const { user, loading: authLoading } = useAuthContext();
   const [profileModalOpen, setProfileModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [textInputModalOpen, setTextInputModalOpen] = useState(false);
-  const [textAreaModalOpen, setTextAreaModalOpen] = useState(false);
-  const [submittedText, setSubmittedText] = useState("");
-  const [submittedNote, setSubmittedNote] = useState("");
+  const [createCampaignModalOpen, setCreateCampaignModalOpen] = useState(false);
+  const [joinCampaignModalOpen, setJoinCampaignModalOpen] = useState(false);
+  const [campaignInfoModalOpen, setCampaignInfoModalOpen] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
+
+  // Load campaigns from Firestore with real-time updates
+  // Filter by user membership using Firestore query
+  const {
+    documents: campaigns,
+    loading: campaignsLoading,
+    error: campaignsError,
+  } = useCollection("campaigns", [
+    {
+      type: "where",
+      field: "members",
+      operator: "array-contains",
+      value: user?.uid || "",
+    },
+  ]);
 
   const handleLogout = async () => {
     await logOut();
     navigate("/");
   };
 
-  const handleDelete = () => {
-    console.log("Elemento eliminato!");
-    setDeleteModalOpen(false);
-    // Qui andrà la logica di eliminazione vera
+  const handleCreateCampaign = async (campaignName) => {
+    if (isCreating || !user) return;
+
+    setIsCreating(true);
+    const username = user.displayName || user.email?.split("@")[0] || "Utente";
+
+    const { campaign, error } = await createCampaign(
+      campaignName,
+      user.uid,
+      username,
+    );
+
+    setIsCreating(false);
+
+    if (error) {
+      console.error("Errore creazione campagna:", error);
+      alert("Errore nella creazione della campagna. Riprova.");
+    }
   };
 
-  const handleTextSubmit = (text) => {
-    console.log("Testo inserito:", text);
-    setSubmittedText(text);
-    // Qui andrà la logica di salvataggio del testo
+  const handleJoinCampaign = async (code) => {
+    if (isJoining || !user) return;
+
+    setIsJoining(true);
+    const username = user.displayName || user.email?.split("@")[0] || "Utente";
+
+    const { campaign, error } = await joinCampaign(code, user.uid, username);
+
+    setIsJoining(false);
+
+    if (error) {
+      console.error("Errore unione campagna:", error);
+      alert(error);
+    }
   };
 
-  const handleNoteSubmit = (note) => {
-    console.log("Nota inserita:", note);
-    setSubmittedNote(note);
-    // Qui andrà la logica di salvataggio della nota
+  const handleLeaveCampaign = async () => {
+    if (!selectedCampaign || !user) return;
+
+    const { success, error } = await leaveCampaign(
+      selectedCampaign.id,
+      user.uid,
+    );
+
+    if (error) {
+      console.error("Errore uscita campagna:", error);
+      alert("Errore nell'uscita dalla campagna. Riprova.");
+    } else {
+      setCampaignInfoModalOpen(false);
+      setSelectedCampaign(null);
+    }
+  };
+
+  const handleUpdateCampaignName = async (newName) => {
+    if (!selectedCampaign) return;
+
+    const { success, error } = await updateCampaignName(
+      selectedCampaign.id,
+      newName,
+    );
+
+    if (error) {
+      console.error("Errore aggiornamento nome:", error);
+      alert("Errore nell'aggiornamento del nome. Riprova.");
+    }
+  };
+
+  const handleCampaignInfo = (campaign, e) => {
+    e.stopPropagation();
+    setSelectedCampaign(campaign);
+    setCampaignInfoModalOpen(true);
   };
 
   const handleUpdateUsername = async (newUsername) => {
@@ -71,6 +149,8 @@ export function Home() {
     }
     return "U";
   };
+
+  const loading = authLoading || campaignsLoading;
 
   if (loading) {
     return (
@@ -99,91 +179,95 @@ export function Home() {
         </header>
 
         <main className="home-content">
-          <div className="home-wip">
-            <div className="home-wip-icon">🚧</div>
-            <h2 className="home-wip-title">In Sviluppo</h2>
-            <p className="home-wip-text">
-              Stiamo costruendo qualcosa di fantastico! Questa dashboard sarà
-              presto pronta per aiutarti a tracciare il progresso della tua
-              civiltà.
-            </p>
+          <div className="campaigns-grid">
+            {/* Render existing campaigns */}
+            {campaigns.map((campaign) => {
+              const membersList =
+                campaign.members
+                  ?.map(
+                    (memberId) => campaign.memberDetails?.[memberId]?.username,
+                  )
+                  .filter(Boolean) || [];
 
-            {/* Test Modals */}
-            <div
-              style={{
-                marginTop: "2rem",
-                maxWidth: "300px",
-                margin: "2rem auto 0",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              <Button
-                onClick={() => setTextInputModalOpen(true)}
-                variant="primary"
-                fullWidth
-              >
-                <Type size={18} style={{ marginRight: "0.5rem" }} />
-                Modale Input Testo
-              </Button>
-              <Button
-                onClick={() => setTextAreaModalOpen(true)}
-                variant="primary"
-                fullWidth
-              >
-                <Type size={18} style={{ marginRight: "0.5rem" }} />
-                Modale Textarea
-              </Button>
-              <Button
-                onClick={() => setDeleteModalOpen(true)}
-                variant="secondary"
-                fullWidth
-              >
-                <Trash2 size={18} style={{ marginRight: "0.5rem" }} />
-                Azione Pericolosa
-              </Button>
-              {(submittedText || submittedNote) && (
+              return (
                 <div
-                  style={{
-                    fontSize: "0.875rem",
-                    color: "rgba(255, 255, 255, 0.7)",
-                    textAlign: "center",
-                    marginTop: "0.5rem",
-                    lineHeight: "1.6",
+                  key={campaign.id}
+                  className="campaign-card"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    console.log("Campagna cliccata:", campaign.name)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      console.log("Campagna cliccata:", campaign.name);
+                    }
                   }}
                 >
-                  {submittedText && (
-                    <p style={{ margin: "0.25rem 0" }}>
-                      Nome: <strong>"{submittedText}"</strong>
-                    </p>
-                  )}
-                  {submittedNote && (
-                    <p style={{ margin: "0.25rem 0" }}>
-                      Nota: <strong>"{submittedNote}"</strong>
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
+                  {/* Header Section */}
+                  <div className="campaign-header">
+                    <h3 className="campaign-title">{campaign.name}</h3>
+                    <button
+                      className="campaign-info-btn"
+                      type="button"
+                      onClick={(e) => handleCampaignInfo(campaign, e)}
+                      aria-label="Informazioni campagna"
+                    >
+                      <Info size={16} />
+                    </button>
+                  </div>
 
-            <div className="home-wip-features" style={{ marginTop: "2rem" }}>
-              <div className="home-feature">
-                <BarChart className="home-feature-icon" size={24} />
-                <span className="home-feature-text">Analitiche</span>
-              </div>
-              <div className="home-feature">
-                <Map className="home-feature-icon" size={24} />
-                <span className="home-feature-text">Tracciamento Mappa</span>
-              </div>
-              <div className="home-feature">
-                <TrendingUp className="home-feature-icon" size={24} />
-                <span className="home-feature-text">Report Progressi</span>
-              </div>
-              <div className="home-feature">
-                <Users className="home-feature-icon" size={24} />
-                <span className="home-feature-text">Gestione Team</span>
-              </div>
+                  {/* Members Section */}
+                  <div className="campaign-members">
+                    <div className="campaign-members-label">Membri</div>
+                    <div className="campaign-members-list">
+                      {membersList.map((member, index) => (
+                        <div key={index} className="campaign-member">
+                          <div className="campaign-member-avatar">
+                            {member.substring(0, 2).toUpperCase()}
+                          </div>
+                          <span className="campaign-member-name">{member}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Stats Section */}
+                  <div className="campaign-stats">
+                    <div className="campaign-stats-placeholder">
+                      {/* Future statistics */}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Add Campaign Card - Combined Join and Create */}
+            <div className="campaign-add-container">
+              {/* Join Campaign Section (2/3) */}
+              <button
+                className="campaign-join-btn"
+                type="button"
+                onClick={() => setJoinCampaignModalOpen(true)}
+                aria-label="Unisciti ad una campagna"
+              >
+                <UserPlus size={38} className="campaign-join-icon" />
+                <span className="campaign-join-text">
+                  Unisciti ad una Campagna
+                </span>
+              </button>
+
+              {/* Create Campaign Section (1/3) */}
+              <button
+                className="campaign-create-btn"
+                type="button"
+                onClick={() => setCreateCampaignModalOpen(true)}
+                aria-label="Nuova campagna"
+              >
+                <Plus size={28} className="campaign-create-icon" />
+                <span className="campaign-create-text">Nuova Campagna</span>
+              </button>
             </div>
           </div>
         </main>
@@ -193,58 +277,42 @@ export function Home() {
         </footer>
       </div>
 
-      {/* Delete Modal - Dangerous Action */}
-      <Modal
-        isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        title="Elimina Elemento"
-        footer={{
-          onConfirm: handleDelete,
-          dangerous: true,
-          dangerousMessage:
-            "Sei sicuro di voler eliminare questo elemento? I dati saranno persi per sempre.",
-          label: "Elimina",
-          icon: <Trash2 size={24} />,
-        }}
-      >
-        <div>
-          <p style={{ marginBottom: "1rem" }}>
-            Stai per eliminare un elemento importante dal sistema.
-          </p>
-          <p style={{ marginBottom: "1rem", color: "rgba(255, 215, 0, 0.8)" }}>
-            ⚠️ Questa azione è <strong>irreversibile</strong>.
-          </p>
-          <p
-            style={{ fontSize: "0.875rem", color: "rgba(255, 255, 255, 0.6)" }}
-          >
-            Poiché questa è un'azione pericolosa, ti verrà chiesta una conferma
-            aggiuntiva.
-          </p>
-        </div>
-      </Modal>
-
-      {/* Text Input Modal */}
+      {/* Create Campaign Modal */}
       <TextInputModal
-        isOpen={textInputModalOpen}
-        onClose={() => setTextInputModalOpen(false)}
-        onConfirm={handleTextSubmit}
-        title="Inserisci Nome"
-        label="Nome Elemento"
-        placeholder="Es: Nuovo progetto, Task importante..."
+        isOpen={createCampaignModalOpen}
+        onClose={() => setCreateCampaignModalOpen(false)}
+        onConfirm={handleCreateCampaign}
+        title="Nuova Campagna"
+        label="Nome Campagna"
+        placeholder="Es: Campagna Italia, Gruppo Nord..."
         maxLength={50}
         minLength={3}
+        confirmLabel="Crea"
       />
 
-      {/* Text Area Modal */}
+      {/* Join Campaign Modal */}
       <TextInputModal
-        isOpen={textAreaModalOpen}
-        onClose={() => setTextAreaModalOpen(false)}
-        onConfirm={handleNoteSubmit}
-        title="Aggiungi Nota"
-        label="Descrizione Dettagliata"
-        placeholder="Scrivi qui la tua nota o descrizione..."
-        maxLength={200}
-        multiline
+        isOpen={joinCampaignModalOpen}
+        onClose={() => setJoinCampaignModalOpen(false)}
+        onConfirm={handleJoinCampaign}
+        title="Unisciti a Campagna"
+        label="Codice Campagna"
+        placeholder="Inserisci codice 8 caratteri..."
+        maxLength={8}
+        minLength={8}
+        confirmLabel="Unisciti"
+      />
+
+      {/* Campaign Info Modal */}
+      <CampaignInfoModal
+        isOpen={campaignInfoModalOpen}
+        onClose={() => {
+          setCampaignInfoModalOpen(false);
+          setSelectedCampaign(null);
+        }}
+        campaign={selectedCampaign}
+        onUpdateName={handleUpdateCampaignName}
+        onLeaveCampaign={handleLeaveCampaign}
       />
 
       {/* Profile Modal */}

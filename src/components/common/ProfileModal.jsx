@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Edit2, LogOut, Mail, User } from "lucide-react";
+import { Mail, User, LogOut } from "lucide-react";
 import { Modal, TextInputModal } from "./";
+import { ReadOnlyField, EditableField } from "./ModalField";
 import "./ProfileModal.css";
 
 /**
@@ -76,35 +77,20 @@ export function ProfileModal({
         }}
       >
         <div className="profile-modal-content">
-          {/* Email Field */}
-          <div className="profile-field">
-            <div className="profile-field-icon">
-              <Mail size={20} />
-            </div>
-            <div className="profile-field-content">
-              <label className="profile-field-label">Email</label>
-              <p className="profile-field-value">{user?.email || "N/A"}</p>
-            </div>
-          </div>
+          {/* Email Field - Read Only */}
+          <ReadOnlyField
+            icon={<Mail size={20} />}
+            label="Email"
+            value={user?.email || "N/A"}
+          />
 
-          {/* Username Field */}
-          <div className="profile-field">
-            <div className="profile-field-icon">
-              <User size={20} />
-            </div>
-            <div className="profile-field-content">
-              <label className="profile-field-label">Nome Utente</label>
-              <p className="profile-field-value">{displayUsername}</p>
-            </div>
-            <button
-              className="profile-edit-btn"
-              onClick={() => setEditUsernameOpen(true)}
-              aria-label="Modifica nome utente"
-              type="button"
-            >
-              <Edit2 size={18} />
-            </button>
-          </div>
+          {/* Username Field - Editable */}
+          <EditableField
+            icon={<User size={20} />}
+            label="Nome Utente"
+            value={displayUsername}
+            onEdit={() => setEditUsernameOpen(true)}
+          />
         </div>
       </Modal>
 

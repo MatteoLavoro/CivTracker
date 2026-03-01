@@ -47,6 +47,13 @@ export function Modal({
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const modalIdRef = useRef(`modal-${++modalCounter}`);
   const initialScrollY = useRef(0);
+  const hasPushedStateRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  // Update onClose ref when it changes
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   // Check if mobile
   useEffect(() => {
@@ -85,7 +92,14 @@ export function Modal({
 
   // History management
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      hasPushedStateRef.current = false;
+      return;
+    }
+
+    // Prevent multiple pushState calls for the same modal open
+    if (hasPushedStateRef.current) return;
+    hasPushedStateRef.current = true;
 
     const modalId = modalIdRef.current;
 
@@ -104,7 +118,7 @@ export function Modal({
       // If current state doesn't have my modalId, it means we went back
       // So we should close this modal
       if (!event.state || event.state.modalId !== modalId) {
-        onClose();
+        onCloseRef.current();
       }
     };
 
@@ -121,7 +135,7 @@ export function Modal({
       document.body.style.width = "";
       window.scrollTo(0, initialScrollY.current);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   // History management for nested confirmation modal
   useEffect(() => {
