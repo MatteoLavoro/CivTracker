@@ -50,3 +50,17 @@ export {
   updateCampaignName,
   getUserCampaigns,
 } from "./campaigns";
+
+// Leaders
+export {
+  getAllLeaders,
+  getLeaderById,
+  getLeadersByCivilization,
+  updateLeaderDescription,
+  updateLeaderAbilities,
+  updateLeaderAgenda,
+  searchLeaders,
+} from "./leaders";
+
+// Database Seeding (dev only)
+export { seedLeaders, verifyLeaderIcons } from "./seedLeaders";

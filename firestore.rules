@@ -8,6 +8,12 @@ service cloud.firestore {
       return request.auth != null;
     }
     
+    // Leaders Collection
+    match /leaders/{leaderId} {
+      // Allow full access for authenticated users (for seeding)
+      allow read, write: if isSignedIn();
+    }
+    
     // Campaigns Collection
     match /campaigns/{campaignId} {
       // Allow get (single document) if user is a member

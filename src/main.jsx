@@ -4,6 +4,9 @@ import { AuthProvider, ModalProvider } from "./contexts";
 import "./index.css";
 import App from "./App.jsx";
 
+// Import seeding utilities for development (accessible via window object)
+import "./utils/seedDatabase";
+
 // Register Service Worker
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

@@ -42,6 +42,7 @@
 
 - **[Autenticazione](docs/AUTH_DOCUMENTATION.md)** - Sistema auth completo
 - **[Campagne](docs/CAMPAIGNS_SYSTEM.md)** - Gestione campagne collaborative
+- **[Leaders](docs/LEADERS_SYSTEM.md)** - Database profili leader Civilization VI
 - **[Modali](docs/MODAL_SYSTEM.md)** - Sistema modale centralizzato
 - **[PWA](docs/PWA_DOCUMENTATION.md)** - Progressive Web App features
 - **[Componenti](docs/COMPONENTS.md)** - Componenti riutilizzabili

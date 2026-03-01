@@ -100,6 +100,174 @@
   padding: 2rem 1.5rem;
 }
 
+/* Leaders Section */
+.leaders-section {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.leaders-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 1);
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+/* Leaders Loading */
+.leaders-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  gap: 1rem;
+}
+
+.leaders-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(212, 175, 55, 1);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.leaders-loading p {
+  font-size: 0.9375rem;
+  color: rgba(200, 200, 200, 1);
+}
+
+/* Leaders Table Container */
+.leaders-table-container {
+  background: rgba(20, 30, 40, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Leaders Table */
+.leaders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaders-table thead {
+  background: rgba(15, 50, 82, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.leaders-table th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.leaders-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.leaders-table tbody tr:hover {
+  background: rgba(15, 50, 82, 0.2);
+}
+
+.leaders-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.leaders-table td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+}
+
+/* Icon Cells */
+.leader-icon-cell,
+.civ-icon-cell {
+  width: 80px;
+  text-align: center;
+}
+
+.leader-icon,
+.civ-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  transition: all 0.2s ease;
+}
+
+.leader-icon:hover,
+.civ-icon:hover {
+  transform: scale(1.1);
+  border-color: rgba(212, 175, 55, 0.6);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* Leader Name Cell */
+.leader-name-cell {
+  min-width: 200px;
+}
+
+.leader-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.leader-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.leader-variant {
+  font-size: 0.875rem;
+  color: rgba(212, 175, 55, 0.9);
+  font-style: italic;
+}
+
+.leader-civilization {
+  font-size: 0.8125rem;
+  color: rgba(150, 150, 150, 1);
+}
+
+/* Empty State */
+.leaders-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: rgba(150, 150, 150, 1);
+}
+
+.leaders-empty p {
+  margin: 0.5rem 0;
+  font-size: 0.9375rem;
+}
+
+.leaders-empty-hint {
+  margin-top: 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.leaders-empty-hint a {
+  color: rgba(212, 175, 55, 1);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.leaders-empty-hint a:hover {
+  color: rgba(212, 175, 55, 0.8);
+}
+
 /* Placeholder - temporary until features are added */
 .campaign-placeholder {
   display: flex;
@@ -124,6 +292,16 @@
   .campaign-content {
     padding: 2.5rem 2rem;
   }
+
+  .leaders-section-title {
+    font-size: 1.75rem;
+  }
+
+  .leader-icon,
+  .civ-icon {
+    width: 70px;
+    height: 70px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -141,6 +319,43 @@
     margin: 0 auto;
     width: 100%;
   }
+
+  .leaders-section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .leaders-table th {
+    padding: 1.25rem;
+    font-size: 0.9375rem;
+  }
+
+  .leaders-table td {
+    padding: 1rem 1.25rem;
+  }
+
+  .leader-icon-cell,
+  .civ-icon-cell {
+    width: 100px;
+  }
+
+  .leader-icon,
+  .civ-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .leader-name {
+    font-size: 1.125rem;
+  }
+
+  .leader-variant {
+    font-size: 0.9375rem;
+  }
+
+  .leader-civilization {
+    font-size: 0.875rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -152,5 +367,58 @@
   .campaign-back-btn:active,
   .campaign-info-btn:active {
     transform: scale(0.92);
+  }
+}
+
+/* Mobile Responsive - Stack table on small screens */
+@media (max-width: 639px) {
+  .leaders-table thead {
+    display: none;
+  }
+
+  .leaders-table,
+  .leaders-table tbody,
+  .leaders-table tr,
+  .leaders-table td {
+    display: block;
+  }
+
+  .leaders-table tr {
+    margin-bottom: 1rem;
+    background: rgba(20, 30, 40, 0.8);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .leaders-table td {
+    padding: 0.5rem 0;
+    border: none;
+    text-align: center;
+  }
+
+  .leader-icon-cell,
+  .civ-icon-cell {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .leader-icon,
+  .civ-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .leader-name-cell {
+    width: 100%;
+    min-width: auto;
+    margin-top: 0.5rem;
+  }
+
+  .leader-name-wrapper {
+    align-items: center;
+    text-align: center;
   }
 }

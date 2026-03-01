@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Info } from "lucide-react";
-import { useDocument } from "../../hooks";
+import { useDocument, useLeaders } from "../../hooks";
 import { useAuthContext } from "../../contexts";
 import { leaveCampaign, updateCampaignName } from "../../services/firebase";
 import { CampaignInfoModal } from "../../components/common";
@@ -24,6 +24,13 @@ export function Campaign() {
     loading,
     error: _error,
   } = useDocument("campaigns", campaignId);
+
+  // Load all leaders
+  const {
+    leaders,
+    loading: leadersLoading,
+    error: leadersError,
+  } = useLeaders();
 
   // Check if user is a member
   const isMember = campaign && user && campaign.members?.includes(user.uid);
@@ -102,10 +109,85 @@ export function Campaign() {
         </button>
       </header>
 
-      {/* Main Content - Empty for now, ready for future features */}
+      {/* Main Content - Leaders Table */}
       <main className="campaign-content">
-        <div className="campaign-placeholder">
-          <p>Contenuto campagna in arrivo...</p>
+        <div className="leaders-section">
+          <h2 className="leaders-section-title">Leader Civilization VI</h2>
+
+          {leadersLoading ? (
+            <div className="leaders-loading">
+              <div className="spinner"></div>
+              <p>Caricamento leader...</p>
+            </div>
+          ) : leadersError ? (
+            <div className="leaders-empty">
+              <p>⚠️ Errore nel caricamento dei leader</p>
+              <p className="leaders-empty-hint">
+                È necessario popolare il database dei leader.
+              </p>
+              <p
+                className="leaders-empty-hint"
+                style={{ fontSize: "0.75rem", marginTop: "1rem" }}
+              >
+                Errore: {leadersError}
+              </p>
+            </div>
+          ) : leaders && leaders.length > 0 ? (
+            <div className="leaders-table-container">
+              <table className="leaders-table">
+                <thead>
+                  <tr>
+                    <th>Leader</th>
+                    <th>Civiltà</th>
+                    <th>Nome</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaders.map((leader) => (
+                    <tr key={leader.id} className="leader-row">
+                      <td className="leader-icon-cell">
+                        <img
+                          src={leader.leaderIconPath}
+                          alt={leader.name}
+                          className="leader-icon"
+                          loading="lazy"
+                        />
+                      </td>
+                      <td className="civ-icon-cell">
+                        <img
+                          src={leader.civilizationIconPath}
+                          alt={leader.civilization}
+                          className="civ-icon"
+                          loading="lazy"
+                        />
+                      </td>
+                      <td className="leader-name-cell">
+                        <div className="leader-name-wrapper">
+                          <span className="leader-name">{leader.name}</span>
+                          {leader.variant && (
+                            <span className="leader-variant">
+                              ({leader.variant})
+                            </span>
+                          )}
+                          <span className="leader-civilization">
+                            {leader.civilization}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="leaders-empty">
+              <p>📋 Nessun leader disponibile</p>
+              <p className="leaders-empty-hint">
+                Il database è vuoto. Popola il database con i 77 leader di
+                Civilization VI.
+              </p>
+            </div>
+          )}
         </div>
       </main>
 
