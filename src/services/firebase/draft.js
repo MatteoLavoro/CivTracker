@@ -320,14 +320,53 @@ export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
     const campaign = campaignDoc.data();
     const draft = campaign.draft || {};
     const selectedLeaders = draft.selectedLeaders || {};
+    const matches = campaign.matches || [];
 
     // Add player's selection
     selectedLeaders[playerId] = leaderId;
 
-    await updateDoc(campaignRef, {
+    const updateData = {
       "draft.selectedLeaders": selectedLeaders,
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    // Check if all players have selected
+    const allPlayersSelected =
+      campaign.members &&
+      campaign.members.every((memberId) => !!selectedLeaders[memberId]);
+
+    // If all players selected and there's an active match, link draft to match
+    if (allPlayersSelected && matches.length > 0) {
+      const currentMatch = matches[matches.length - 1];
+      if (
+        currentMatch &&
+        currentMatch.status === "in-progress" &&
+        !currentMatch.draftCompleted
+      ) {
+        const updatedMatches = matches.map((match) => {
+          if (match.id === currentMatch.id) {
+            const updatedParticipants = { ...match.participants };
+
+            Object.keys(selectedLeaders).forEach((userId) => {
+              if (updatedParticipants[userId]) {
+                updatedParticipants[userId].leaderId = selectedLeaders[userId];
+              }
+            });
+
+            return {
+              ...match,
+              participants: updatedParticipants,
+              draftCompleted: true,
+            };
+          }
+          return match;
+        });
+
+        updateData.matches = updatedMatches;
+      }
+    }
+
+    await updateDoc(campaignRef, updateData);
 
     return { success: true, error: null };
   } catch (error) {

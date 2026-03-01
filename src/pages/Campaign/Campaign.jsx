@@ -1,7 +1,7 @@
-// Campaign Page - Individual Campaign View with Draft System
+// Campaign Page - Individual Campaign View with Draft System and Matches
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Info, Check, X, Clock, Eye, Ban } from "lucide-react";
+import { ArrowLeft, Info } from "lucide-react";
 import { useDocument, useLeaders } from "../../hooks";
 import { useAuthContext } from "../../contexts";
 import {
@@ -12,16 +12,20 @@ import {
   executeDraft,
   submitBanVote,
   finalizeBans,
-  voteResetDraft,
-  resetDraft,
   selectFinalLeader,
+  createMatch,
+  updateMatchTurns,
+  updateParticipantScore,
+  completeMatch,
 } from "../../services/firebase";
-import { CampaignInfoModal, LeaderConfirmModal } from "../../components/common";
 import {
-  hasPlayerVoted,
-  haveAllPlayersVoted,
-  getRemainingLeaders,
-} from "../../utils/draftUtils";
+  CampaignInfoModal,
+  LeaderConfirmModal,
+  TextInputModal,
+  DraftModal,
+  MatchRow,
+  AddMatchButton,
+} from "../../components/common";
 import "./Campaign.css";
 
 /**
@@ -33,12 +37,17 @@ export function Campaign() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const [campaignInfoModalOpen, setCampaignInfoModalOpen] = useState(false);
-  const [myCountdown, setMyCountdown] = useState(5);
-  const [hasStartedDraft, setHasStartedDraft] = useState(false);
-  const [currentBanTargetIndex, setCurrentBanTargetIndex] = useState(0);
-  const [selectedLeaderForBan, setSelectedLeaderForBan] = useState(null);
+  const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [confirmSelectOpen, setConfirmSelectOpen] = useState(false);
   const [leaderToSelect, setLeaderToSelect] = useState(null);
+
+  // Match system state
+  const [turnsModalOpen, setTurnsModalOpen] = useState(false);
+  const [scoreModalOpen, setScoreModalOpen] = useState(false);
+  const [currentMatchId, setCurrentMatchId] = useState(null);
+  const [currentParticipantId, setCurrentParticipantId] = useState(null);
+  const [currentTurns, setCurrentTurns] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
 
   // Load campaign data with real-time updates
   const {
@@ -60,35 +69,8 @@ export function Campaign() {
   // Get draft state
   const draft = campaign?.draft || null;
   const draftPhase = draft?.phase || null;
-  const isReady = draft?.readyPlayers?.includes(user?.uid) || false;
-  const myDraftedLeaders = draft?.playerDrafts?.[user?.uid] || [];
-  const bannedLeaderId = draft?.bannedLeaders?.[user?.uid] || null;
-  const myPlayerState = draft?.playerStates?.[user?.uid] || {};
-  const hasCompletedBans = myPlayerState.hasCompletedBans || false;
-  const votesReset = myPlayerState.votesReset || false;
   const selectedLeaders = draft?.selectedLeaders || {};
   const mySelectedLeader = selectedLeaders[user?.uid] || null;
-
-  // Get other players for banning
-  const otherPlayers =
-    campaign?.members?.filter((id) => id !== user?.uid) || [];
-  const currentBanTarget = otherPlayers[currentBanTargetIndex];
-
-  // Check if all players have completed bans
-  const allPlayersCompletedBans =
-    draft?.playerStates && campaign?.members
-      ? campaign.members.every(
-          (id) => draft.playerStates[id]?.hasCompletedBans === true,
-        )
-      : false;
-
-  // Check if all players vote for reset
-  const allPlayersVoteReset =
-    draft?.playerStates && campaign?.members
-      ? campaign.members.every(
-          (id) => draft.playerStates[id]?.votesReset === true,
-        )
-      : false;
 
   // Initialize draft if not exists
   useEffect(() => {
@@ -96,26 +78,6 @@ export function Campaign() {
       initializeDraft(campaignId);
     }
   }, [campaign, draft, isMember, campaignId]);
-
-  // My personal countdown timer (starts when phase becomes countdown)
-  useEffect(() => {
-    if (draftPhase === "countdown" && !hasStartedDraft) {
-      setMyCountdown(5);
-      const interval = setInterval(() => {
-        setMyCountdown((prev) => {
-          const newValue = prev - 1;
-          if (newValue <= 0) {
-            clearInterval(interval);
-            setHasStartedDraft(true);
-            return 0;
-          }
-          return newValue;
-        });
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [draftPhase, hasStartedDraft]);
 
   // Execute draft server-side when countdown phase starts (only once)
   useEffect(() => {
@@ -145,45 +107,28 @@ export function Campaign() {
     }
   }, [draftPhase, draft?.countdownStartAt, campaignId, campaign?.members]);
 
-  // Reset local state when phase changes to active
-  useEffect(() => {
-    if (draftPhase === "active") {
-      setHasStartedDraft(false);
-      setMyCountdown(5);
-    }
-  }, [draftPhase]);
-
   // Auto-finalize bans when all players completed
   useEffect(() => {
-    if (
-      draftPhase === "active" &&
-      allPlayersCompletedBans &&
-      campaign?.members
-    ) {
-      finalizeBans(campaignId, campaign.members);
+    if (draftPhase === "active" && campaign?.members && draft?.playerStates) {
+      const allCompleted = campaign.members.every(
+        (id) => draft.playerStates[id]?.hasCompletedBans === true,
+      );
+      if (allCompleted) {
+        finalizeBans(campaignId, campaign.members);
+      }
     }
-  }, [draftPhase, allPlayersCompletedBans, campaignId, campaign?.members]);
+  }, [draftPhase, draft?.playerStates, campaignId, campaign?.members]);
 
   // Auto-skip banning phase if solo player
   useEffect(() => {
-    if (
-      draftPhase === "active" &&
-      otherPlayers.length === 0 &&
-      campaign?.members
-    ) {
-      // Solo player - no banning needed, go straight to completed
-      finalizeBans(campaignId, campaign.members);
+    if (draftPhase === "active" && campaign?.members) {
+      const otherPlayers = campaign.members.filter((id) => id !== user?.uid);
+      if (otherPlayers.length === 0) {
+        // Solo player - no banning needed, go straight to completed
+        finalizeBans(campaignId, campaign.members);
+      }
     }
-  }, [draftPhase, otherPlayers.length, campaignId, campaign?.members]);
-
-  // Auto-reset when all players vote for reset
-  useEffect(() => {
-    if (draftPhase === "completed" && allPlayersVoteReset) {
-      resetDraft(campaignId);
-      setCurrentBanTargetIndex(0);
-      setSelectedLeaderForBan(null);
-    }
-  }, [draftPhase, allPlayersVoteReset, campaignId]);
+  }, [draftPhase, campaign?.members, campaignId, user?.uid]);
 
   // Redirect if not a member or campaign doesn't exist
   useEffect(() => {
@@ -221,43 +166,101 @@ export function Campaign() {
     }
   };
 
-  // Draft handlers
-  const handleToggleReady = async () => {
+  // Match handlers
+  const handleCreateMatch = async () => {
     if (!campaign || !user) return;
-    await togglePlayerReady(campaignId, user.uid, !isReady, campaign.members);
-  };
 
-  const handleSelectLeaderForBan = (leaderId) => {
-    setSelectedLeaderForBan(leaderId);
-  };
-
-  const handleConfirmBan = async () => {
-    if (!selectedLeaderForBan || !currentBanTarget || !campaign) return;
-
-    await submitBanVote(
+    const { success, error } = await createMatch(
       campaignId,
-      user.uid,
-      currentBanTarget,
-      selectedLeaderForBan,
       campaign.members,
+      campaign.memberDetails,
     );
 
-    // Move to next player or finish
-    if (currentBanTargetIndex < otherPlayers.length - 1) {
-      setCurrentBanTargetIndex(currentBanTargetIndex + 1);
-      setSelectedLeaderForBan(null);
-    } else {
-      // All votes submitted - reset to see results
-      setCurrentBanTargetIndex(0);
-      setSelectedLeaderForBan(null);
+    if (error) {
+      console.error("Errore creazione partita:", error);
+      alert(error);
     }
   };
 
-  const handleToggleVoteReset = async () => {
-    await voteResetDraft(campaignId, user.uid, !votesReset);
+  const handleUpdateTurnsRequest = (matchId, currentTurns) => {
+    setCurrentMatchId(matchId);
+    setCurrentTurns(currentTurns);
+    setTurnsModalOpen(true);
   };
 
-  const handleRequestSelectLeader = (leaderId) => {
+  const handleUpdateTurnsConfirm = async (turnsValue) => {
+    if (!currentMatchId) return;
+
+    const { error } = await updateMatchTurns(
+      campaignId,
+      currentMatchId,
+      turnsValue,
+    );
+
+    if (error) {
+      console.error("Errore aggiornamento turni:", error);
+      alert("Errore nell'aggiornamento dei turni. Riprova.");
+    }
+
+    setTurnsModalOpen(false);
+    setCurrentMatchId(null);
+  };
+
+  const handleUpdateScoreRequest = (matchId, participantId, currentScore) => {
+    setCurrentMatchId(matchId);
+    setCurrentParticipantId(participantId);
+    setCurrentScore(currentScore);
+    setScoreModalOpen(true);
+  };
+
+  const handleUpdateScoreConfirm = async (scoreValue) => {
+    if (!currentMatchId || !currentParticipantId) return;
+
+    const { error } = await updateParticipantScore(
+      campaignId,
+      currentMatchId,
+      currentParticipantId,
+      scoreValue,
+    );
+
+    if (error) {
+      console.error("Errore aggiornamento punteggio:", error);
+      alert("Errore nell'aggiornamento del punteggio. Riprova.");
+    }
+
+    setScoreModalOpen(false);
+    setCurrentMatchId(null);
+    setCurrentParticipantId(null);
+  };
+
+  const handleCompleteMatch = async (matchId) => {
+    const { error } = await completeMatch(campaignId, matchId);
+
+    if (error) {
+      console.error("Errore completamento partita:", error);
+      alert("Errore nel completamento della partita. Riprova.");
+    }
+  };
+
+  // Draft handlers
+  const handleToggleReady = async () => {
+    if (!campaign || !user) return;
+    const isReady = draft?.readyPlayers?.includes(user.uid) || false;
+    await togglePlayerReady(campaignId, user.uid, !isReady, campaign.members);
+  };
+
+  const handleSubmitBan = async (targetPlayerId, bannedLeaderId) => {
+    if (!campaign) return;
+    await submitBanVote(
+      campaignId,
+      user.uid,
+      targetPlayerId,
+      bannedLeaderId,
+      campaign.members,
+    );
+  };
+
+  const handleSelectLeader = async (leaderId) => {
     setLeaderToSelect(leaderId);
     setConfirmSelectOpen(true);
   };
@@ -274,486 +277,32 @@ export function Campaign() {
     if (error) {
       console.error("Errore nella selezione del leader:", error);
       alert("Errore nella selezione del leader. Riprova.");
+    } else {
+      // Close draft modal after selection
+      setDraftModalOpen(false);
     }
 
     setConfirmSelectOpen(false);
     setLeaderToSelect(null);
   };
 
-  // Get leader object by ID
-  const getLeaderById = (leaderId) => {
-    return leaders?.find((l) => l.id === leaderId);
+  const handleOpenDraftModal = () => {
+    setDraftModalOpen(true);
   };
 
-  // Render functions for different phases
-  const renderWaitingPhase = () => {
-    const readyCount = draft?.readyPlayers?.length || 0;
-    const totalPlayers = campaign?.members?.length || 0;
+  // Match system logic
+  const matches = campaign?.matches || [];
+  const hasMatches = matches.length > 0;
+  const currentMatch = hasMatches ? matches[matches.length - 1] : null;
+  const isCurrentMatchActive =
+    currentMatch && currentMatch.status === "in-progress";
+  const canCreateNewMatch = !hasMatches || !isCurrentMatchActive;
 
-    return (
-      <div className="draft-waiting">
-        <div className="draft-card">
-          <div className="draft-header">
-            <h2 className="draft-title">Pronto per il Draft?</h2>
-          </div>
-
-          <div className="draft-divider"></div>
-
-          <div className="draft-body">
-            <p className="draft-description">
-              Quando tutti i giocatori saranno pronti, inizierà un countdown di
-              5 secondi prima dell'estrazione dei leader.
-            </p>
-
-            <div className="ready-status">
-              <div className="ready-count">
-                {readyCount} / {totalPlayers} giocatori pronti
-              </div>
-
-              <div className="ready-players">
-                {campaign?.members?.map((memberId) => {
-                  const memberData = campaign.memberDetails?.[memberId];
-                  const isPlayerReady =
-                    draft?.readyPlayers?.includes(memberId) || false;
-
-                  return (
-                    <div
-                      key={memberId}
-                      className={`ready-player ${isPlayerReady ? "ready" : ""}`}
-                    >
-                      <div className="ready-player-avatar">
-                        {memberData?.username?.substring(0, 2).toUpperCase() ||
-                          "?"}
-                      </div>
-                      <span className="ready-player-name">
-                        {memberData?.username || "Sconosciuto"}
-                      </span>
-                      {isPlayerReady && (
-                        <Check size={20} className="ready-check-icon" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="draft-divider"></div>
-
-          <div className="draft-footer">
-            <button
-              className={`draft-ready-btn ${isReady ? "ready" : ""}`}
-              onClick={handleToggleReady}
-              type="button"
-            >
-              {isReady ? (
-                <>
-                  <X size={20} />
-                  Non Pronto
-                </>
-              ) : (
-                <>
-                  <Check size={20} />
-                  Pronto
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderCountdownPhase = () => {
-    const readyCount = draft?.readyPlayers?.length || 0;
-    const totalPlayers = campaign?.members?.length || 0;
-
-    return (
-      <div className="draft-countdown">
-        <div className="draft-card">
-          <div className="draft-header">
-            <h2 className="draft-title">Inizia il Draft!</h2>
-          </div>
-
-          <div className="draft-divider"></div>
-
-          <div className="draft-body">
-            <div className="countdown-display">
-              <Clock size={48} />
-              <div className="countdown-number">{myCountdown}</div>
-            </div>
-
-            <p className="draft-description">
-              L'estrazione dei leader inizierà tra {myCountdown} second
-              {myCountdown !== 1 ? "i" : "o"}...
-            </p>
-
-            <div className="countdown-ready-status">
-              <div className="ready-count">
-                {readyCount} / {totalPlayers} giocatori pronti
-              </div>
-            </div>
-          </div>
-
-          <div className="draft-divider"></div>
-
-          <div className="draft-footer">
-            <button
-              className="draft-ready-btn ready"
-              onClick={handleToggleReady}
-              type="button"
-            >
-              <X size={20} />
-              Annulla
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderActivePhase = () => {
-    // Player has completed bans - waiting for others
-    if (hasCompletedBans) {
-      return (
-        <div className="draft-waiting-results">
-          <div className="draft-card">
-            <div className="draft-header">
-              <h2 className="draft-title">In Attesa...</h2>
-            </div>
-
-            <div className="draft-divider"></div>
-
-            <div className="draft-body">
-              <p className="draft-description">
-                Hai completato i tuoi ban. Attendere che tutti i giocatori
-                finiscano.
-              </p>
-
-              <div className="waiting-spinner">
-                <div className="spinner"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Player is banning - show other players' leaders
-    if (!currentBanTarget || otherPlayers.length === 0) {
-      // Solo player - skip banning
-      return (
-        <div className="draft-banning">
-          <div className="draft-card">
-            <div className="draft-header">
-              <h2 className="draft-title">Nessun Ban Necessario</h2>
-            </div>
-
-            <div className="draft-divider"></div>
-
-            <div className="draft-body">
-              <p className="draft-description">
-                Sei l'unico giocatore, quindi nessun ban è necessario.
-              </p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    const targetMemberData = campaign?.memberDetails?.[currentBanTarget];
-    const targetLeaders = draft?.playerDrafts?.[currentBanTarget] || [];
-
-    // If no leaders were drafted, show error
-    if (!myDraftedLeaders || myDraftedLeaders.length === 0) {
-      return (
-        <div className="draft-banning">
-          <div className="draft-card">
-            <div className="draft-header">
-              <h2 className="draft-title">Errore Draft</h2>
-            </div>
-
-            <div className="draft-divider"></div>
-
-            <div className="draft-body">
-              <p className="draft-description">
-                I leader non sono stati estratti correttamente. Riprova ad
-                avviare il draft.
-              </p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (!targetLeaders || targetLeaders.length === 0) {
-      return (
-        <div className="draft-banning">
-          <div className="draft-card">
-            <div className="draft-header">
-              <h2 className="draft-title">Caricamento...</h2>
-            </div>
-
-            <div className="draft-divider"></div>
-
-            <div className="draft-body">
-              <p className="draft-description">
-                Attendere l'estrazione dei leader...
-              </p>
-              <div className="waiting-spinner">
-                <div className="spinner"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="draft-banning">
-        <div className="draft-card">
-          <div className="draft-header">
-            <h2 className="draft-title">Banna un Leader</h2>
-          </div>
-
-          <div className="draft-divider"></div>
-
-          <div className="draft-body">
-            <div className="ban-target-player">
-              <div className="ban-target-avatar">
-                {targetMemberData?.username?.substring(0, 2).toUpperCase() ||
-                  "?"}
-              </div>
-              <div className="ban-target-name">
-                {targetMemberData?.username || "Sconosciuto"}
-              </div>
-            </div>
-
-            <p className="draft-description">Seleziona un leader da bannare</p>
-
-            <div className="ban-leaders">
-              {targetLeaders.map((leaderId) => {
-                const leader = getLeaderById(leaderId);
-                if (!leader) return null;
-
-                const isSelected = selectedLeaderForBan === leaderId;
-
-                return (
-                  <div
-                    key={leaderId}
-                    className={`ban-leader-card ${isSelected ? "selected" : ""}`}
-                    onClick={() => handleSelectLeaderForBan(leaderId)}
-                  >
-                    <img
-                      src={leader.leaderIconPath}
-                      alt={leader.name}
-                      className="ban-leader-icon"
-                    />
-                    <img
-                      src={leader.civilizationIconPath}
-                      alt={leader.civilization}
-                      className="ban-civ-icon"
-                    />
-                    <div className="ban-leader-info">
-                      <div className="ban-leader-name">
-                        {leader.name}
-                        {leader.variant && (
-                          <span className="ban-leader-variant">
-                            {" "}
-                            - {leader.variant}
-                          </span>
-                        )}
-                      </div>
-                      <div className="ban-leader-civ">
-                        {leader.civilization}
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <div className="ban-selected-indicator">
-                        <Check size={24} />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="draft-divider"></div>
-
-          <div className="draft-footer">
-            <button
-              className="draft-action-btn"
-              onClick={handleConfirmBan}
-              disabled={!selectedLeaderForBan}
-              type="button"
-            >
-              Conferma Ban
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderCompletedPhase = () => {
-    // If player has already selected a leader, show results table
-    if (mySelectedLeader) {
-      return (
-        <div className="draft-results-view">
-          <div className="draft-card">
-            <div className="draft-header">
-              <h2 className="draft-title">Risultati Draft</h2>
-            </div>
-
-            <div className="draft-divider"></div>
-
-            <div className="draft-body">
-              <p className="draft-subtitle">
-                Leader selezionati da tutti i giocatori
-              </p>
-
-              <div className="results-table-container">
-                {campaign?.members?.map((memberId) => {
-                  const memberData = campaign.memberDetails?.[memberId];
-                  const selectedLeaderId = selectedLeaders[memberId];
-                  const leader = selectedLeaderId
-                    ? getLeaderById(selectedLeaderId)
-                    : null;
-                  const hasSelected = !!selectedLeaderId;
-
-                  return (
-                    <div key={memberId} className="result-row">
-                      <div className="result-player-section">
-                        <div className="result-player-avatar">
-                          {memberData?.username
-                            ?.substring(0, 2)
-                            .toUpperCase() || "?"}
-                        </div>
-                        <span className="result-player-name">
-                          {memberData?.username || "Sconosciuto"}
-                        </span>
-                      </div>
-
-                      <div className="result-divider">|</div>
-
-                      {hasSelected && leader ? (
-                        <div className="result-leader-section">
-                          <img
-                            src={leader.leaderIconPath}
-                            alt={leader.name}
-                            className="result-leader-icon"
-                          />
-                          <img
-                            src={leader.civilizationIconPath}
-                            alt={leader.civilization}
-                            className="result-civ-icon"
-                          />
-                          <div className="result-leader-details">
-                            <div className="result-leader-name">
-                              {leader.name}
-                              {leader.variant && (
-                                <span className="result-leader-variant">
-                                  {" "}
-                                  - {leader.variant}
-                                </span>
-                              )}
-                            </div>
-                            <div className="result-leader-civ">
-                              {leader.civilization}
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="result-waiting">
-                          <div className="waiting-spinner-small">
-                            <div className="spinner-small"></div>
-                          </div>
-                          <span>In attesa...</span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Player hasn't selected yet - show selection interface
-    return (
-      <div className="draft-completed">
-        <div className="draft-card">
-          <div className="draft-header">
-            <h2 className="draft-title">Scegli il tuo Leader!</h2>
-          </div>
-
-          <div className="draft-divider"></div>
-
-          <div className="draft-body">
-            <p className="draft-subtitle">
-              Seleziona uno dei tuoi leader per giocare
-            </p>
-
-            <div className="final-leaders">
-              {myDraftedLeaders.map((leaderId) => {
-                const leader = getLeaderById(leaderId);
-                if (!leader) return null;
-
-                const isBanned = leaderId === bannedLeaderId;
-
-                return (
-                  <div
-                    key={leaderId}
-                    className={`final-leader-card ${isBanned ? "banned" : ""}`}
-                  >
-                    <img
-                      src={leader.leaderIconPath}
-                      alt={leader.name}
-                      className="final-leader-icon"
-                    />
-                    <img
-                      src={leader.civilizationIconPath}
-                      alt={leader.civilization}
-                      className="final-civ-icon"
-                    />
-                    <div className="final-leader-info">
-                      <div className="final-leader-name">
-                        {leader.name}
-                        {leader.variant && (
-                          <span className="final-leader-variant">
-                            {" "}
-                            - {leader.variant}
-                          </span>
-                        )}
-                      </div>
-                      <div className="final-leader-civ">
-                        {leader.civilization}
-                      </div>
-                    </div>
-
-                    {isBanned ? (
-                      <div className="leader-tag banned-tag">BANNATO</div>
-                    ) : (
-                      <button
-                        className="leader-tag choose-tag"
-                        onClick={() => handleRequestSelectLeader(leaderId)}
-                        type="button"
-                      >
-                        SCEGLI
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // Draft button logic
+  const isDraftInProgress =
+    draftPhase && draftPhase !== "waiting" && !mySelectedLeader;
+  const readyPlayersCount = draft?.readyPlayers?.length || 0;
+  const totalPlayersCount = campaign?.members?.length || 0;
 
   if (loading || leadersLoading) {
     return (
@@ -837,12 +386,34 @@ export function Campaign() {
         </button>
       </header>
 
-      {/* Main Content - Draft System */}
+      {/* Main Content - Matches and Draft System */}
       <main className="campaign-content">
-        {draftPhase === "waiting" && renderWaitingPhase()}
-        {draftPhase === "countdown" && renderCountdownPhase()}
-        {draftPhase === "active" && renderActivePhase()}
-        {draftPhase === "completed" && renderCompletedPhase()}
+        {/* Matches Section */}
+        <section className="matches-section">
+          {/* Match List - Oldest first, newest last */}
+          {matches.map((match) => (
+            <MatchRow
+              key={match.id}
+              match={match}
+              leaders={leaders}
+              draft={draft}
+              onStartDraft={handleOpenDraftModal}
+              onCompleteMatch={handleCompleteMatch}
+              onUpdateTurns={handleUpdateTurnsRequest}
+              onUpdateScore={handleUpdateScoreRequest}
+              isCurrentMatch={match.id === currentMatch?.id}
+              isDraftInProgress={isDraftInProgress}
+              readyPlayersCount={readyPlayersCount}
+              totalPlayersCount={totalPlayersCount}
+            />
+          ))}
+
+          {/* Add Match Button */}
+          <AddMatchButton
+            onClick={handleCreateMatch}
+            disabled={!canCreateNewMatch}
+          />
+        </section>
       </main>
 
       {/* Campaign Info Modal */}
@@ -854,6 +425,19 @@ export function Campaign() {
         onLeaveCampaign={handleLeaveCampaign}
       />
 
+      {/* Draft Modal */}
+      <DraftModal
+        isOpen={draftModalOpen}
+        onClose={() => setDraftModalOpen(false)}
+        campaign={campaign}
+        draft={draft}
+        leaders={leaders}
+        user={user}
+        onToggleReady={handleToggleReady}
+        onSubmitBan={handleSubmitBan}
+        onSelectLeader={handleSelectLeader}
+      />
+
       {/* Confirm Select Leader Modal */}
       <LeaderConfirmModal
         isOpen={confirmSelectOpen}
@@ -862,7 +446,48 @@ export function Campaign() {
           setLeaderToSelect(null);
         }}
         onConfirm={handleConfirmSelectLeader}
-        leader={leaderToSelect ? getLeaderById(leaderToSelect) : null}
+        leader={
+          leaderToSelect ? leaders?.find((l) => l.id === leaderToSelect) : null
+        }
+      />
+
+      {/* Update Turns Modal */}
+      <TextInputModal
+        isOpen={turnsModalOpen}
+        onClose={() => {
+          setTurnsModalOpen(false);
+          setCurrentMatchId(null);
+        }}
+        onConfirm={handleUpdateTurnsConfirm}
+        title="Aggiorna Turni"
+        label="Numero di Turni"
+        placeholder="Es: 300"
+        confirmLabel="Salva"
+        defaultValue={currentTurns > 0 ? currentTurns.toString() : ""}
+        customValidation={(value) => {
+          const num = parseInt(value);
+          return !isNaN(num) && num > 0 && num <= 9999;
+        }}
+      />
+
+      {/* Update Score Modal */}
+      <TextInputModal
+        isOpen={scoreModalOpen}
+        onClose={() => {
+          setScoreModalOpen(false);
+          setCurrentMatchId(null);
+          setCurrentParticipantId(null);
+        }}
+        onConfirm={handleUpdateScoreConfirm}
+        title="Aggiorna Punteggio"
+        label="Punteggio"
+        placeholder="Es: 450"
+        confirmLabel="Salva"
+        defaultValue={currentScore > 0 ? currentScore.toString() : ""}
+        customValidation={(value) => {
+          const num = parseInt(value);
+          return !isNaN(num) && num >= 0 && num <= 9999;
+        }}
       />
     </div>
   );

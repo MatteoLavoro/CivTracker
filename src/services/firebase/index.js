@@ -75,5 +75,14 @@ export {
   selectFinalLeader,
 } from "./draft";
 
+// Matches
+export {
+  createMatch,
+  updateMatchTurns,
+  updateParticipantScore,
+  completeMatch,
+  linkDraftToMatch,
+} from "./matches";
+
 // Database Seeding (dev only)
 export { seedLeaders, verifyLeaderIcons } from "./seedLeaders";

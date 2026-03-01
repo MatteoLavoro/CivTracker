@@ -1,0 +1,87 @@
+/* Add Match Button Styles - Similar to Join Campaign Button */
+
+.add-match-btn {
+  width: 100%;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.2) 0%,
+    rgba(15, 50, 82, 0.3) 100%
+  );
+  border: 2px dashed rgba(15, 50, 82, 0.6);
+  border-radius: 16px;
+  color: rgba(15, 50, 82, 1);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.add-match-btn:hover:not(.disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.3) 0%,
+    rgba(15, 50, 82, 0.4) 100%
+  );
+  border-color: rgba(15, 50, 82, 1);
+  border-style: solid;
+  color: rgba(20, 65, 105, 1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.add-match-btn:active:not(.disabled) {
+  transform: translateY(-2px);
+}
+
+.add-match-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(60, 60, 60, 0.2) 0%,
+    rgba(60, 60, 60, 0.3) 100%
+  );
+}
+
+.add-match-icon {
+  color: rgba(15, 50, 82, 1);
+  transition: all 0.3s ease;
+}
+
+.add-match-btn:hover:not(.disabled) .add-match-icon {
+  color: rgba(20, 65, 105, 1);
+  transform: scale(1.1);
+}
+
+.add-match-text {
+  letter-spacing: 0.3px;
+  color: rgba(150, 150, 150, 1);
+  transition: color 0.3s ease;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.add-match-btn:hover:not(.disabled) .add-match-text {
+  color: rgba(200, 200, 200, 1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .add-match-btn {
+    min-height: 80px;
+    font-size: 14px;
+    padding: 16px;
+    gap: 8px;
+  }
+}
