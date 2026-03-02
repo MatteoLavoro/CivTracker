@@ -1,6 +1,8 @@
 /* Match Row Styles */
 
 .match-row {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 120px minmax(400px, 1fr) 150px 120px 140px;
   gap: 16px;
@@ -47,6 +49,29 @@
   justify-content: center;
   padding-right: 16px;
   border-right: 1px solid rgba(212, 175, 55, 0.08);
+}
+
+.match-number-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.9),
+    rgba(184, 134, 11, 0.8)
+  );
+  border: 1px solid rgba(212, 175, 55, 1);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+  align-self: center;
+  margin-bottom: 8px;
 }
 
 .match-date-label {
@@ -277,6 +302,21 @@
   text-shadow:
     0 1px 2px rgba(0, 0, 0, 0.5),
     0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.match-winner-name.defeat-text {
+  color: rgba(239, 68, 68, 1);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.match-winner-name.canceled-text {
+  color: rgba(239, 68, 68, 1);
+  text-decoration: line-through;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(239, 68, 68, 0.3);
 }
 
 .match-victory-type {

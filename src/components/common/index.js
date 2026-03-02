@@ -16,6 +16,7 @@ export { VictoryTypeSelectModal } from "./VictoryTypeSelectModal";
 export { DraftModal } from "./DraftModal";
 export { MatchRow } from "./MatchRow";
 export { AddMatchButton } from "./AddMatchButton";
+export { ResultsModal } from "./ResultsModal";
 export {
   ModalField,
   EditButton,

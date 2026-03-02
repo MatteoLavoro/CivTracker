@@ -208,10 +208,9 @@ export const completeMatch = async (
     const campaign = campaignDoc.data();
     const matches = campaign.matches || [];
 
-    // First, complete/update the current match
-    const matchesAfterUpdate = matches.map((match) => {
+    // PHASE 1: Save basic data immediately (fast operation)
+    const matchesWithBasicUpdate = matches.map((match) => {
       if (match.id === matchId) {
-        // Update participant raw scores and bonus tags
         const updatedParticipants = { ...match.participants };
         Object.keys(scores).forEach((userId) => {
           if (updatedParticipants[userId]) {
@@ -233,56 +232,76 @@ export const completeMatch = async (
       return match;
     });
 
-    // Calculate NEW victory counts (including the newly completed match)
-    const newVictoryCounts = getVictoryCounts(matchesAfterUpdate);
-
-    // Recalculate ALL completed matches with the new victory counts
-    const updatedMatches = matchesAfterUpdate.map((match) => {
-      // Recalculate if completed and has victoryType
-      // For canceled and defeat matches, winnerId can be empty
-      if (
-        match.status === "completed" &&
-        match.victoryType &&
-        (match.victoryType === "canceled" ||
-          match.victoryType === "defeat" ||
-          match.winnerId)
-      ) {
-        // Recalculate processed scores with NEW victory counts
-        const processedScores = calculateProcessedScores(
-          match.participants,
-          match.winnerId,
-          match.victoryType,
-          newVictoryCounts,
-        );
-
-        // Calculate final scores with bonus tags
-        const finalScores = calculateFinalScores(
-          processedScores,
-          match.participants,
-        );
-
-        // Update participants with new scores
-        const updatedParticipants = { ...match.participants };
-        Object.keys(processedScores).forEach((userId) => {
-          if (updatedParticipants[userId]) {
-            updatedParticipants[userId].processedScore =
-              processedScores[userId];
-            updatedParticipants[userId].finalScore = finalScores[userId];
-          }
-        });
-
-        return {
-          ...match,
-          participants: updatedParticipants,
-        };
-      }
-      return match;
-    });
-
+    // Save basic data immediately
     await updateDoc(campaignRef, {
-      matches: updatedMatches,
+      matches: matchesWithBasicUpdate,
       updatedAt: new Date().toISOString(),
     });
+
+    // PHASE 2: Calculate scores in background (heavy operation)
+    // This happens after returning success to the user
+    setTimeout(async () => {
+      try {
+        // Re-fetch the campaign to ensure we have the latest data
+        const updatedCampaignDoc = await getDoc(campaignRef);
+        if (!updatedCampaignDoc.exists()) return;
+
+        const updatedCampaign = updatedCampaignDoc.data();
+        const latestMatches = updatedCampaign.matches || [];
+
+        // Calculate NEW victory counts (including the newly completed match)
+        const newVictoryCounts = getVictoryCounts(latestMatches);
+
+        // Recalculate ALL completed matches with the new victory counts
+        const finalMatches = latestMatches.map((match) => {
+          if (
+            match.status === "completed" &&
+            match.victoryType &&
+            (match.victoryType === "canceled" ||
+              match.victoryType === "defeat" ||
+              match.winnerId)
+          ) {
+            // Recalculate processed scores with NEW victory counts
+            const processedScores = calculateProcessedScores(
+              match.participants,
+              match.winnerId,
+              match.victoryType,
+              newVictoryCounts,
+            );
+
+            // Calculate final scores with bonus tags
+            const finalScores = calculateFinalScores(
+              processedScores,
+              match.participants,
+            );
+
+            // Update participants with new scores
+            const updatedParticipants = { ...match.participants };
+            Object.keys(processedScores).forEach((userId) => {
+              if (updatedParticipants[userId]) {
+                updatedParticipants[userId].processedScore =
+                  processedScores[userId];
+                updatedParticipants[userId].finalScore = finalScores[userId];
+              }
+            });
+
+            return {
+              ...match,
+              participants: updatedParticipants,
+            };
+          }
+          return match;
+        });
+
+        // Save calculated scores
+        await updateDoc(campaignRef, {
+          matches: finalMatches,
+          updatedAt: new Date().toISOString(),
+        });
+      } catch (error) {
+        console.error("Error calculating scores in background:", error);
+      }
+    }, 0);
 
     return { success: true, error: null };
   } catch (error) {

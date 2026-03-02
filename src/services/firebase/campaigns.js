@@ -207,6 +207,27 @@ export const updateCampaignName = async (campaignId, newName) => {
 };
 
 /**
+ * Toggle campaign important/starred status
+ * @param {string} campaignId - Campaign ID
+ * @param {boolean} isImportant - Whether campaign is marked as important
+ * @returns {Object} { success, error }
+ */
+export const toggleCampaignImportant = async (campaignId, isImportant) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    await updateDoc(campaignRef, {
+      isImportant: isImportant,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error toggling campaign important:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
  * Get user campaigns
  * @param {string} userId - User ID
  * @returns {Object} { campaigns, error }

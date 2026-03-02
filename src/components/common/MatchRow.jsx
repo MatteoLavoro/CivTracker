@@ -5,6 +5,7 @@ import "./MatchRow.css";
 /**
  * MatchRow component - displays a single match with all details
  * @param {Object} match - Match data
+ * @param {number} matchNumber - Match number (1-indexed)
  * @param {Object} leaders - All leaders data
  * @param {Object} draft - Draft data for real-time leader selection
  * @param {Function} onStartDraft - Handler for starting draft
@@ -17,6 +18,7 @@ import "./MatchRow.css";
  */
 export function MatchRow({
   match,
+  matchNumber,
   leaders,
   draft,
   onStartDraft,
@@ -91,6 +93,7 @@ export function MatchRow({
     <div className={`match-row ${isCompleted ? "completed" : ""}`}>
       {/* Column 1: Dates */}
       <div className="match-col match-col-dates">
+        <div className="match-number-tag">Partita {matchNumber}</div>
         <div className="match-date-label">Inizio</div>
         <div className="match-date-value">{formatDate(match.startDate)}</div>
         {isCompleted && (
@@ -181,13 +184,18 @@ export function MatchRow({
           <>
             {match.victoryType === "defeat" ||
             match.victoryType === "canceled" ? (
-              /* Solo icona per sconfitta e annullata */
+              /* Testo per sconfitta e annullata */
               <div className="match-winner-info">
                 <img
                   src={victoryInfo.icon}
                   alt={victoryInfo.name}
                   className="match-victory-icon"
                 />
+                <span
+                  className={`match-winner-name ${match.victoryType === "defeat" ? "defeat-text" : "canceled-text"}`}
+                >
+                  {match.victoryType === "defeat" ? "SCONFITTA" : "ANNULLATA"}
+                </span>
               </div>
             ) : winner ? (
               /* Icona + nome vincitore per vittorie normali e forfait */

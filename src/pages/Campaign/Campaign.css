@@ -44,6 +44,8 @@
 
 /* Header */
 .campaign-header {
+  position: relative;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -88,6 +90,7 @@
 /* Kebab Menu */
 .campaign-kebab-menu {
   position: relative;
+  z-index: 9999;
 }
 
 .campaign-kebab-dropdown {
@@ -106,7 +109,7 @@
     0 0 0 1px rgba(212, 175, 55, 0.1) inset;
   backdrop-filter: blur(10px);
   min-width: 200px;
-  z-index: 1100;
+  z-index: 9999;
   overflow: hidden;
 }
 
@@ -1231,6 +1234,8 @@
 
 /* Matches Section */
 .matches-section {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1400px;
   display: flex;

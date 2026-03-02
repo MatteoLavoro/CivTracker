@@ -48,6 +48,7 @@ export {
   joinCampaign,
   leaveCampaign,
   updateCampaignName,
+  toggleCampaignImportant,
   getUserCampaigns,
 } from "./campaigns";
 

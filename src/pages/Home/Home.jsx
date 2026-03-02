@@ -1,7 +1,7 @@
 // Home Page - Campaign Management
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Info, UserPlus, Trophy } from "lucide-react";
+import { Plus, Info, UserPlus, Trophy, Star } from "lucide-react";
 import { useAuthContext } from "../../contexts";
 import { useCollection } from "../../hooks";
 import {
@@ -11,6 +11,7 @@ import {
   joinCampaign,
   leaveCampaign,
   updateCampaignName,
+  toggleCampaignImportant,
 } from "../../services/firebase";
 import {
   TextInputModal,
@@ -33,6 +34,56 @@ export function Home() {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
+
+  // Calculate player rankings for a campaign
+  const calculatePlayerRankings = (campaign) => {
+    if (!campaign.members || !campaign.memberDetails) return [];
+
+    // Get completed matches
+    const completedMatches = (campaign.matches || []).filter(
+      (m) => m.status === "completed",
+    );
+
+    // If no completed matches, return alphabetically sorted list
+    if (completedMatches.length === 0) {
+      return campaign.members
+        .map((memberId) => ({
+          memberId,
+          username: campaign.memberDetails[memberId]?.username || "Sconosciuto",
+          totalScore: 0,
+          hasMatches: false,
+        }))
+        .sort((a, b) => a.username.localeCompare(b.username));
+    }
+
+    // Calculate scores for each player
+    const playerScores = campaign.members.map((memberId) => {
+      let totalScore = 0;
+
+      completedMatches.forEach((match) => {
+        const participant = match.participants?.[memberId];
+        if (participant) {
+          const score =
+            participant.finalScore !== undefined
+              ? participant.finalScore
+              : participant.processedScore !== undefined
+                ? participant.processedScore
+                : participant.score || 0;
+          totalScore += score;
+        }
+      });
+
+      return {
+        memberId,
+        username: campaign.memberDetails[memberId]?.username || "Sconosciuto",
+        totalScore,
+        hasMatches: true,
+      };
+    });
+
+    // Sort by total score descending
+    return playerScores.sort((a, b) => b.totalScore - a.totalScore);
+  };
 
   // Load campaigns from Firestore with real-time updates
   // Filter by user membership using Firestore query
@@ -121,6 +172,21 @@ export function Home() {
     }
   };
 
+  const handleToggleImportant = async (campaign, e) => {
+    e.stopPropagation();
+    const newImportantStatus = !campaign.isImportant;
+
+    const { success, error } = await toggleCampaignImportant(
+      campaign.id,
+      newImportantStatus,
+    );
+
+    if (error) {
+      console.error("Errore aggiornamento importante:", error);
+      alert("Errore nell'aggiornamento. Riprova.");
+    }
+  };
+
   const handleCampaignInfo = (campaign, e) => {
     e.stopPropagation();
     setSelectedCampaign(campaign);
@@ -181,81 +247,106 @@ export function Home() {
         <main className="home-content">
           <div className="campaigns-grid">
             {/* Render existing campaigns */}
-            {campaigns.map((campaign) => {
-              const membersList =
-                campaign.members
-                  ?.map(
-                    (memberId) => campaign.memberDetails?.[memberId]?.username,
-                  )
-                  .filter(Boolean) || [];
+            {campaigns
+              .sort((a, b) => {
+                // Sort by important status first (true before false)
+                if (a.isImportant && !b.isImportant) return -1;
+                if (!a.isImportant && b.isImportant) return 1;
+                // Then by name alphabetically
+                return a.name.localeCompare(b.name);
+              })
+              .map((campaign) => {
+                const rankedPlayers = calculatePlayerRankings(campaign);
+                const completedMatchCount = (campaign.matches || []).filter(
+                  (m) => m.status === "completed",
+                ).length;
 
-              return (
-                <div
-                  key={campaign.id}
-                  className="campaign-card"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => navigate(`/campaign/${campaign.id}`)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      navigate(`/campaign/${campaign.id}`);
-                    }
-                  }}
-                >
-                  {/* Header Section */}
-                  <div className="campaign-card-header">
-                    <h3 className="campaign-card-title">{campaign.name}</h3>
-                    <button
-                      className="campaign-card-info-btn"
-                      type="button"
-                      onClick={(e) => handleCampaignInfo(campaign, e)}
-                      aria-label="Informazioni campagna"
-                    >
-                      <Info size={16} />
-                    </button>
-                  </div>
+                return (
+                  <div
+                    key={campaign.id}
+                    className="campaign-card"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigate(`/campaign/${campaign.id}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        navigate(`/campaign/${campaign.id}`);
+                      }
+                    }}
+                  >
+                    {/* Header Section */}
+                    <div className="campaign-card-header">
+                      <h3 className="campaign-card-title">{campaign.name}</h3>
+                      <div className="campaign-card-actions">
+                        <button
+                          className={`campaign-card-star-btn ${
+                            campaign.isImportant ? "active" : ""
+                          }`}
+                          type="button"
+                          onClick={(e) => handleToggleImportant(campaign, e)}
+                          aria-label="Segna come importante"
+                        >
+                          <Star size={16} />
+                        </button>
+                        <button
+                          className="campaign-card-info-btn"
+                          type="button"
+                          onClick={(e) => handleCampaignInfo(campaign, e)}
+                          aria-label="Informazioni campagna"
+                        >
+                          <Info size={16} />
+                        </button>
+                      </div>
+                    </div>
 
-                  {/* Ranking Section */}
-                  <div className="campaign-members">
-                    <div className="campaign-members-label">Classifica</div>
-                    <div className="campaign-members-list">
-                      {membersList
-                        .sort((a, b) => a.localeCompare(b))
-                        .map((member, index) => (
-                          <div key={index} className="campaign-member">
+                    {/* Ranking Section */}
+                    <div className="campaign-members">
+                      <div className="campaign-members-label">Classifica</div>
+                      <div className="campaign-members-list">
+                        {rankedPlayers.map((player, index) => (
+                          <div
+                            key={player.memberId}
+                            className="campaign-member"
+                          >
                             <div
                               className={`campaign-member-rank ${
-                                index === 0 ? "trophy" : ""
+                                player.hasMatches && index === 0 ? "trophy" : ""
                               }`}
                             >
-                              {index === 0 ? (
-                                <Trophy size={16} />
+                              {player.hasMatches ? (
+                                index === 0 ? (
+                                  <Trophy size={16} />
+                                ) : (
+                                  `${index + 1}`
+                                )
                               ) : (
-                                `${index + 1}`
+                                "-"
                               )}
                             </div>
                             <span className="campaign-member-divider">|</span>
                             <div className="campaign-member-avatar">
-                              {member.substring(0, 2).toUpperCase()}
+                              {player.username.substring(0, 2).toUpperCase()}
                             </div>
                             <span className="campaign-member-name">
-                              {member}
+                              {player.username}
                             </span>
                           </div>
                         ))}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Stats Section */}
-                  <div className="campaign-stats">
-                    <div className="campaign-stats-placeholder">
-                      {/* Future statistics */}
+                    {/* Stats Section */}
+                    <div className="campaign-stats">
+                      <div className="campaign-stats-placeholder">
+                        {completedMatchCount === 0
+                          ? "Nessuna partita completata"
+                          : `${completedMatchCount} ${completedMatchCount === 1 ? "partita completata" : "partite completate"}`}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
 
             {/* Add Campaign Card - Combined Join and Create */}
             <div className="campaign-add-container">

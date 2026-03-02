@@ -1,7 +1,7 @@
 // Campaign Page - Individual Campaign View with Draft System and Matches
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, MoreVertical, Info, Trophy } from "lucide-react";
+import { ArrowLeft, MoreVertical, Info, Trophy, BarChart3 } from "lucide-react";
 import { useDocument, useLeaders } from "../../hooks";
 import { useAuthContext } from "../../contexts";
 import {
@@ -26,6 +26,7 @@ import {
   DraftModal,
   MatchRow,
   AddMatchButton,
+  ResultsModal,
 } from "../../components/common";
 import "./Campaign.css";
 
@@ -39,6 +40,7 @@ export function Campaign() {
   const { user } = useAuthContext();
   const [campaignInfoModalOpen, setCampaignInfoModalOpen] = useState(false);
   const [victoryInfoModalOpen, setVictoryInfoModalOpen] = useState(false);
+  const [resultsModalOpen, setResultsModalOpen] = useState(false);
   const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
@@ -439,6 +441,17 @@ export function Campaign() {
               <button
                 className="campaign-kebab-item"
                 onClick={() => {
+                  setResultsModalOpen(true);
+                  setKebabMenuOpen(false);
+                }}
+                type="button"
+              >
+                <BarChart3 size={18} />
+                <span>Classifica Generale</span>
+              </button>
+              <button
+                className="campaign-kebab-item"
+                onClick={() => {
                   setVictoryInfoModalOpen(true);
                   setKebabMenuOpen(false);
                 }}
@@ -468,10 +481,11 @@ export function Campaign() {
         {/* Matches Section */}
         <section className="matches-section">
           {/* Match List - Oldest first, newest last */}
-          {matches.map((match) => (
+          {matches.map((match, index) => (
             <MatchRow
               key={match.id}
               match={match}
+              matchNumber={index + 1}
               leaders={leaders}
               draft={draft}
               onStartDraft={handleOpenDraftModal}
@@ -506,6 +520,14 @@ export function Campaign() {
         isOpen={victoryInfoModalOpen}
         onClose={() => setVictoryInfoModalOpen(false)}
         victoryCounts={victoryCounts}
+      />
+
+      {/* Results Modal */}
+      <ResultsModal
+        isOpen={resultsModalOpen}
+        onClose={() => setResultsModalOpen(false)}
+        matches={campaign?.matches || []}
+        memberDetails={campaign?.memberDetails || {}}
       />
 
       {/* Draft Modal */}

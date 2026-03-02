@@ -150,7 +150,9 @@
   border: 2px solid rgba(212, 175, 55, 0.15);
   border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    all 0.3s ease,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -213,6 +215,15 @@
     0 0 8px rgba(212, 175, 55, 0.15);
 }
 
+/* Campaign Card Actions (Star and Info buttons) */
+.campaign-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.campaign-card-star-btn,
 .campaign-card-info-btn {
   flex-shrink: 0;
   width: 26px;
@@ -226,9 +237,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   color: rgba(212, 175, 55, 0.7);
-  margin-left: 0.5rem;
 }
 
+.campaign-card-star-btn:hover,
 .campaign-card-info-btn:hover {
   background: rgba(212, 175, 55, 0.25);
   border-color: rgba(212, 175, 55, 0.6);
@@ -237,8 +248,34 @@
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
 }
 
+.campaign-card-star-btn:active,
 .campaign-card-info-btn:active {
   transform: scale(0.95);
+}
+
+/* Star button active state (filled) */
+.campaign-card-star-btn.active {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.3),
+    rgba(212, 175, 55, 0.4)
+  );
+  border-color: rgba(212, 175, 55, 0.8);
+  color: rgba(212, 175, 55, 1);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+.campaign-card-star-btn.active svg {
+  fill: rgba(212, 175, 55, 1);
+}
+
+.campaign-card-star-btn.active:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.4),
+    rgba(212, 175, 55, 0.5)
+  );
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.5);
 }
 
 /* Campaign Members Section */
