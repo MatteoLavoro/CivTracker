@@ -1,7 +1,15 @@
 // Campaign Page - Individual Campaign View with Draft System and Matches
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, MoreVertical, Info, Trophy, BarChart3 } from "lucide-react";
+import {
+  ArrowLeft,
+  MoreVertical,
+  Info,
+  Trophy,
+  BarChart3,
+  ScrollText,
+  Activity,
+} from "lucide-react";
 import { useDocument, useLeaders } from "../../hooks";
 import { useAuthContext } from "../../contexts";
 import {
@@ -16,10 +24,14 @@ import {
   createMatch,
   updateMatchTurns,
   completeMatch,
+  voteForCampaignStatus,
+  revokeStatusVote,
 } from "../../services/firebase";
 import {
   CampaignInfoModal,
+  CampaignStatusModal,
   VictoryInfoModal,
+  RulesModal,
   CompleteMatchModal,
   LeaderConfirmModal,
   TextInputModal,
@@ -39,7 +51,9 @@ export function Campaign() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const [campaignInfoModalOpen, setCampaignInfoModalOpen] = useState(false);
+  const [campaignStatusModalOpen, setCampaignStatusModalOpen] = useState(false);
   const [victoryInfoModalOpen, setVictoryInfoModalOpen] = useState(false);
+  const [rulesModalOpen, setRulesModalOpen] = useState(false);
   const [resultsModalOpen, setResultsModalOpen] = useState(false);
   const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
@@ -194,9 +208,49 @@ export function Campaign() {
     }
   };
 
+  // Campaign status handlers
+  const handleVoteForStatus = async (desiredStatus) => {
+    if (!user) return;
+
+    const { statusChanged, error } = await voteForCampaignStatus(
+      campaignId,
+      user.uid,
+      desiredStatus,
+    );
+
+    if (error) {
+      console.error("Errore voto stato:", error);
+      alert(error);
+    } else if (statusChanged) {
+      // Status changed successfully
+      console.log("Stato campagna cambiato:", desiredStatus);
+    }
+  };
+
+  const handleRevokeStatusVote = async (statusVotedFor) => {
+    if (!user) return;
+
+    const { error } = await revokeStatusVote(
+      campaignId,
+      user.uid,
+      statusVotedFor,
+    );
+
+    if (error) {
+      console.error("Errore revoca voto:", error);
+      alert("Errore nella revoca del voto. Riprova.");
+    }
+  };
+
   // Match handlers
   const handleCreateMatch = async () => {
     if (!campaign || !user) return;
+
+    // Check if campaign is in-progress
+    if (campaign.status !== "in-progress") {
+      alert("Non puoi creare una nuova partita se la campagna non è in corso.");
+      return;
+    }
 
     const { success, error } = await createMatch(
       campaignId,
@@ -328,6 +382,11 @@ export function Campaign() {
   };
 
   const handleOpenDraftModal = () => {
+    // Check if campaign is in-progress
+    if (campaign?.status !== "in-progress") {
+      alert("Non puoi avviare un draft se la campagna non è in corso.");
+      return;
+    }
     setDraftModalOpen(true);
   };
 
@@ -337,7 +396,9 @@ export function Campaign() {
   const currentMatch = hasMatches ? matches[matches.length - 1] : null;
   const isCurrentMatchActive =
     currentMatch && currentMatch.status === "in-progress";
-  const canCreateNewMatch = !hasMatches || !isCurrentMatchActive;
+  const canCreateNewMatch =
+    (!hasMatches || !isCurrentMatchActive) &&
+    campaign?.status === "in-progress";
 
   // Calculate victory counts from completed matches
   const victoryCounts = matches
@@ -463,6 +524,28 @@ export function Campaign() {
               <button
                 className="campaign-kebab-item"
                 onClick={() => {
+                  setRulesModalOpen(true);
+                  setKebabMenuOpen(false);
+                }}
+                type="button"
+              >
+                <ScrollText size={18} />
+                <span>Regole del Gioco</span>
+              </button>
+              <button
+                className="campaign-kebab-item"
+                onClick={() => {
+                  setCampaignStatusModalOpen(true);
+                  setKebabMenuOpen(false);
+                }}
+                type="button"
+              >
+                <Activity size={18} />
+                <span>Stato Campagna</span>
+              </button>
+              <button
+                className="campaign-kebab-item"
+                onClick={() => {
                   setCampaignInfoModalOpen(true);
                   setKebabMenuOpen(false);
                 }}
@@ -499,10 +582,12 @@ export function Campaign() {
           ))}
 
           {/* Add Match Button */}
-          <AddMatchButton
-            onClick={handleCreateMatch}
-            disabled={!canCreateNewMatch}
-          />
+          {campaign?.status !== "completed" && (
+            <AddMatchButton
+              onClick={handleCreateMatch}
+              disabled={!canCreateNewMatch}
+            />
+          )}
         </section>
       </main>
 
@@ -515,11 +600,27 @@ export function Campaign() {
         onLeaveCampaign={handleLeaveCampaign}
       />
 
+      {/* Campaign Status Modal */}
+      <CampaignStatusModal
+        isOpen={campaignStatusModalOpen}
+        onClose={() => setCampaignStatusModalOpen(false)}
+        campaign={campaign}
+        userId={user?.uid}
+        onVote={handleVoteForStatus}
+        onRevokeVote={handleRevokeStatusVote}
+      />
+
       {/* Victory Info Modal */}
       <VictoryInfoModal
         isOpen={victoryInfoModalOpen}
         onClose={() => setVictoryInfoModalOpen(false)}
         victoryCounts={victoryCounts}
+      />
+
+      {/* Rules Modal */}
+      <RulesModal
+        isOpen={rulesModalOpen}
+        onClose={() => setRulesModalOpen(false)}
       />
 
       {/* Results Modal */}

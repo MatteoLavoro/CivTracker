@@ -57,6 +57,8 @@ export const createCampaign = async (name, userId, username) => {
       createdBy: userId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      status: "not-started",
+      statusVotes: {},
       members: [userId],
       memberDetails: {
         [userId]: {
@@ -122,6 +124,14 @@ export const joinCampaign = async (code, userId, username) => {
     // Check if user is already a member
     if (campaign.members.includes(userId)) {
       return { campaign: null, error: "Sei già membro di questa campagna" };
+    }
+
+    // Check if campaign is in progress - block joining
+    if (campaign.status === "in-progress") {
+      return {
+        campaign: null,
+        error: "Non puoi entrare in una campagna in corso",
+      };
     }
 
     // Add user to campaign
@@ -249,5 +259,147 @@ export const getUserCampaigns = async (userId) => {
   } catch (error) {
     console.error("Error getting user campaigns:", error);
     return { campaigns: [], error: error.message };
+  }
+};
+
+/**
+ * Vote for campaign status change
+ * @param {string} campaignId - Campaign ID
+ * @param {string} userId - User ID voting
+ * @param {string} desiredStatus - Desired status ("not-started", "in-progress", "completed")
+ * @returns {Object} { success, statusChanged, error }
+ */
+export const voteForCampaignStatus = async (
+  campaignId,
+  userId,
+  desiredStatus,
+) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return {
+        success: false,
+        statusChanged: false,
+        error: "Campaign not found",
+      };
+    }
+
+    const campaign = campaignDoc.data();
+    const currentStatus = campaign.status || "not-started";
+    const members = campaign.members || [];
+
+    // Don't allow voting if already at desired status
+    if (currentStatus === desiredStatus) {
+      return {
+        success: false,
+        statusChanged: false,
+        error: "La campagna è già in questo stato",
+      };
+    }
+
+    // Don't allow going back from completed
+    if (currentStatus === "completed") {
+      return {
+        success: false,
+        statusChanged: false,
+        error: "Non si può cambiare lo stato di una campagna terminata",
+      };
+    }
+
+    // Initialize or get current votes
+    const statusVotes = campaign.statusVotes || {};
+    const currentVoteData = statusVotes[desiredStatus] || { voters: [] };
+
+    // Check if user already voted for this status
+    if (currentVoteData.voters.includes(userId)) {
+      return {
+        success: false,
+        statusChanged: false,
+        error: "Hai già votato per questo stato",
+      };
+    }
+
+    // Add user's vote
+    const updatedVoters = [...currentVoteData.voters, userId];
+
+    // Check if all members have voted
+    const allVoted = members.every((memberId) =>
+      updatedVoters.includes(memberId),
+    );
+
+    if (allVoted) {
+      // All members voted - apply status change and reset votes
+      await updateDoc(campaignRef, {
+        status: desiredStatus,
+        statusVotes: {},
+        updatedAt: new Date().toISOString(),
+      });
+
+      return { success: true, statusChanged: true, error: null };
+    } else {
+      // Update votes only
+      await updateDoc(campaignRef, {
+        [`statusVotes.${desiredStatus}`]: {
+          voters: updatedVoters,
+        },
+        updatedAt: new Date().toISOString(),
+      });
+
+      return { success: true, statusChanged: false, error: null };
+    }
+  } catch (error) {
+    console.error("Error voting for campaign status:", error);
+    return { success: false, statusChanged: false, error: error.message };
+  }
+};
+
+/**
+ * Revoke vote for campaign status change
+ * @param {string} campaignId - Campaign ID
+ * @param {string} userId - User ID revoking vote
+ * @param {string} statusVotedFor - Status user voted for
+ * @returns {Object} { success, error }
+ */
+export const revokeStatusVote = async (campaignId, userId, statusVotedFor) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const statusVotes = campaign.statusVotes || {};
+    const currentVoteData = statusVotes[statusVotedFor] || { voters: [] };
+
+    // Remove user from voters
+    const updatedVoters = currentVoteData.voters.filter((id) => id !== userId);
+
+    if (updatedVoters.length === 0) {
+      // No more voters - remove the vote entry entirely
+      const updatedStatusVotes = { ...statusVotes };
+      delete updatedStatusVotes[statusVotedFor];
+
+      await updateDoc(campaignRef, {
+        statusVotes: updatedStatusVotes,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      // Update voters list
+      await updateDoc(campaignRef, {
+        [`statusVotes.${statusVotedFor}`]: {
+          voters: updatedVoters,
+        },
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error revoking status vote:", error);
+    return { success: false, error: error.message };
   }
 };

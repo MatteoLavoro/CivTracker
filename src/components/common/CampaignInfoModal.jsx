@@ -70,6 +70,10 @@ export function CampaignInfoModal({
 
   if (!campaign) return null;
 
+  const campaignStatus = campaign.status || "not-started";
+  const isInProgress = campaignStatus === "in-progress";
+  const canLeave = !isInProgress;
+
   return (
     <>
       <Modal
@@ -78,11 +82,13 @@ export function CampaignInfoModal({
         title="Info Campagna"
         footer={{
           dangerous: true,
-          label: "Esci dal Gruppo",
+          label: isInProgress ? "Non puoi uscire" : "Esci dal Gruppo",
           icon: <LogOut size={20} />,
           onConfirm: handleLeave,
-          dangerousMessage:
-            "Sei sicuro di voler uscire da questa campagna? Se sei l'ultimo membro, la campagna verrà eliminata definitivamente.",
+          disabled: !canLeave,
+          dangerousMessage: isInProgress
+            ? "Non puoi uscire da una campagna in corso. Vota per terminare la campagna prima di uscire."
+            : "Sei sicuro di voler uscire da questa campagna? Se sei l'ultimo membro, la campagna verrà eliminata definitivamente.",
         }}
       >
         <div className="campaign-info-content">

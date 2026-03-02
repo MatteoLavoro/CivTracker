@@ -1,0 +1,438 @@
+/* Campaign Status Modal Styles */
+
+/* Content wrapper */
+.campaign-status-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Current Status Card */
+.status-current-card {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.6) 0%,
+    rgba(25, 70, 110, 0.6) 100%
+  );
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.status-current-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.status-current-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.2) 0%,
+    rgba(255, 215, 0, 0.2) 100%
+  );
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: rgba(212, 175, 55, 1);
+  flex-shrink: 0;
+}
+
+.status-current-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.status-current-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.status-current-name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 1);
+  letter-spacing: 0.3px;
+}
+
+.status-current-description {
+  margin: 0;
+  font-size: 0.925rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Status Change Section */
+.status-change-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.status-change-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.status-change-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.status-change-description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.status-change-description strong {
+  color: rgba(248, 113, 113, 1);
+  font-weight: 600;
+}
+
+/* Status Options List */
+.status-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* Status Option Card */
+.status-option {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.4) 0%,
+    rgba(25, 70, 110, 0.4) 100%
+  );
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  transition: all 0.25s ease;
+}
+
+.status-option:not(.status-option-disabled):hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.5) 0%,
+    rgba(25, 70, 110, 0.5) 100%
+  );
+  transform: translateY(-1px);
+}
+
+.status-option-current {
+  border: 2px solid rgba(212, 175, 55, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.6) 0%,
+    rgba(25, 70, 110, 0.6) 100%
+  );
+}
+
+.status-option-voted {
+  border-color: rgba(96, 165, 250, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.5) 0%,
+    rgba(59, 130, 246, 0.2) 100%
+  );
+}
+
+.status-option-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.status-option-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.status-option-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+/* Icon Colors */
+.status-icon-blue {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.2) 0%,
+    rgba(96, 165, 250, 0.2) 100%
+  );
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: rgba(96, 165, 250, 1);
+}
+
+.status-icon-gold {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.2) 0%,
+    rgba(255, 215, 0, 0.2) 100%
+  );
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: rgba(212, 175, 55, 1);
+}
+
+.status-icon-green {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.2) 0%,
+    rgba(74, 222, 128, 0.2) 100%
+  );
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: rgba(74, 222, 128, 1);
+}
+
+.status-option-info {
+  flex: 1;
+}
+
+.status-option-name {
+  margin: 0 0 0.375rem 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.status-option-description {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Vote Section */
+.status-option-votes {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.status-vote-count {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(15, 50, 82, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 6px;
+  color: rgba(212, 175, 55, 1);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-vote-btn {
+  padding: 0.375rem 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 0.8) 0%,
+    rgba(25, 70, 110, 0.8) 100%
+  );
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-vote-btn:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 50, 82, 1) 0%,
+    rgba(25, 70, 110, 1) 100%
+  );
+  border-color: rgba(212, 175, 55, 0.6);
+  transform: translateY(-1px);
+}
+
+.status-vote-btn-active {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.6) 0%,
+    rgba(96, 165, 250, 0.6) 100%
+  );
+  border-color: rgba(96, 165, 250, 0.6);
+  color: rgba(255, 255, 255, 1);
+}
+
+.status-vote-btn-active:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.8) 0%,
+    rgba(96, 165, 250, 0.8) 100%
+  );
+  border-color: rgba(96, 165, 250, 0.8);
+}
+
+.status-vote-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status-current-badge {
+  padding: 0.375rem 0.75rem;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 6px;
+  color: rgba(212, 175, 55, 1);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Voters List */
+.status-voters-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.625rem;
+  padding-top: 0.625rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.status-voter-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  color: rgba(96, 165, 250, 1);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Info Footer */
+.status-info-footer {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.1) 0%,
+    rgba(255, 215, 0, 0.1) 100%
+  );
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.status-info-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.status-info-footer strong {
+  color: rgba(212, 175, 55, 1);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .status-current-card {
+    padding: 1rem 1.25rem;
+  }
+
+  .status-current-icon-wrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .status-current-icon-wrapper svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .status-current-name {
+    font-size: 1.3rem;
+  }
+
+  .status-option {
+    padding: 0.875rem 1rem;
+  }
+
+  .status-option-icon-wrapper {
+    width: 42px;
+    height: 42px;
+  }
+
+  .status-option-icon-wrapper svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .status-option-votes {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-current-card {
+    padding: 0.875rem 1rem;
+  }
+
+  .status-current-header {
+    gap: 0.75rem;
+  }
+
+  .status-current-icon-wrapper {
+    width: 44px;
+    height: 44px;
+  }
+
+  .status-current-name {
+    font-size: 1.2rem;
+  }
+
+  .status-option {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .status-option-header {
+    gap: 0.75rem;
+  }
+
+  .status-option-icon-wrapper {
+    width: 38px;
+    height: 38px;
+  }
+
+  .status-option-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .status-option-name {
+    font-size: 0.975rem;
+  }
+
+  .status-option-description {
+    font-size: 0.825rem;
+  }
+}

@@ -50,6 +50,8 @@ export {
   updateCampaignName,
   toggleCampaignImportant,
   getUserCampaigns,
+  voteForCampaignStatus,
+  revokeStatusVote,
 } from "./campaigns";
 
 // Leaders
