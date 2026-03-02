@@ -1,10 +1,16 @@
 /* Winner Select Modal Styles */
 
+/* Increase modal width for better content display */
 .winner-select-content {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding: 0.5rem 0;
+}
+
+/* Custom width override for winner select modal */
+.modal-desktop:has(.winner-select-content) {
+  max-width: 650px;
 }
 
 .winner-select-list {

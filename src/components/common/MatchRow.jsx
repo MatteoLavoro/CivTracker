@@ -74,6 +74,12 @@ export function MatchRow({
       icon: "/IconeVittorie/ReligiousVictory.webp",
     },
     score: { name: "Per Punti", icon: "/IconeVittorie/ScoreVictory.webp" },
+    forfait: {
+      name: "Per Forfait",
+      icon: "/IconeVittorie/ForfaitVictory .webp",
+    },
+    defeat: { name: "Sconfitta", icon: "/IconeVittorie/Defeat.webp" },
+    canceled: { name: "Annullata", icon: "/IconeVittorie/Cancelled.png" },
   };
 
   const victoryInfo =
@@ -171,16 +177,29 @@ export function MatchRow({
 
       {/* Column 3: Winner */}
       <div className="match-col match-col-winner">
-        {isCompleted && winner && victoryInfo ? (
+        {isCompleted && victoryInfo ? (
           <>
-            <div className="match-winner-info">
-              <img
-                src={victoryInfo.icon}
-                alt={victoryInfo.name}
-                className="match-victory-icon"
-              />
-              <span className="match-winner-name">{winner.username}</span>
-            </div>
+            {match.victoryType === "defeat" ||
+            match.victoryType === "canceled" ? (
+              /* Solo icona per sconfitta e annullata */
+              <div className="match-winner-info">
+                <img
+                  src={victoryInfo.icon}
+                  alt={victoryInfo.name}
+                  className="match-victory-icon"
+                />
+              </div>
+            ) : winner ? (
+              /* Icona + nome vincitore per vittorie normali e forfait */
+              <div className="match-winner-info">
+                <img
+                  src={victoryInfo.icon}
+                  alt={victoryInfo.name}
+                  className="match-victory-icon"
+                />
+                <span className="match-winner-name">{winner.username}</span>
+              </div>
+            ) : null}
           </>
         ) : null}
       </div>

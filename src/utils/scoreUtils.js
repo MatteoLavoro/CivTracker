@@ -1,21 +1,43 @@
 // Score Calculation Utilities
 
 /**
+ * Get total points pool based on victory type
+ * @param {string} victoryType - Victory type ID
+ * @returns {number} Total points pool
+ */
+export function getTotalPointsPool(victoryType) {
+  if (victoryType === "canceled") {
+    return 0; // Canceled match has 0 points pool
+  }
+  if (victoryType === "forfait" || victoryType === "defeat") {
+    return 100; // Forfait and defeat have reduced pool
+  }
+  return 200; // Normal victories have full pool
+}
+
+/**
  * Calculate victory points based on logarithmic formula
  * Formula: MAX(50, MIN(150, 100 - 50 * SIGN(d) * LN(1 + ABS(d)) / LN(6)))
  * Where d = deviation from average
  * - d = +5 → 50 points (most common)
  * - d = -5 → 150 points (most rare)
  * - d = 0 → 100 points (balanced)
+ * - forfait → 50 points (fixed)
  * - defeat → 0 points (no victory)
+ * - canceled → 0 points (no victory)
  *
  * @param {string} victoryType - Victory type ID
  * @param {Object} victoryCounts - Object with victory counts { victoryType: count }
  * @returns {number} Points for this victory type (0-150)
  */
 export function calculateVictoryPoints(victoryType, victoryCounts = {}) {
-  // Defeat gives 0 points
-  if (victoryType === "defeat") {
+  // Forfait gives fixed 50 points
+  if (victoryType === "forfait") {
+    return 50;
+  }
+
+  // Defeat and canceled give 0 points
+  if (victoryType === "defeat" || victoryType === "canceled") {
     return 0;
   }
 
@@ -58,12 +80,21 @@ export function calculateVictoryPoints(victoryType, victoryCounts = {}) {
 
 /**
  * Calculate processed scores for all participants
- * Total pool: 200 points
- * - Winner receives: victory points (50-150)
- * - Remaining points (200 - victory points) are distributed proportionally based on raw scores
+ * Pool allocation:
+ * - Normal victories (science, culture, etc.): 200 points total
+ *   - Winner gets victory points (50-150 dynamic)
+ *   - Remaining points distributed by raw scores
+ * - Forfait: 100 points total
+ *   - Winner gets 50 points fixed
+ *   - Remaining 50 distributed by raw scores
+ * - Defeat: 100 points total
+ *   - All players lost to a bot
+ *   - All 100 points distributed by raw scores among all players
+ * - Canceled: 0 points total
+ *   - Everyone gets 0 points
  *
  * @param {Object} participants - Match participants { userId: { username, score, ... } }
- * @param {string} winnerId - Winner user ID
+ * @param {string} winnerId - Winner user ID (empty for defeat/canceled)
  * @param {string} victoryType - Victory type ID
  * @param {Object} victoryCounts - Victory counts for calculating points
  * @returns {Object} Processed scores { userId: processedScore }
@@ -76,9 +107,49 @@ export function calculateProcessedScores(
 ) {
   const processedScores = {};
 
-  // Calculate victory points
+  // Canceled match: everyone gets 0
+  if (victoryType === "canceled") {
+    Object.keys(participants).forEach((userId) => {
+      processedScores[userId] = 0;
+    });
+    return processedScores;
+  }
+
+  // Special handling for defeat: all players lost to a bot, share 100 points
+  if (victoryType === "defeat") {
+    const totalPool = 100;
+
+    // Calculate total raw score
+    const totalRawScore = Object.values(participants).reduce(
+      (sum, participant) => sum + (participant.score || 0),
+      0,
+    );
+
+    // Distribute 100 points among all players proportionally
+    if (totalRawScore > 0) {
+      Object.entries(participants).forEach(([userId, participant]) => {
+        const rawScore = participant.score || 0;
+        processedScores[userId] = Math.round(
+          (rawScore / totalRawScore) * totalPool,
+        );
+      });
+    } else {
+      // If no scores, distribute equally
+      const playerCount = Object.keys(participants).length;
+      const equalShare =
+        playerCount > 0 ? Math.round(totalPool / playerCount) : 0;
+      Object.keys(participants).forEach((userId) => {
+        processedScores[userId] = equalShare;
+      });
+    }
+
+    return processedScores;
+  }
+
+  // Calculate victory points and total pool for normal victories and forfait
   const victoryPoints = calculateVictoryPoints(victoryType, victoryCounts);
-  const remainingPoints = 200 - victoryPoints;
+  const totalPool = getTotalPointsPool(victoryType);
+  const remainingPoints = totalPool - victoryPoints;
 
   // Calculate total raw score
   const totalRawScore = Object.values(participants).reduce(
@@ -107,7 +178,6 @@ export function calculateProcessedScores(
       (rawScore / totalRawScore) * remainingPoints,
     );
 
-    // Winner gets victory points + proportional share
     processedScores[userId] =
       userId === winnerId
         ? victoryPoints + proportionalScore

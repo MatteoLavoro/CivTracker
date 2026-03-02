@@ -53,9 +53,19 @@ export function VictoryTypeSelectModal({
       icon: "/IconeVittorie/ScoreVictory.webp",
     },
     {
+      id: "forfait",
+      name: "Vittoria per Forfait",
+      icon: "/IconeVittorie/ForfaitVictory .webp",
+    },
+    {
       id: "defeat",
       name: "Sconfitta",
-      icon: null,
+      icon: "/IconeVittorie/Defeat.webp",
+    },
+    {
+      id: "canceled",
+      name: "Annullata",
+      icon: "/IconeVittorie/Cancelled.png",
     },
   ];
 
@@ -63,28 +73,35 @@ export function VictoryTypeSelectModal({
     onConfirm(victoryTypeId);
   };
 
+  // Group victory types into sections
+  const normalVictories = victoryTypes.filter((v) =>
+    [
+      "science",
+      "culture",
+      "diplomatic",
+      "domination",
+      "religious",
+      "score",
+    ].includes(v.id),
+  );
+  const forfaitVictory = victoryTypes.find((v) => v.id === "forfait");
+  const defeatOutcome = victoryTypes.find((v) => v.id === "defeat");
+  const canceledOutcome = victoryTypes.find((v) => v.id === "canceled");
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Seleziona Esito">
       <div className="victory-type-select-content">
-        <div className="victory-type-select-description">
-          <p>
-            I punti variano in base alla rarità.{" "}
-            <span style={{ opacity: 0.7 }}>
-              Nota: i valori cambieranno dopo aver salvato questa partita.
-            </span>
-          </p>
-        </div>
-
         <div className="victory-type-select-list">
-          {victoryTypes.map((victory) => {
+          {/* Normal Victories */}
+          {normalVictories.map((victory) => {
             const points = calculateVictoryPoints(victory.id, victoryCounts);
             const isSelected = victory.id === selectedVictoryType;
-            const isDefeat = victory.id === "defeat";
+            const totalPool = 200;
 
             return (
               <div
                 key={victory.id}
-                className={`victory-type-select-item ${isSelected ? "selected" : ""} ${isDefeat ? "defeat" : ""}`}
+                className={`victory-type-select-item ${isSelected ? "selected" : ""}`}
                 onClick={() => handleSelectVictoryType(victory.id)}
               >
                 <div className="victory-type-select-info">
@@ -97,36 +114,112 @@ export function VictoryTypeSelectModal({
                       />
                     </div>
                   )}
-                  {!victory.icon && (
-                    <div className="victory-type-select-icon-placeholder">
-                      ✕
-                    </div>
-                  )}
                   <div className="victory-type-select-details">
                     <h3 className="victory-type-select-name">{victory.name}</h3>
                   </div>
                 </div>
 
                 <div className="victory-type-select-points">
-                  {!isDefeat ? (
-                    <span className="victory-type-select-points-value">
-                      {points} PT
-                    </span>
-                  ) : (
-                    <span className="victory-type-select-points-defeat">
-                      0 PT
-                    </span>
-                  )}
+                  <span className="victory-type-select-points-main">
+                    {points} PT
+                  </span>
+                  <span className="victory-type-select-points-sub">
+                    [su {totalPool}]
+                  </span>
                 </div>
-
-                {isSelected && (
-                  <div className="victory-type-select-check">
-                    <Check size={20} />
-                  </div>
-                )}
               </div>
             );
           })}
+
+          {/* Divider */}
+          <div className="victory-type-select-divider"></div>
+
+          {/* Forfait Victory */}
+          {forfaitVictory && (
+            <div
+              className={`victory-type-select-item ${selectedVictoryType === "forfait" ? "selected" : ""}`}
+              onClick={() => handleSelectVictoryType("forfait")}
+            >
+              <div className="victory-type-select-info">
+                <div className="victory-type-select-icon-wrapper">
+                  <img
+                    src={forfaitVictory.icon}
+                    alt={forfaitVictory.name}
+                    className="victory-type-select-icon"
+                  />
+                </div>
+                <div className="victory-type-select-details">
+                  <h3 className="victory-type-select-name">
+                    {forfaitVictory.name}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="victory-type-select-points">
+                <span className="victory-type-select-points-main">50 PT</span>
+                <span className="victory-type-select-points-sub">[su 100]</span>
+              </div>
+            </div>
+          )}
+
+          {/* Defeat Outcome */}
+          {defeatOutcome && (
+            <div
+              className={`victory-type-select-item defeat ${selectedVictoryType === "defeat" ? "selected" : ""}`}
+              onClick={() => handleSelectVictoryType("defeat")}
+            >
+              <div className="victory-type-select-info">
+                <div className="victory-type-select-icon-wrapper">
+                  <img
+                    src={defeatOutcome.icon}
+                    alt={defeatOutcome.name}
+                    className="victory-type-select-icon"
+                  />
+                </div>
+                <div className="victory-type-select-details">
+                  <h3 className="victory-type-select-name">
+                    {defeatOutcome.name}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="victory-type-select-points">
+                <span className="victory-type-select-points-main">0 PT</span>
+                <span className="victory-type-select-points-sub">[su 100]</span>
+              </div>
+            </div>
+          )}
+
+          {/* Divider */}
+          <div className="victory-type-select-divider"></div>
+
+          {/* Canceled Outcome */}
+          {canceledOutcome && (
+            <div
+              className={`victory-type-select-item defeat ${selectedVictoryType === "canceled" ? "selected" : ""}`}
+              onClick={() => handleSelectVictoryType("canceled")}
+            >
+              <div className="victory-type-select-info">
+                <div className="victory-type-select-icon-wrapper">
+                  <img
+                    src={canceledOutcome.icon}
+                    alt={canceledOutcome.name}
+                    className="victory-type-select-icon"
+                  />
+                </div>
+                <div className="victory-type-select-details">
+                  <h3 className="victory-type-select-name">
+                    {canceledOutcome.name}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="victory-type-select-points">
+                <span className="victory-type-select-points-main">0 PT</span>
+                <span className="victory-type-select-points-sub">[su 0]</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Modal>

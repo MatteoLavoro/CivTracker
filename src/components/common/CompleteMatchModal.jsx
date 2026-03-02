@@ -117,9 +117,19 @@ export function CompleteMatchModal({
       icon: "/IconeVittorie/ScoreVictory.webp",
     },
     {
+      id: "forfait",
+      name: "Vittoria per Forfait",
+      icon: "/IconeVittorie/ForfaitVictory .webp",
+    },
+    {
       id: "defeat",
       name: "Sconfitta",
-      icon: null,
+      icon: "/IconeVittorie/Defeat.webp",
+    },
+    {
+      id: "canceled",
+      name: "Annullata",
+      icon: "/IconeVittorie/Cancelled.png",
     },
   ];
 
@@ -217,8 +227,8 @@ export function CompleteMatchModal({
 
   const handleSelectVictoryType = (victoryTypeId) => {
     setVictoryType(victoryTypeId);
-    // Clear winner if defeat is selected
-    if (victoryTypeId === "defeat") {
+    // Clear winner if defeat or canceled is selected
+    if (victoryTypeId === "defeat" || victoryTypeId === "canceled") {
       setWinnerId("");
     }
     setShowVictoryTypeSelect(false);
@@ -257,8 +267,9 @@ export function CompleteMatchModal({
       return;
     }
 
-    // Winner is required only if not a defeat
-    if (victoryType !== "defeat" && !winnerId) {
+    // Winner is required only for normal victories and forfait
+    // Defeat and canceled don't require a winner
+    if (victoryType !== "canceled" && victoryType !== "defeat" && !winnerId) {
       alert("Seleziona il vincitore");
       return;
     }
@@ -286,7 +297,7 @@ export function CompleteMatchModal({
   const isValid =
     turns > 0 &&
     victoryType &&
-    (victoryType === "defeat" || winnerId) && // Winner required only if not defeat
+    (victoryType === "canceled" || victoryType === "defeat" || winnerId) && // Winner not required for canceled/defeat
     participants.every(
       ([userId]) => scores[userId] !== undefined && scores[userId] !== null,
     );
@@ -512,11 +523,13 @@ export function CompleteMatchModal({
                   <div className="complete-match-field-icon">
                     <Trophy size={20} />
                   </div>
-                  <label className="complete-match-field-label">Vincitore</label>
+                  <label className="complete-match-field-label">
+                    Vincitore
+                  </label>
                 </div>
                 <div className="complete-match-field-separator">|</div>
                 <div className="complete-match-field-right">
-                  {victoryType === "defeat" ? (
+                  {victoryType === "canceled" || victoryType === "defeat" ? (
                     <div className="complete-match-field-none">Nessuno</div>
                   ) : winnerId ? (
                     <button

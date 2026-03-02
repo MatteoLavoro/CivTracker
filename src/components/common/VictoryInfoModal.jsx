@@ -1,6 +1,9 @@
 // Victory Info Modal - Victory scoring calculator
 import { Modal } from "./";
-import { calculateVictoryPoints } from "../../utils/scoreUtils";
+import {
+  calculateVictoryPoints,
+  getTotalPointsPool,
+} from "../../utils/scoreUtils";
 import "./VictoryInfoModal.css";
 
 /**
@@ -49,6 +52,11 @@ export function VictoryInfoModal({ isOpen, onClose, victoryCounts = {} }) {
       name: "Vittoria per Punti",
       icon: "/IconeVittorie/ScoreVictory.webp",
     },
+    {
+      id: "forfait",
+      name: "Vittoria per Forfait",
+      icon: "/IconeVittorie/ForfaitVictory .webp",
+    },
   ];
 
   return (
@@ -60,9 +68,8 @@ export function VictoryInfoModal({ isOpen, onClose, victoryCounts = {} }) {
             Vittorie rare valgono di più.
           </p>
           <p style={{ marginTop: "0.5rem", fontSize: "0.85rem", opacity: 0.7 }}>
-            Il vincitore riceve questi punti. I restanti punti (su un totale di
-            200) vengono distribuiti proporzionalmente ai punteggi raw di tutti
-            i giocatori.
+            Il vincitore riceve questi punti. I restanti punti vengono
+            distribuiti proporzionalmente ai punteggi raw di tutti i giocatori.
           </p>
         </div>
 
@@ -70,6 +77,7 @@ export function VictoryInfoModal({ isOpen, onClose, victoryCounts = {} }) {
           {victories.map((victory) => {
             const points = calculateVictoryPoints(victory.id, victoryCounts);
             const count = victoryCounts[victory.id] || 0;
+            const totalPool = getTotalPointsPool(victory.id);
 
             return (
               <div key={victory.id} className="victory-row">
@@ -88,7 +96,10 @@ export function VictoryInfoModal({ isOpen, onClose, victoryCounts = {} }) {
                     </div>
                   </div>
                 </div>
-                <div className="victory-points-large">{points} PT</div>
+                <div className="victory-points-large">
+                  <span className="victory-points-value">{points} PT</span>
+                  <span className="victory-points-pool">[su {totalPool}]</span>
+                </div>
               </div>
             );
           })}

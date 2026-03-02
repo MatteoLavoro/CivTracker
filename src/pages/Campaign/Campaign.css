@@ -106,7 +106,7 @@
     0 0 0 1px rgba(212, 175, 55, 0.1) inset;
   backdrop-filter: blur(10px);
   min-width: 200px;
-  z-index: 1000;
+  z-index: 1100;
   overflow: hidden;
 }
 

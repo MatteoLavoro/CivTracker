@@ -12,6 +12,7 @@ import "./WinnerSelectModal.css";
  * @param {Array} participants - Array of [userId, participant] from match
  * @param {Object} leaders - All leaders data
  * @param {string} selectedWinnerId - Currently selected winner ID
+ * @param {string} title - Modal title (default: "Seleziona Vincitore")
  */
 export function WinnerSelectModal({
   isOpen,
@@ -20,6 +21,7 @@ export function WinnerSelectModal({
   participants = [],
   leaders = [],
   selectedWinnerId = "",
+  title = "Seleziona Vincitore",
 }) {
   const getLeaderById = (leaderId) => {
     return leaders?.find((l) => l.id === leaderId);
@@ -30,7 +32,7 @@ export function WinnerSelectModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Seleziona Vincitore">
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <div className="winner-select-content">
         <div className="winner-select-list">
           {participants.map(([userId, participant]) => {

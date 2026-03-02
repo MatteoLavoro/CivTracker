@@ -238,7 +238,15 @@ export const completeMatch = async (
 
     // Recalculate ALL completed matches with the new victory counts
     const updatedMatches = matchesAfterUpdate.map((match) => {
-      if (match.status === "completed" && match.winnerId && match.victoryType) {
+      // Recalculate if completed and has victoryType
+      // For canceled and defeat matches, winnerId can be empty
+      if (
+        match.status === "completed" &&
+        match.victoryType &&
+        (match.victoryType === "canceled" ||
+          match.victoryType === "defeat" ||
+          match.winnerId)
+      ) {
         // Recalculate processed scores with NEW victory counts
         const processedScores = calculateProcessedScores(
           match.participants,
