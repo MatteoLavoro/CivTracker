@@ -253,11 +253,20 @@
   justify-self: center;
 }
 
-.match-participant-info-btn:hover {
+.match-participant-info-btn:hover:not(:disabled) {
   background: rgba(212, 175, 55, 0.2);
   border-color: rgba(212, 175, 55, 0.5);
   color: rgba(212, 175, 55, 1);
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.match-participant-info-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  background: rgba(100, 100, 100, 0.1);
+  border-color: rgba(100, 100, 100, 0.2);
+  color: rgba(150, 150, 150, 0.5);
+  pointer-events: none;
 }
 
 /* Column 4: Winner */

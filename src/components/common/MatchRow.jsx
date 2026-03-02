@@ -1,5 +1,7 @@
 // Match Row Component
+import { useState } from "react";
 import { Check, Users, Pencil, Clock, Info } from "lucide-react";
+import { PlayerDraftInfoModal } from "./PlayerDraftInfoModal";
 import "./MatchRow.css";
 
 /**
@@ -29,8 +31,40 @@ export function MatchRow({
   readyPlayersCount,
   totalPlayersCount,
 }) {
+  const [draftInfoModalOpen, setDraftInfoModalOpen] = useState(false);
+  const [selectedPlayerDraft, setSelectedPlayerDraft] = useState(null);
+  const [selectedPlayerName, setSelectedPlayerName] = useState("");
+
   const getLeaderById = (leaderId) => {
     return leaders?.find((l) => l.id === leaderId);
+  };
+
+  const handleOpenDraftInfo = (userId, username) => {
+    // Check if draft history exists in match (completed draft)
+    if (match.draftHistory && match.draftHistory[userId]) {
+      setSelectedPlayerDraft(match.draftHistory[userId]);
+      setSelectedPlayerName(username);
+      setDraftInfoModalOpen(true);
+      return;
+    }
+
+    // If current match and draft is in progress, check if player has selected
+    if (
+      isCurrentMatch &&
+      draft &&
+      draft.selectedLeaders &&
+      draft.selectedLeaders[userId]
+    ) {
+      // Build draft history from current draft data
+      const liveDraftHistory = {
+        draftedLeaders: draft.playerDrafts?.[userId] || [],
+        bannedLeader: draft.bannedLeaders?.[userId] || null,
+        selectedLeader: draft.selectedLeaders[userId],
+      };
+      setSelectedPlayerDraft(liveDraftHistory);
+      setSelectedPlayerName(username);
+      setDraftInfoModalOpen(true);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -167,9 +201,19 @@ export function MatchRow({
               {/* 1/9 - Info Button */}
               <button
                 className="match-participant-info-btn"
-                onClick={() => {}}
+                onClick={() =>
+                  handleOpenDraftInfo(userId, participant.username)
+                }
                 type="button"
-                title="Info giocatore"
+                title="Vedi draft"
+                disabled={
+                  !(
+                    (match.draftHistory && match.draftHistory[userId]) ||
+                    (isCurrentMatch &&
+                      draft?.selectedLeaders &&
+                      draft.selectedLeaders[userId])
+                  )
+                }
               >
                 <Info size={16} />
               </button>
@@ -309,6 +353,19 @@ export function MatchRow({
           </button>
         )}
       </div>
+
+      {/* Player Draft Info Modal */}
+      <PlayerDraftInfoModal
+        isOpen={draftInfoModalOpen}
+        onClose={() => {
+          setDraftInfoModalOpen(false);
+          setSelectedPlayerDraft(null);
+          setSelectedPlayerName("");
+        }}
+        playerDraftData={selectedPlayerDraft}
+        playerName={selectedPlayerName}
+        leaders={leaders}
+      />
     </div>
   );
 }

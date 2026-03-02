@@ -106,6 +106,7 @@ export function CampaignStatusModal({
     await onVote(statusToVote);
     setIsVoting(false);
     setStatusToVote(null);
+    setConfirmModalOpen(false);
   };
 
   // Get next possible status

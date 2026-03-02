@@ -99,24 +99,63 @@ export const togglePlayerReady = async (
 
 /**
  * Execute the draft - assign random leaders to all players
+ * Excludes leaders that have been drafted before in this campaign
  * @param {string} campaignId - Campaign ID
  * @param {Array} playerIds - Array of player IDs
  * @returns {Object} { success, error }
  */
 export const executeDraft = async (campaignId, playerIds) => {
   try {
-    // Get all leaders
-    const leaders = await getAllLeaders();
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
 
-    if (!leaders || leaders.length < playerIds.length * 5) {
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const matches = campaign.matches || [];
+
+    // Get all leaders
+    const allLeaders = await getAllLeaders();
+
+    if (!allLeaders || allLeaders.length < playerIds.length * 5) {
       return {
         success: false,
         error: "Non ci sono abbastanza leader nel database",
       };
     }
 
-    // Draft leaders for each player
-    const playerDrafts = draftLeadersForPlayers(leaders, playerIds, 5);
+    // Collect all leaders that have been drafted in previous matches
+    const usedLeaderIds = new Set();
+    matches.forEach((match) => {
+      if (match.draftHistory) {
+        Object.values(match.draftHistory).forEach((playerDraft) => {
+          if (playerDraft.draftedLeaders) {
+            playerDraft.draftedLeaders.forEach((leaderId) => {
+              usedLeaderIds.add(leaderId);
+            });
+          }
+        });
+      }
+    });
+
+    // Filter out leaders that have already been drafted
+    const availableLeaders = allLeaders.filter(
+      (leader) => !usedLeaderIds.has(leader.id),
+    );
+
+    // Check if we have enough available leaders
+    const requiredLeaders = playerIds.length * 5;
+    if (availableLeaders.length < requiredLeaders) {
+      return {
+        success: false,
+        error: `Non ci sono abbastanza leader disponibili. Necessari: ${requiredLeaders}, Disponibili: ${availableLeaders.length}. Alcuni leader sono già stati usati in precedenti draft.`,
+      };
+    }
+
+    // Draft leaders for each player from available pool
+    const playerDrafts = draftLeadersForPlayers(availableLeaders, playerIds, 5);
 
     // Initialize player states
     const playerStates = {};
@@ -129,7 +168,6 @@ export const executeDraft = async (campaignId, playerIds) => {
     });
 
     // Update campaign
-    const campaignRef = doc(db, "campaigns", campaignId);
     await updateDoc(campaignRef, {
       "draft.phase": "active",
       "draft.playerDrafts": playerDrafts,
@@ -346,16 +384,26 @@ export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
         const updatedMatches = matches.map((match) => {
           if (match.id === currentMatch.id) {
             const updatedParticipants = { ...match.participants };
+            const draftHistory = {};
 
+            // Save complete draft history for each player
             Object.keys(selectedLeaders).forEach((userId) => {
               if (updatedParticipants[userId]) {
                 updatedParticipants[userId].leaderId = selectedLeaders[userId];
+
+                // Save draft history: all 5 leaders, which was banned, which was selected
+                draftHistory[userId] = {
+                  draftedLeaders: draft.playerDrafts?.[userId] || [],
+                  bannedLeader: draft.bannedLeaders?.[userId] || null,
+                  selectedLeader: selectedLeaders[userId],
+                };
               }
             });
 
             return {
               ...match,
               participants: updatedParticipants,
+              draftHistory,
               draftCompleted: true,
               startDate: new Date().toISOString(),
             };

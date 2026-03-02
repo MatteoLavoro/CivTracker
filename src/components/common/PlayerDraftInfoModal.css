@@ -1,0 +1,147 @@
+/* Player Draft Info Modal Styles */
+.player-draft-info-modal-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 75vh;
+}
+
+.player-draft-info-body {
+  padding: 0.75rem 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.player-draft-info-subtitle {
+  font-size: 0.9375rem;
+  color: rgba(200, 200, 200, 0.8);
+  text-align: center;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+/* Leaders List */
+.player-draft-leaders {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0 0.25rem;
+}
+
+.player-draft-leader-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  background: rgba(15, 50, 82, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  min-height: 84px;
+  height: 84px;
+}
+
+.player-draft-leader-card:hover {
+  background: rgba(15, 50, 82, 0.25);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.player-draft-leader-card.banned {
+  opacity: 0.6;
+}
+
+.player-draft-leader-card.selected {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.player-draft-leader-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.player-draft-civ-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.player-draft-leader-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  justify-content: center;
+}
+
+.player-draft-leader-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.player-draft-leader-variant {
+  font-size: 0.875rem;
+  color: rgba(212, 175, 55, 0.9);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.player-draft-leader-civ {
+  font-size: 0.875rem;
+  color: rgba(150, 150, 150, 1);
+}
+
+/* Leader Tags */
+.player-draft-tag {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.banned-tag {
+  background: rgba(30, 40, 50, 0.6);
+  border: 1px solid rgba(120, 120, 120, 0.4);
+  color: rgba(160, 160, 160, 1);
+}
+
+.selected-tag {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.9),
+    rgba(184, 134, 11, 0.9)
+  );
+  color: white;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 639px) {
+  .player-draft-leader-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .player-draft-civ-icon {
+    width: 30px;
+    height: 30px;
+  }
+}
