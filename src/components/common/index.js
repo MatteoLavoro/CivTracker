@@ -9,6 +9,7 @@ export { ProfileModal } from "./ProfileModal";
 export { InstallPrompt } from "./InstallPrompt";
 export { CampaignInfoModal } from "./CampaignInfoModal";
 export { VictoryInfoModal } from "./VictoryInfoModal";
+export { BonusInfoModal } from "./BonusInfoModal";
 export { CompleteMatchModal } from "./CompleteMatchModal";
 export { DraftModal } from "./DraftModal";
 export { MatchRow } from "./MatchRow";

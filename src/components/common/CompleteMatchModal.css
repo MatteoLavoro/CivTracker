@@ -1,10 +1,236 @@
-/* Complete Match Modal Styles */
+/* Complete Match Modal Styles - Table Layout */
 
 .complete-match-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 0.5rem 0;
+}
+
+/* Remove number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Table Container */
+.complete-match-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.complete-match-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(15, 50, 82, 0.15);
+}
+
+.complete-match-table thead {
+  background: rgba(15, 50, 82, 0.3);
+}
+
+.complete-match-table th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.complete-match-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.complete-match-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.complete-match-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.complete-match-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Bonus Header with Info Button */
+.complete-match-bonus-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.complete-match-info-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.complete-match-info-btn:hover {
+  color: rgba(212, 175, 55, 1);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+/* Player Cell */
+.complete-match-player-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.complete-match-player-avatar {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 175, 55, 0.15);
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 1);
+  flex-shrink: 0;
+}
+
+.complete-match-player-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Score Input */
+.complete-match-score-input {
+  width: 100%;
+  max-width: 120px;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.complete-match-score-input:focus {
+  outline: none;
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Bonus Cell */
+.complete-match-bonus-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.complete-match-bonus-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.complete-match-bonus-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.5rem;
+  background: rgba(20, 30, 40, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+}
+
+.complete-match-bonus-icon {
+  display: flex;
+  align-items: center;
+  color: rgba(212, 175, 55, 1);
+}
+
+.complete-match-bonus-text {
+  white-space: nowrap;
+}
+
+.complete-match-bonus-remove {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.complete-match-bonus-remove:hover {
+  color: rgba(239, 68, 68, 1);
+}
+
+.complete-match-bonus-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(15, 50, 82, 0.3);
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: 6px;
+  color: rgba(212, 175, 55, 1);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.complete-match-bonus-add-btn:hover {
+  background: rgba(15, 50, 82, 0.5);
+  border-color: rgba(212, 175, 55, 0.6);
+  border-style: solid;
+}
+
+/* Footer Layout */
+.complete-match-footer {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.complete-match-footer-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.complete-match-footer-right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* Field Layout */
@@ -77,92 +303,39 @@
   color: rgba(255, 255, 255, 0.95);
 }
 
-/* Section */
-.complete-match-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.complete-match-section-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(212, 175, 55, 1);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Scores */
-.complete-match-scores {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.complete-match-score-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
-  background: rgba(15, 50, 82, 0.15);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.complete-match-player-info {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.complete-match-player-avatar {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(212, 175, 55, 0.15);
-  border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 50%;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(212, 175, 55, 1);
-}
-
-.complete-match-player-name {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.complete-match-score-input {
-  width: 120px;
-  padding: 0.5rem 0.75rem;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-align: center;
-  transition: all 0.2s ease;
-}
-
-.complete-match-score-input:focus {
-  outline: none;
-  border-color: rgba(212, 175, 55, 0.5);
-  background: rgba(0, 0, 0, 0.4);
-}
-
 /* Mobile Responsive */
+@media (max-width: 1024px) {
+  .complete-match-footer {
+    flex-direction: column;
+  }
+
+  .complete-match-footer-left,
+  .complete-match-footer-right {
+    flex: 1;
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .complete-match-content {
     gap: 1.25rem;
+  }
+
+  .complete-match-table th,
+  .complete-match-table td {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .complete-match-player-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+
+  .complete-match-bonus-tag {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
   }
 
   .complete-match-field {
@@ -184,9 +357,25 @@
     padding: 0.625rem;
     font-size: 0.95rem;
   }
+}
 
-  .complete-match-score-row {
-    padding: 0.625rem 0.875rem;
+@media (max-width: 640px) {
+  .complete-match-table {
+    font-size: 0.8rem;
+  }
+
+  .complete-match-table th,
+  .complete-match-table td {
+    padding: 0.5rem;
+  }
+
+  .complete-match-bonus-cell {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .complete-match-score-input {
+    max-width: 100px;
   }
 
   .complete-match-player-avatar {
@@ -196,12 +385,6 @@
   }
 
   .complete-match-player-name {
-    font-size: 0.9rem;
-  }
-
-  .complete-match-score-input {
-    width: 100px;
-    padding: 0.5rem;
     font-size: 0.9rem;
   }
 }

@@ -278,6 +278,7 @@ export function Campaign() {
       currentMatchId,
       matchData.turns,
       matchData.scores,
+      matchData.bonusTags || {},
       matchData.winnerId,
       matchData.victoryType,
     );
@@ -487,7 +488,6 @@ export function Campaign() {
               draft={draft}
               onStartDraft={handleOpenDraftModal}
               onCompleteMatch={handleCompleteMatch}
-              onUpdateTurns={handleUpdateTurnsRequest}
               onUpdateScore={handleUpdateScoreRequest}
               isCurrentMatch={match.id === currentMatch?.id}
               isDraftInProgress={isDraftInProgress}

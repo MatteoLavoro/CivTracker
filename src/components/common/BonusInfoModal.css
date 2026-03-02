@@ -1,0 +1,220 @@
+/* Bonus Info Modal Styles */
+
+.bonus-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.bonus-info-description {
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+}
+
+.bonus-info-description p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.bonus-info-description strong {
+  color: rgba(212, 175, 55, 1);
+  font-weight: 600;
+}
+
+/* Selected Bonus Section */
+.bonus-selected-section {
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+}
+
+.bonus-selected-section h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bonus-selected-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bonus-selected-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(20, 30, 40, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.bonus-selected-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bonus-remove-btn {
+  background: none;
+  border: none;
+  padding: 0 0.25rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.bonus-remove-btn:hover {
+  color: rgba(239, 68, 68, 1);
+}
+
+/* Bonus List */
+.bonus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bonus-card {
+  padding: 1.25rem;
+  background: rgba(20, 30, 40, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.bonus-card.clickable {
+  cursor: pointer;
+}
+
+.bonus-card.clickable:hover {
+  background: rgba(20, 30, 40, 0.9);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.2);
+  transform: translateY(-2px);
+}
+
+.bonus-card:hover {
+  background: rgba(20, 30, 40, 0.8);
+  border-color: rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+}
+
+.bonus-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.bonus-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.bonus-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.bonus-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+}
+
+.bonus-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.bonus-auto-tag {
+  padding: 0.25rem 0.75rem;
+  background: rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 12px;
+  color: rgba(212, 175, 55, 1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.bonus-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Footer */
+.bonus-info-footer {
+  padding: 1rem;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+}
+
+.bonus-info-note {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.bonus-info-note strong {
+  color: rgba(212, 175, 55, 1);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bonus-header {
+    gap: 0.75rem;
+  }
+
+  .bonus-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bonus-name {
+    font-size: 1rem;
+  }
+
+  .bonus-value {
+    font-size: 0.85rem;
+  }
+
+  .bonus-description {
+    font-size: 0.85rem;
+  }
+}

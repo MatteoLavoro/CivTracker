@@ -1,6 +1,12 @@
 // Firebase Matches Service
 import { doc, updateDoc, getDoc, arrayUnion } from "firebase/firestore";
 import { db } from "./config";
+import {
+  calculateProcessedScores,
+  calculateFinalScores,
+  getVictoryCounts,
+  BONUS_TAGS,
+} from "../../utils/scoreUtils";
 
 /**
  * Create a new match in a campaign
@@ -175,7 +181,8 @@ export const updateParticipantScore = async (
  * @param {string} campaignId - Campaign ID
  * @param {string} matchId - Match ID
  * @param {number} turns - Final turn count
- * @param {Object} scores - Scores for all participants { userId: score }
+ * @param {Object} scores - Raw scores for all participants { userId: score }
+ * @param {Object} bonusTags - Bonus tags for all participants { userId: [tagIds] }
  * @param {string} winnerId - Winner user ID
  * @param {string} victoryType - Victory type ID
  * @returns {Object} { success, error }
@@ -185,6 +192,7 @@ export const completeMatch = async (
   matchId,
   turns,
   scores,
+  bonusTags,
   winnerId,
   victoryType,
 ) => {
@@ -201,11 +209,40 @@ export const completeMatch = async (
 
     const updatedMatches = matches.map((match) => {
       if (match.id === matchId) {
-        // Update participant scores
+        // Update participant raw scores and bonus tags
         const updatedParticipants = { ...match.participants };
         Object.keys(scores).forEach((userId) => {
           if (updatedParticipants[userId]) {
             updatedParticipants[userId].score = scores[userId];
+            updatedParticipants[userId].bonusTags = bonusTags[userId] || [];
+          }
+        });
+
+        // Calculate victory counts (excluding this match)
+        const victoryCounts = getVictoryCounts(
+          matches.filter((m) => m.id !== matchId),
+        );
+
+        // Calculate processed scores
+        const processedScores = calculateProcessedScores(
+          updatedParticipants,
+          winnerId,
+          victoryType,
+          victoryCounts,
+        );
+
+        // Calculate final scores with bonus tags (now fully manual)
+        const finalScores = calculateFinalScores(
+          processedScores,
+          updatedParticipants,
+        );
+
+        // Add processed and final scores to participants
+        Object.keys(processedScores).forEach((userId) => {
+          if (updatedParticipants[userId]) {
+            updatedParticipants[userId].processedScore =
+              processedScores[userId];
+            updatedParticipants[userId].finalScore = finalScores[userId];
           }
         });
 

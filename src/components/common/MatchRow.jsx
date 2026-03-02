@@ -1,5 +1,5 @@
 // Match Row Component
-import { Check, Users, Pencil, Clock } from "lucide-react";
+import { Check, Users, Pencil, Clock, Info } from "lucide-react";
 import "./MatchRow.css";
 
 /**
@@ -9,7 +9,6 @@ import "./MatchRow.css";
  * @param {Object} draft - Draft data for real-time leader selection
  * @param {Function} onStartDraft - Handler for starting draft
  * @param {Function} onCompleteMatch - Handler for completing match
- * @param {Function} onUpdateTurns - Handler for updating turns
  * @param {Function} onUpdateScore - Handler for updating score
  * @param {boolean} isCurrentMatch - Whether this is the current active match
  * @param {boolean} isDraftInProgress - Whether draft is in progress
@@ -23,7 +22,6 @@ export function MatchRow({
   draft,
   onStartDraft,
   onCompleteMatch,
-  onUpdateTurns,
   onUpdateScore,
   isCurrentMatch,
   isDraftInProgress,
@@ -111,8 +109,9 @@ export function MatchRow({
           }
 
           return (
-            <div key={userId} className="match-participant">
-              <div className="match-participant-user">
+            <div key={userId} className="match-participant-row">
+              {/* 4/9 - Player Section */}
+              <div className="match-participant-player">
                 <div className="match-participant-avatar">
                   {participant.username?.substring(0, 2).toUpperCase() || "?"}
                 </div>
@@ -120,7 +119,11 @@ export function MatchRow({
                   {participant.username}
                 </span>
               </div>
+
+              {/* Divider */}
               <div className="match-participant-divider">|</div>
+
+              {/* 4/9 - Leader Section */}
               <div className="match-participant-leader">
                 {leader ? (
                   <>
@@ -150,55 +153,30 @@ export function MatchRow({
                   </>
                 )}
               </div>
+
+              {/* Divider */}
+              <div className="match-participant-divider">|</div>
+
+              {/* 1/9 - Info Button */}
+              <button
+                className="match-participant-info-btn"
+                onClick={() => {}}
+                type="button"
+                title="Info giocatore"
+              >
+                <Info size={16} />
+              </button>
             </div>
           );
         })}
       </div>
 
-      {/* Column 3: Turns */}
-      <div className="match-col match-col-turns">
-        {isCompleted ? (
-          <div className="match-turns-display">
-            {match.turns > 0 ? match.turns : "-"}
-          </div>
-        ) : (
-          <button
-            className="match-turns-value"
-            onClick={() => onUpdateTurns(match.id, match.turns)}
-            type="button"
-          >
-            {match.turns > 0 ? match.turns : "Imposta"}
-          </button>
-        )}
-        <div className="match-turns-label">Turni Vittoria</div>
+      {/* Column 3: Bonus */}
+      <div className="match-col match-col-bonus">
+        <div className="match-bonus-placeholder">-</div>
       </div>
 
-      {/* Column 4: Scores */}
-      <div className="match-col match-col-scores">
-        <div className="match-scores-values">
-          {isCompleted
-            ? participants.map(([userId, participant]) => (
-                <div key={userId} className="match-score-display">
-                  {participant.score > 0 ? participant.score : "-"}
-                </div>
-              ))
-            : participants.map(([userId, participant]) => (
-                <button
-                  key={userId}
-                  className="match-score-btn"
-                  onClick={() =>
-                    onUpdateScore(match.id, userId, participant.score)
-                  }
-                  type="button"
-                >
-                  {participant.score > 0 ? participant.score : "Imposta"}
-                </button>
-              ))}
-        </div>
-        <div className="match-scores-label">Punteggi</div>
-      </div>
-
-      {/* Column 5: Winner */}
+      {/* Column 4: Winner */}
       <div className="match-col match-col-winner">
         {isCompleted && winner && victoryInfo ? (
           <>
@@ -212,6 +190,35 @@ export function MatchRow({
             </div>
           </>
         ) : null}
+      </div>
+
+      {/* Column 5: Scores */}
+      <div className="match-col match-col-scores">
+        {participants.map(([userId, participant]) => (
+          <div key={userId} className="match-score-item">
+            {isCompleted ? (
+              <div className="match-score-display">
+                {participant.finalScore !== undefined
+                  ? participant.finalScore
+                  : participant.processedScore !== undefined
+                    ? participant.processedScore
+                    : participant.score > 0
+                      ? participant.score
+                      : "-"}
+              </div>
+            ) : (
+              <button
+                className="match-score-btn"
+                onClick={() =>
+                  onUpdateScore(match.id, userId, participant.score)
+                }
+                type="button"
+              >
+                {participant.score > 0 ? participant.score : "Imposta"}
+              </button>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Column 6: Actions */}

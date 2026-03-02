@@ -36,6 +36,7 @@ export function Modal({
   children,
   footer = null,
   className = "",
+  wide = false,
 }) {
   const [isMobile, setIsMobile] = useState(false);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
@@ -166,7 +167,7 @@ export function Modal({
   const modalContent = (
     <div className="modal-overlay" style={{ zIndex: baseZIndex }}>
       <div
-        className={`modal-container ${isMobile ? "modal-mobile" : "modal-desktop"} ${className}`}
+        className={`modal-container ${isMobile ? "modal-mobile" : "modal-desktop"} ${wide ? "modal-wide" : ""} ${className}`}
       >
         {/* Header */}
         <div className="modal-header">

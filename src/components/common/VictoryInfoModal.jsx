@@ -1,5 +1,6 @@
 // Victory Info Modal - Victory scoring calculator
 import { Modal } from "./";
+import { calculateVictoryPoints } from "../../utils/scoreUtils";
 import "./VictoryInfoModal.css";
 
 /**
@@ -50,42 +51,6 @@ export function VictoryInfoModal({ isOpen, onClose, victoryCounts = {} }) {
     },
   ];
 
-  /**
-   * Calculate victory points based on logarithmic formula
-   * Formula: MAX(50, MIN(150, 100 - 50 * SIGN(d) * LN(1 + ABS(d)) / LN(6)))
-   * Where d = deviation from average
-   * - d = +5 → 50 points (most common)
-   * - d = -5 → 150 points (most rare)
-   * - d = 0 → 100 points (balanced)
-   */
-  const calculatePoints = (victoryId) => {
-    const totalVictories = Object.values(victoryCounts).reduce(
-      (sum, count) => sum + count,
-      0,
-    );
-
-    if (totalVictories === 0) return 100;
-
-    // Calculate deviation from average
-    const average = totalVictories / victories.length;
-    const count = victoryCounts[victoryId] || 0;
-    const deviation = count - average;
-
-    // Logarithmic formula with limits
-    const points = Math.max(
-      50,
-      Math.min(
-        150,
-        100 -
-          50 *
-            Math.sign(deviation) *
-            (Math.log(1 + Math.abs(deviation)) / Math.log(6)),
-      ),
-    );
-
-    return Math.round(points);
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Punteggi Vittorie">
       <div className="victory-info-content">
@@ -94,11 +59,16 @@ export function VictoryInfoModal({ isOpen, onClose, victoryCounts = {} }) {
             I punti variano da <strong>50 a 150</strong> in base alla rarità.
             Vittorie rare valgono di più.
           </p>
+          <p style={{ marginTop: "0.5rem", fontSize: "0.85rem", opacity: 0.7 }}>
+            Il vincitore riceve questi punti. I restanti punti (su un totale di
+            200) vengono distribuiti proporzionalmente ai punteggi raw di tutti
+            i giocatori.
+          </p>
         </div>
 
         <div className="victory-table">
           {victories.map((victory) => {
-            const points = calculatePoints(victory.id);
+            const points = calculateVictoryPoints(victory.id, victoryCounts);
             const count = victoryCounts[victory.id] || 0;
 
             return (

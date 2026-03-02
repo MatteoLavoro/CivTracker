@@ -2,7 +2,7 @@
 
 .match-row {
   display: grid;
-  grid-template-columns: 120px minmax(350px, 1fr) 100px 140px 150px 140px;
+  grid-template-columns: 120px minmax(400px, 1fr) 80px 150px 120px 140px;
   gap: 16px;
   padding: 20px;
   background: linear-gradient(
@@ -67,109 +67,52 @@
   text-align: center;
 }
 
-/* Column 2: Turns */
-.match-col-turns {
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding-right: 16px;
-  border-right: 1px solid rgba(212, 175, 55, 0.08);
-}
-
-.match-turns-label {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  white-space: nowrap;
-}
-
-.match-turns-value {
-  padding: 8px 12px;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.match-turns-value:hover:not(:disabled) {
-  background: rgba(212, 175, 55, 0.25);
-  border-color: rgba(212, 175, 55, 0.6);
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-}
-
-.match-turns-value:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.match-turns-display {
-  padding: 8px 12px;
-  background: rgba(212, 175, 55, 0.05);
-  border: 1px solid rgba(212, 175, 55, 0.15);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Column 3: Participants */
+/* Column 2: Participants with new layout */
 .match-col-participants {
   gap: 12px;
   padding-right: 16px;
   border-right: 1px solid rgba(212, 175, 55, 0.08);
 }
 
-.match-participant {
-  display: flex;
+.match-participant-row {
+  display: grid;
+  grid-template-columns: 4fr auto 4fr auto 1fr;
   align-items: center;
-  gap: 16px;
-  padding: 8px;
+  gap: 12px;
+  padding: 10px 12px;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   border: 1px solid rgba(212, 175, 55, 0.05);
   transition: all 0.2s ease;
 }
 
-.match-participant:hover {
+.match-participant-row:hover {
   background: rgba(0, 0, 0, 0.4);
   border-color: rgba(212, 175, 55, 0.15);
 }
 
-.match-participant-user {
+/* 4/9 - Player Section */
+.match-participant-player {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 140px;
+  gap: 10px;
+  min-width: 0;
 }
 
 .match-participant-avatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: linear-gradient(
     135deg,
     rgba(212, 175, 55, 0.3),
     rgba(184, 134, 11, 0.2)
   );
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 2px solid rgba(212, 175, 55, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: white;
   flex-shrink: 0;
@@ -177,28 +120,29 @@
 }
 
 .match-participant-name {
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* Divider */
 .match-participant-divider {
   color: rgba(212, 175, 55, 0.4);
   font-weight: 300;
-  font-size: 16px;
+  font-size: 18px;
   flex-shrink: 0;
-  margin: 0 4px;
+  justify-self: center;
 }
 
+/* 4/9 - Leader Section */
 .match-participant-leader {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
   min-width: 0;
 }
 
@@ -267,73 +211,45 @@
   font-style: italic;
 }
 
-/* Column 4: Scores */
-.match-col-scores {
-  flex-direction: row;
+/* 1/9 - Info Button */
+.match-participant-info-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  color: rgba(212, 175, 55, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  justify-self: center;
+}
+
+.match-participant-info-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.5);
+  color: rgba(212, 175, 55, 1);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+/* Column 3: Bonus */
+.match-col-bonus {
   justify-content: center;
   align-items: center;
-  gap: 12px;
   padding-right: 16px;
   border-right: 1px solid rgba(212, 175, 55, 0.08);
 }
 
-.match-scores-values {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: stretch;
+.match-bonus-placeholder {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 300;
 }
 
-.match-scores-label {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  white-space: nowrap;
-}
-
-.match-score-btn {
-  padding: 6px 12px;
-  background: rgba(212, 175, 55, 0.15);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 6px;
-  color: rgba(212, 175, 55, 1);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.match-score-btn:hover:not(:disabled) {
-  background: rgba(212, 175, 55, 0.25);
-  border-color: rgba(212, 175, 55, 0.5);
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-}
-
-.match-score-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.match-score-display {
-  padding: 6px 12px;
-  background: rgba(212, 175, 55, 0.05);
-  border: 1px solid rgba(212, 175, 55, 0.15);
-  border-radius: 6px;
-  color: rgba(212, 175, 55, 0.7);
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Column 5: Winner */
+/* Column 4: Winner */
 .match-col-winner {
   justify-content: center;
   align-items: center;
@@ -390,6 +306,60 @@
 
 .match-winner-trophy {
   font-size: 24px;
+}
+
+/* Column 5: Scores - aligned with participants */
+.match-col-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 16px;
+  border-right: 1px solid rgba(212, 175, 55, 0.08);
+}
+
+.match-score-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px; /* Match participant row height */
+}
+
+.match-score-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 6px;
+  color: rgba(212, 175, 55, 1);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.match-score-btn:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.match-score-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.match-score-display {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 6px;
+  color: rgba(212, 175, 55, 0.9);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Column 6: Actions */
@@ -559,14 +529,30 @@
 /* Responsive Design */
 @media (max-width: 1400px) {
   .match-row {
-    grid-template-columns: 100px minmax(300px, 1fr) 80px 120px 120px 120px;
+    grid-template-columns: 100px minmax(350px, 1fr) 60px 130px 100px 120px;
     gap: 12px;
     padding: 16px;
   }
 
   .match-participant-name,
   .match-leader-name {
+    font-size: 13px;
+  }
+
+  .match-participant-avatar {
+    width: 32px;
+    height: 32px;
     font-size: 12px;
+  }
+
+  .match-leader-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .match-civ-icon {
+    width: 22px;
+    height: 22px;
   }
 }
 
@@ -590,5 +576,21 @@
 
   .match-col-participants {
     max-height: none;
+  }
+
+  .match-participant-row {
+    grid-template-columns: 3fr auto 4fr auto auto;
+    gap: 8px;
+  }
+
+  .match-col-scores {
+    flex-direction: row;
+    justify-content: space-around;
+    border-right: none;
+  }
+
+  .match-score-item {
+    height: auto;
+    flex: 1;
   }
 }

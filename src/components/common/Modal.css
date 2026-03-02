@@ -59,6 +59,11 @@
   max-width: 480px;
 }
 
+/* Wide Modal - For complex forms and tables */
+.modal-wide.modal-desktop {
+  max-width: 1100px;
+}
+
 /* Mobile Modal - Fullscreen */
 .modal-mobile {
   border-radius: 0;
