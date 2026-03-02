@@ -1,5 +1,5 @@
 // Match Row Component
-import { Check, Users } from "lucide-react";
+import { Check, Users, Pencil, Clock } from "lucide-react";
 import "./MatchRow.css";
 
 /**
@@ -13,6 +13,7 @@ import "./MatchRow.css";
  * @param {Function} onUpdateScore - Handler for updating score
  * @param {boolean} isCurrentMatch - Whether this is the current active match
  * @param {boolean} isDraftInProgress - Whether draft is in progress
+ * @param {boolean} hasUserCompletedDraft - Whether current user has completed draft
  * @param {number} readyPlayersCount - Number of ready players
  * @param {number} totalPlayersCount - Total number of players
  */
@@ -26,6 +27,7 @@ export function MatchRow({
   onUpdateScore,
   isCurrentMatch,
   isDraftInProgress,
+  hasUserCompletedDraft,
   readyPlayersCount,
   totalPlayersCount,
 }) {
@@ -50,12 +52,37 @@ export function MatchRow({
   });
   const isCompleted = match.status === "completed";
 
-  // Find winner (highest score)
+  // Get winner from match data
   const winner =
-    isCompleted && participants.length > 0
-      ? participants.reduce((max, current) =>
-          current[1].score > max[1].score ? current : max,
-        )
+    isCompleted && match.winnerId && match.participants[match.winnerId]
+      ? match.participants[match.winnerId]
+      : null;
+
+  // Get victory type name and icon
+  const victoryTypes = {
+    science: {
+      name: "Scientifica",
+      icon: "/IconeVittorie/ScienceVictory.webp",
+    },
+    culture: { name: "Culturale", icon: "/IconeVittorie/CultureVictory.webp" },
+    diplomatic: {
+      name: "Diplomatica",
+      icon: "/IconeVittorie/DiplomaticVictory.webp",
+    },
+    domination: {
+      name: "Dominio",
+      icon: "/IconeVittorie/DominationVictory.webp",
+    },
+    religious: {
+      name: "Religiosa",
+      icon: "/IconeVittorie/ReligiousVictory.webp",
+    },
+    score: { name: "Per Punti", icon: "/IconeVittorie/ScoreVictory.webp" },
+  };
+
+  const victoryInfo =
+    match.victoryType && victoryTypes[match.victoryType]
+      ? victoryTypes[match.victoryType]
       : null;
 
   return (
@@ -130,41 +157,58 @@ export function MatchRow({
 
       {/* Column 3: Turns */}
       <div className="match-col match-col-turns">
+        {isCompleted ? (
+          <div className="match-turns-display">
+            {match.turns > 0 ? match.turns : "-"}
+          </div>
+        ) : (
+          <button
+            className="match-turns-value"
+            onClick={() => onUpdateTurns(match.id, match.turns)}
+            type="button"
+          >
+            {match.turns > 0 ? match.turns : "Imposta"}
+          </button>
+        )}
         <div className="match-turns-label">Turni Vittoria</div>
-        <button
-          className="match-turns-value"
-          onClick={() => onUpdateTurns(match.id, match.turns)}
-          disabled={isCompleted}
-          type="button"
-        >
-          {match.turns > 0 ? match.turns : "Imposta"}
-        </button>
       </div>
 
       {/* Column 4: Scores */}
       <div className="match-col match-col-scores">
+        <div className="match-scores-values">
+          {isCompleted
+            ? participants.map(([userId, participant]) => (
+                <div key={userId} className="match-score-display">
+                  {participant.score > 0 ? participant.score : "-"}
+                </div>
+              ))
+            : participants.map(([userId, participant]) => (
+                <button
+                  key={userId}
+                  className="match-score-btn"
+                  onClick={() =>
+                    onUpdateScore(match.id, userId, participant.score)
+                  }
+                  type="button"
+                >
+                  {participant.score > 0 ? participant.score : "Imposta"}
+                </button>
+              ))}
+        </div>
         <div className="match-scores-label">Punteggi</div>
-        {participants.map(([userId, participant]) => (
-          <button
-            key={userId}
-            className="match-score-btn"
-            onClick={() => onUpdateScore(match.id, userId, participant.score)}
-            disabled={isCompleted}
-            type="button"
-          >
-            {participant.score > 0 ? participant.score : "Imposta"}
-          </button>
-        ))}
       </div>
 
       {/* Column 5: Winner */}
       <div className="match-col match-col-winner">
-        {isCompleted && winner ? (
+        {isCompleted && winner && victoryInfo ? (
           <>
-            <div className="match-winner-label">Vincitore</div>
             <div className="match-winner-info">
-              <span className="match-winner-trophy">🏆</span>
-              <span className="match-winner-name">{winner[1].username}</span>
+              <img
+                src={victoryInfo.icon}
+                alt={victoryInfo.name}
+                className="match-victory-icon"
+              />
+              <span className="match-winner-name">{winner.username}</span>
             </div>
           </>
         ) : null}
@@ -173,27 +217,65 @@ export function MatchRow({
       {/* Column 6: Actions */}
       <div className="match-col match-col-actions">
         {!match.draftCompleted && isCurrentMatch && (
-          <button
-            className={`match-action-btn draft-btn ${isDraftInProgress || readyPlayersCount > 0 ? "blinking" : ""}`}
-            onClick={() => onStartDraft(match.id)}
-            disabled={isCompleted}
-            type="button"
-          >
-            <Users size={20} />
-            {isDraftInProgress
-              ? "Continua Draft"
-              : `Draft (${readyPlayersCount}/${totalPlayersCount} pronti)`}
-          </button>
+          <>
+            {hasUserCompletedDraft ? (
+              <button
+                className="match-action-btn waiting-btn"
+                disabled
+                type="button"
+              >
+                <Clock size={20} className="waiting-icon" />
+                <div className="draft-text-container">
+                  <span className="draft-text">
+                    Attendi gli altri giocatori
+                  </span>
+                </div>
+              </button>
+            ) : (
+              <button
+                className={`match-action-btn draft-btn ${isDraftInProgress || readyPlayersCount > 0 ? "blinking" : ""}`}
+                onClick={() => onStartDraft(match.id)}
+                disabled={isCompleted}
+                type="button"
+              >
+                <Users size={20} />
+                <div className="draft-text-container">
+                  {isDraftInProgress ? (
+                    <>
+                      <span className="draft-text">Continua</span>
+                      <span className="draft-text">Draft</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="draft-text">Draft</span>
+                      <span className="draft-counter">
+                        [{readyPlayersCount}/{totalPlayersCount}]
+                      </span>
+                    </>
+                  )}
+                </div>
+              </button>
+            )}
+          </>
         )}
         {match.draftCompleted && !isCompleted && (
           <button
             className="match-action-btn complete-btn"
             onClick={() => onCompleteMatch(match.id)}
-            disabled={isCompleted}
             type="button"
           >
             <Check size={20} />
             Segna Finita
+          </button>
+        )}
+        {isCompleted && (
+          <button
+            className="match-action-btn edit-btn"
+            onClick={() => onCompleteMatch(match.id)}
+            type="button"
+          >
+            <Pencil size={20} />
+            Modifica
           </button>
         )}
       </div>

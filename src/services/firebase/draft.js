@@ -357,6 +357,7 @@ export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
               ...match,
               participants: updatedParticipants,
               draftCompleted: true,
+              startDate: new Date().toISOString(),
             };
           }
           return match;

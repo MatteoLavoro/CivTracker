@@ -45,7 +45,7 @@ export const createMatch = async (campaignId, memberIds, memberDetails) => {
 
     const newMatch = {
       id: matchId,
-      startDate: new Date().toISOString(),
+      startDate: null,
       endDate: null,
       turns: 0,
       participants,
@@ -171,12 +171,23 @@ export const updateParticipantScore = async (
 };
 
 /**
- * Complete match (mark as finished)
+ * Complete match (mark as finished) with all details
  * @param {string} campaignId - Campaign ID
  * @param {string} matchId - Match ID
+ * @param {number} turns - Final turn count
+ * @param {Object} scores - Scores for all participants { userId: score }
+ * @param {string} winnerId - Winner user ID
+ * @param {string} victoryType - Victory type ID
  * @returns {Object} { success, error }
  */
-export const completeMatch = async (campaignId, matchId) => {
+export const completeMatch = async (
+  campaignId,
+  matchId,
+  turns,
+  scores,
+  winnerId,
+  victoryType,
+) => {
   try {
     const campaignRef = doc(db, "campaigns", campaignId);
     const campaignDoc = await getDoc(campaignRef);
@@ -190,10 +201,22 @@ export const completeMatch = async (campaignId, matchId) => {
 
     const updatedMatches = matches.map((match) => {
       if (match.id === matchId) {
+        // Update participant scores
+        const updatedParticipants = { ...match.participants };
+        Object.keys(scores).forEach((userId) => {
+          if (updatedParticipants[userId]) {
+            updatedParticipants[userId].score = scores[userId];
+          }
+        });
+
         return {
           ...match,
           status: "completed",
           endDate: new Date().toISOString(),
+          turns: turns,
+          participants: updatedParticipants,
+          winnerId: winnerId,
+          victoryType: victoryType,
         };
       }
       return match;

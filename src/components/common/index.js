@@ -8,6 +8,8 @@ export { TextInputModal } from "./TextInputModal";
 export { ProfileModal } from "./ProfileModal";
 export { InstallPrompt } from "./InstallPrompt";
 export { CampaignInfoModal } from "./CampaignInfoModal";
+export { VictoryInfoModal } from "./VictoryInfoModal";
+export { CompleteMatchModal } from "./CompleteMatchModal";
 export { DraftModal } from "./DraftModal";
 export { MatchRow } from "./MatchRow";
 export { AddMatchButton } from "./AddMatchButton";

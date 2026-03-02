@@ -55,7 +55,8 @@
 }
 
 .campaign-back-btn,
-.campaign-info-btn {
+.campaign-info-btn,
+.campaign-kebab-btn {
   width: 44px;
   height: 44px;
   display: flex;
@@ -70,7 +71,8 @@
 }
 
 .campaign-back-btn:hover,
-.campaign-info-btn:hover {
+.campaign-info-btn:hover,
+.campaign-kebab-btn:hover {
   background: rgba(15, 50, 82, 0.5);
   border-color: rgba(15, 50, 82, 0.8);
   color: white;
@@ -78,8 +80,60 @@
 }
 
 .campaign-back-btn:active,
-.campaign-info-btn:active {
+.campaign-info-btn:active,
+.campaign-kebab-btn:active {
   transform: scale(0.95);
+}
+
+/* Kebab Menu */
+.campaign-kebab-menu {
+  position: relative;
+}
+
+.campaign-kebab-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 40, 50, 0.95) 0%,
+    rgba(20, 30, 40, 0.98) 100%
+  );
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(212, 175, 55, 0.1) inset;
+  backdrop-filter: blur(10px);
+  min-width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.campaign-kebab-item {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.campaign-kebab-item:last-child {
+  border-bottom: none;
+}
+
+.campaign-kebab-item:hover {
+  background: rgba(212, 175, 55, 0.15);
+  color: rgba(212, 175, 55, 1);
 }
 
 .campaign-title {

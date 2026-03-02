@@ -1,7 +1,7 @@
 // Campaign Page - Individual Campaign View with Draft System and Matches
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Info } from "lucide-react";
+import { ArrowLeft, MoreVertical, Info, Trophy } from "lucide-react";
 import { useDocument, useLeaders } from "../../hooks";
 import { useAuthContext } from "../../contexts";
 import {
@@ -20,6 +20,8 @@ import {
 } from "../../services/firebase";
 import {
   CampaignInfoModal,
+  VictoryInfoModal,
+  CompleteMatchModal,
   LeaderConfirmModal,
   TextInputModal,
   DraftModal,
@@ -37,6 +39,9 @@ export function Campaign() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const [campaignInfoModalOpen, setCampaignInfoModalOpen] = useState(false);
+  const [victoryInfoModalOpen, setVictoryInfoModalOpen] = useState(false);
+  const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
+  const kebabMenuRef = useRef(null);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [confirmSelectOpen, setConfirmSelectOpen] = useState(false);
   const [leaderToSelect, setLeaderToSelect] = useState(null);
@@ -44,7 +49,9 @@ export function Campaign() {
   // Match system state
   const [turnsModalOpen, setTurnsModalOpen] = useState(false);
   const [scoreModalOpen, setScoreModalOpen] = useState(false);
+  const [completeMatchModalOpen, setCompleteMatchModalOpen] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState(null);
+  const [selectedMatch, setSelectedMatch] = useState(null);
   const [currentParticipantId, setCurrentParticipantId] = useState(null);
   const [currentTurns, setCurrentTurns] = useState(0);
   const [currentScore, setCurrentScore] = useState(0);
@@ -71,6 +78,26 @@ export function Campaign() {
   const draftPhase = draft?.phase || null;
   const selectedLeaders = draft?.selectedLeaders || {};
   const mySelectedLeader = selectedLeaders[user?.uid] || null;
+
+  // Close kebab menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        kebabMenuRef.current &&
+        !kebabMenuRef.current.contains(event.target)
+      ) {
+        setKebabMenuOpen(false);
+      }
+    };
+
+    if (kebabMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [kebabMenuOpen]);
 
   // Initialize draft if not exists
   useEffect(() => {
@@ -233,12 +260,35 @@ export function Campaign() {
     setCurrentParticipantId(null);
   };
 
-  const handleCompleteMatch = async (matchId) => {
-    const { error } = await completeMatch(campaignId, matchId);
+  const handleCompleteMatch = (matchId) => {
+    // Find the match
+    const match = campaign?.matches?.find((m) => m.id === matchId);
+    if (!match) return;
+
+    setSelectedMatch(match);
+    setCurrentMatchId(matchId);
+    setCompleteMatchModalOpen(true);
+  };
+
+  const handleCompleteMatchConfirm = async (matchData) => {
+    if (!currentMatchId) return;
+
+    const { error } = await completeMatch(
+      campaignId,
+      currentMatchId,
+      matchData.turns,
+      matchData.scores,
+      matchData.winnerId,
+      matchData.victoryType,
+    );
 
     if (error) {
       console.error("Errore completamento partita:", error);
       alert("Errore nel completamento della partita. Riprova.");
+    } else {
+      setCompleteMatchModalOpen(false);
+      setCurrentMatchId(null);
+      setSelectedMatch(null);
     }
   };
 
@@ -298,9 +348,19 @@ export function Campaign() {
     currentMatch && currentMatch.status === "in-progress";
   const canCreateNewMatch = !hasMatches || !isCurrentMatchActive;
 
+  // Calculate victory counts from completed matches
+  const victoryCounts = matches
+    .filter((match) => match.status === "completed" && match.victoryType)
+    .reduce((acc, match) => {
+      acc[match.victoryType] = (acc[match.victoryType] || 0) + 1;
+      return acc;
+    }, {});
+
   // Draft button logic
   const isDraftInProgress =
     draftPhase && draftPhase !== "waiting" && !mySelectedLeader;
+  const hasUserCompletedDraft =
+    !!mySelectedLeader && !currentMatch?.draftCompleted;
   const readyPlayersCount = draft?.readyPlayers?.length || 0;
   const totalPlayersCount = campaign?.members?.length || 0;
 
@@ -376,14 +436,42 @@ export function Campaign() {
 
         <h1 className="campaign-title">{campaign.name}</h1>
 
-        <button
-          className="campaign-info-btn"
-          onClick={() => setCampaignInfoModalOpen(true)}
-          aria-label="Info campagna"
-          type="button"
-        >
-          <Info size={24} />
-        </button>
+        <div className="campaign-kebab-menu" ref={kebabMenuRef}>
+          <button
+            className="campaign-kebab-btn"
+            onClick={() => setKebabMenuOpen(!kebabMenuOpen)}
+            aria-label="Menu opzioni"
+            type="button"
+          >
+            <MoreVertical size={24} />
+          </button>
+          {kebabMenuOpen && (
+            <div className="campaign-kebab-dropdown">
+              <button
+                className="campaign-kebab-item"
+                onClick={() => {
+                  setVictoryInfoModalOpen(true);
+                  setKebabMenuOpen(false);
+                }}
+                type="button"
+              >
+                <Trophy size={18} />
+                <span>Punteggi Vittorie</span>
+              </button>
+              <button
+                className="campaign-kebab-item"
+                onClick={() => {
+                  setCampaignInfoModalOpen(true);
+                  setKebabMenuOpen(false);
+                }}
+                type="button"
+              >
+                <Info size={18} />
+                <span>Info Campagna</span>
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Main Content - Matches and Draft System */}
@@ -403,6 +491,7 @@ export function Campaign() {
               onUpdateScore={handleUpdateScoreRequest}
               isCurrentMatch={match.id === currentMatch?.id}
               isDraftInProgress={isDraftInProgress}
+              hasUserCompletedDraft={hasUserCompletedDraft}
               readyPlayersCount={readyPlayersCount}
               totalPlayersCount={totalPlayersCount}
             />
@@ -423,6 +512,13 @@ export function Campaign() {
         campaign={campaign}
         onUpdateName={handleUpdateCampaignName}
         onLeaveCampaign={handleLeaveCampaign}
+      />
+
+      {/* Victory Info Modal */}
+      <VictoryInfoModal
+        isOpen={victoryInfoModalOpen}
+        onClose={() => setVictoryInfoModalOpen(false)}
+        victoryCounts={victoryCounts}
       />
 
       {/* Draft Modal */}
@@ -488,6 +584,19 @@ export function Campaign() {
           const num = parseInt(value);
           return !isNaN(num) && num >= 0 && num <= 9999;
         }}
+      />
+
+      {/* Complete Match Modal */}
+      <CompleteMatchModal
+        key={selectedMatch?.id || "empty"}
+        isOpen={completeMatchModalOpen}
+        onClose={() => {
+          setCompleteMatchModalOpen(false);
+          setCurrentMatchId(null);
+          setSelectedMatch(null);
+        }}
+        match={selectedMatch}
+        onConfirm={handleCompleteMatchConfirm}
       />
     </div>
   );
