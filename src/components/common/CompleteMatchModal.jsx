@@ -9,8 +9,14 @@ import {
   Swords,
   Medal,
   X,
+  ChevronRight,
 } from "lucide-react";
-import { Modal, BonusInfoModal } from "./";
+import {
+  Modal,
+  BonusInfoModal,
+  WinnerSelectModal,
+  VictoryTypeSelectModal,
+} from "./";
 import { BONUS_TAGS } from "../../utils/scoreUtils";
 import "./CompleteMatchModal.css";
 
@@ -22,10 +28,23 @@ import "./CompleteMatchModal.css";
  * @param {Function} onClose - Callback when modal closes
  * @param {Object} match - Match object with participants
  * @param {Function} onConfirm - Callback to save match completion
+ * @param {Array} leaders - All leaders data
+ * @param {Object} victoryCounts - Current victory counts
  */
-export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
+export function CompleteMatchModal({
+  isOpen,
+  onClose,
+  match,
+  onConfirm,
+  leaders = [],
+  victoryCounts = {},
+}) {
   const participants = match?.participants
-    ? Object.entries(match.participants)
+    ? Object.entries(match.participants).sort((a, b) => {
+        const nameA = a[1].username?.toLowerCase() || "";
+        const nameB = b[1].username?.toLowerCase() || "";
+        return nameA.localeCompare(nameB);
+      })
     : [];
 
   const [turns, setTurns] = useState(match?.turns || 0);
@@ -34,6 +53,13 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
   const [showBonusInfo, setShowBonusInfo] = useState(false);
   const [showBonusAssign, setShowBonusAssign] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [showOverflowBonusInfo, setShowOverflowBonusInfo] = useState(false);
+  const [overflowBonusList, setOverflowBonusList] = useState([]);
+  const [showWinnerSelect, setShowWinnerSelect] = useState(false);
+  const [showVictoryTypeSelect, setShowVictoryTypeSelect] = useState(false);
+
+  // Max visible bonus tags before showing "Altri bonus"
+  const MAX_VISIBLE_BONUS = 2;
 
   // Initialize scores from match using useMemo to avoid cascading renders
   const initialScores = useMemo(() => {
@@ -60,13 +86,41 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
   const [bonusTags, setBonusTags] = useState(initialBonusTags);
 
   const victoryTypes = [
-    { id: "science", name: "Vittoria Scientifica" },
-    { id: "culture", name: "Vittoria Culturale" },
-    { id: "diplomatic", name: "Vittoria Diplomatica" },
-    { id: "domination", name: "Vittoria per Dominio" },
-    { id: "religious", name: "Vittoria Religiosa" },
-    { id: "score", name: "Vittoria per Punti" },
-    { id: "defeat", name: "Sconfitta" },
+    {
+      id: "science",
+      name: "Vittoria Scientifica",
+      icon: "/IconeVittorie/ScienceVictory.webp",
+    },
+    {
+      id: "culture",
+      name: "Vittoria Culturale",
+      icon: "/IconeVittorie/CultureVictory.webp",
+    },
+    {
+      id: "diplomatic",
+      name: "Vittoria Diplomatica",
+      icon: "/IconeVittorie/DiplomaticVictory.webp",
+    },
+    {
+      id: "domination",
+      name: "Vittoria per Dominio",
+      icon: "/IconeVittorie/DominationVictory.webp",
+    },
+    {
+      id: "religious",
+      name: "Vittoria Religiosa",
+      icon: "/IconeVittorie/ReligiousVictory.webp",
+    },
+    {
+      id: "score",
+      name: "Vittoria per Punti",
+      icon: "/IconeVittorie/ScoreVictory.webp",
+    },
+    {
+      id: "defeat",
+      name: "Sconfitta",
+      icon: null,
+    },
   ];
 
   const handleScoreChange = (userId, value) => {
@@ -121,6 +175,76 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
     }
   };
 
+  const getBonusColor = (bonusId) => {
+    switch (bonusId) {
+      case BONUS_TAGS.SECOND_PLACE:
+        return "silver"; // Silver for second place
+      case BONUS_TAGS.SURVIVOR:
+        return "green"; // Green for survivor
+      default:
+        return "default";
+    }
+  };
+
+  const handleShowOverflowBonuses = (userId) => {
+    const tags = bonusTags[userId] || [];
+    setOverflowBonusList(tags);
+    setCurrentUserId(userId);
+    setShowOverflowBonusInfo(true);
+  };
+
+  const handleRemoveFromOverflow = (indexToRemove) => {
+    if (currentUserId) {
+      handleRemoveSingleBonus(currentUserId, indexToRemove);
+      // Update the overflow list
+      const updatedTags = bonusTags[currentUserId].filter(
+        (_, index) => index !== indexToRemove,
+      );
+      setOverflowBonusList(updatedTags);
+      // Close modal if no more bonuses
+      if (updatedTags.length === 0) {
+        setShowOverflowBonusInfo(false);
+        setOverflowBonusList([]);
+        setCurrentUserId(null);
+      }
+    }
+  };
+
+  const handleSelectWinner = (userId) => {
+    setWinnerId(userId);
+    setShowWinnerSelect(false);
+  };
+
+  const handleSelectVictoryType = (victoryTypeId) => {
+    setVictoryType(victoryTypeId);
+    // Clear winner if defeat is selected
+    if (victoryTypeId === "defeat") {
+      setWinnerId("");
+    }
+    setShowVictoryTypeSelect(false);
+  };
+
+  const getVictoryTypeName = () => {
+    const victory = victoryTypes.find((v) => v.id === victoryType);
+    return victory ? victory.name : "Seleziona esito...";
+  };
+
+  const getVictoryTypeData = () => {
+    return victoryTypes.find((v) => v.id === victoryType) || null;
+  };
+
+  const getWinnerName = () => {
+    if (!winnerId) return "Seleziona vincitore...";
+    const winner = participants.find(([userId]) => userId === winnerId);
+    return winner ? winner[1].username : "Seleziona vincitore...";
+  };
+
+  const getWinnerData = () => {
+    if (!winnerId) return null;
+    const winner = participants.find(([userId]) => userId === winnerId);
+    return winner ? winner[1] : null;
+  };
+
   const handleSubmit = () => {
     // Validation
     if (turns <= 0) {
@@ -128,13 +252,14 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
       return;
     }
 
-    if (!winnerId) {
-      alert("Seleziona il vincitore");
+    if (!victoryType) {
+      alert("Seleziona l'esito della partita");
       return;
     }
 
-    if (!victoryType) {
-      alert("Seleziona il tipo di vittoria");
+    // Winner is required only if not a defeat
+    if (victoryType !== "defeat" && !winnerId) {
+      alert("Seleziona il vincitore");
       return;
     }
 
@@ -160,8 +285,8 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
 
   const isValid =
     turns > 0 &&
-    winnerId &&
     victoryType &&
+    (victoryType === "defeat" || winnerId) && // Winner required only if not defeat
     participants.every(
       ([userId]) => scores[userId] !== undefined && scores[userId] !== null,
     );
@@ -233,6 +358,7 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
                         onChange={(e) =>
                           handleScoreChange(userId, e.target.value)
                         }
+                        onFocus={(e) => e.target.select()}
                         placeholder="0"
                         min="0"
                         max="999999"
@@ -240,35 +366,58 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
                     </td>
 
                     {/* Bonus Tags */}
-                    <td>
+                    <td className="complete-match-bonus-td">
                       <div className="complete-match-bonus-cell">
-                        {bonusTags[userId] && bonusTags[userId].length > 0 ? (
-                          <div className="complete-match-bonus-tags">
-                            {bonusTags[userId].map((tagId, index) => (
-                              <div
-                                key={index}
-                                className="complete-match-bonus-tag"
-                              >
-                                <span className="complete-match-bonus-icon">
-                                  {getBonusIcon(tagId)}
-                                </span>
-                                <span className="complete-match-bonus-text">
-                                  {getBonusName(tagId)}
-                                </span>
-                                <button
-                                  type="button"
-                                  className="complete-match-bonus-remove"
+                        <div className="complete-match-bonus-tags-container">
+                          {bonusTags[userId] && bonusTags[userId].length > 0 ? (
+                            <div className="complete-match-bonus-tags">
+                              {bonusTags[userId]
+                                .slice(0, MAX_VISIBLE_BONUS)
+                                .map((tagId, index) => (
+                                  <div
+                                    key={index}
+                                    className={`complete-match-bonus-tag bonus-color-${getBonusColor(tagId)}`}
+                                  >
+                                    <span className="complete-match-bonus-icon">
+                                      {getBonusIcon(tagId)}
+                                    </span>
+                                    <span className="complete-match-bonus-text">
+                                      {getBonusName(tagId)}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="complete-match-bonus-remove"
+                                      onClick={() =>
+                                        handleRemoveSingleBonus(userId, index)
+                                      }
+                                      title="Rimuovi bonus"
+                                    >
+                                      <X size={14} />
+                                    </button>
+                                  </div>
+                                ))}
+                              {bonusTags[userId].length > MAX_VISIBLE_BONUS && (
+                                <div
+                                  className="complete-match-bonus-tag bonus-overflow"
                                   onClick={() =>
-                                    handleRemoveSingleBonus(userId, index)
+                                    handleShowOverflowBonuses(userId)
                                   }
-                                  title="Rimuovi bonus"
+                                  title="Visualizza tutti i bonus"
                                 >
-                                  <X size={14} />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : null}
+                                  <span className="complete-match-bonus-icon">
+                                    <Award size={14} />
+                                  </span>
+                                  <span className="complete-match-bonus-text">
+                                    Altri{" "}
+                                    {bonusTags[userId].length -
+                                      MAX_VISIBLE_BONUS}{" "}
+                                    bonus
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          ) : null}
+                        </div>
                         <button
                           type="button"
                           className="complete-match-bonus-add-btn"
@@ -286,22 +435,26 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
             </table>
           </div>
 
-          {/* Footer Section: Turns (left) + Winner + Victory Type (right) */}
+          {/* Footer Section: Turns | Victory Type | Winner */}
           <div className="complete-match-footer">
-            {/* Left: Turns */}
-            <div className="complete-match-footer-left">
-              <div className="complete-match-field">
-                <div className="complete-match-field-icon">
-                  <Clock size={20} />
+            {/* Turns */}
+            <div className="complete-match-footer-field">
+              <div className="complete-match-field-horizontal">
+                <div className="complete-match-field-left">
+                  <div className="complete-match-field-icon">
+                    <Clock size={20} />
+                  </div>
+                  <label className="complete-match-field-label">Turno</label>
                 </div>
-                <div className="complete-match-field-content">
-                  <label className="complete-match-label">Turno</label>
+                <div className="complete-match-field-separator">|</div>
+                <div className="complete-match-field-right">
                   <input
                     type="number"
-                    className="complete-match-input"
+                    className="complete-match-field-input"
                     value={turns}
                     onChange={(e) => setTurns(parseInt(e.target.value) || 0)}
-                    placeholder="Es: 300"
+                    onFocus={(e) => e.target.select()}
+                    placeholder="300"
                     min="1"
                     max="9999"
                   />
@@ -309,51 +462,86 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
               </div>
             </div>
 
-            {/* Right: Winner + Victory Type */}
-            <div className="complete-match-footer-right">
-              {/* Winner Selection */}
-              <div className="complete-match-field">
-                <div className="complete-match-field-icon">
-                  <Trophy size={20} />
+            {/* Victory Type / Outcome */}
+            <div className="complete-match-footer-field">
+              <div className="complete-match-field-horizontal">
+                <div className="complete-match-field-left">
+                  <div className="complete-match-field-icon">
+                    <Award size={20} />
+                  </div>
+                  <label className="complete-match-field-label">Esito</label>
                 </div>
-                <div className="complete-match-field-content">
-                  <label className="complete-match-label">Vincitore</label>
-                  <select
-                    className="complete-match-select"
-                    value={winnerId}
-                    onChange={(e) => setWinnerId(e.target.value)}
-                  >
-                    <option value="">Seleziona vincitore...</option>
-                    {participants.map(([userId, participant]) => (
-                      <option key={userId} value={userId}>
-                        {participant.username}
-                      </option>
-                    ))}
-                  </select>
+                <div className="complete-match-field-separator">|</div>
+                <div className="complete-match-field-right">
+                  {victoryType ? (
+                    <button
+                      type="button"
+                      className="complete-match-field-value-display"
+                      onClick={() => setShowVictoryTypeSelect(true)}
+                    >
+                      {getVictoryTypeData()?.icon ? (
+                        <img
+                          src={getVictoryTypeData().icon}
+                          alt={getVictoryTypeData().name}
+                          className="complete-match-victory-icon"
+                        />
+                      ) : (
+                        <X size={24} className="complete-match-defeat-icon" />
+                      )}
+                      <span className="complete-match-value-text">
+                        {getVictoryTypeName()}
+                      </span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="complete-match-assign-btn"
+                      onClick={() => setShowVictoryTypeSelect(true)}
+                    >
+                      Assegna
+                    </button>
+                  )}
                 </div>
               </div>
+            </div>
 
-              {/* Victory Type Selection */}
-              <div className="complete-match-field">
-                <div className="complete-match-field-icon">
-                  <Award size={20} />
+            {/* Winner */}
+            <div className="complete-match-footer-field">
+              <div className="complete-match-field-horizontal">
+                <div className="complete-match-field-left">
+                  <div className="complete-match-field-icon">
+                    <Trophy size={20} />
+                  </div>
+                  <label className="complete-match-field-label">Vincitore</label>
                 </div>
-                <div className="complete-match-field-content">
-                  <label className="complete-match-label">
-                    Tipo di Vittoria
-                  </label>
-                  <select
-                    className="complete-match-select"
-                    value={victoryType}
-                    onChange={(e) => setVictoryType(e.target.value)}
-                  >
-                    <option value="">Seleziona tipo di vittoria...</option>
-                    {victoryTypes.map((type) => (
-                      <option key={type.id} value={type.id}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="complete-match-field-separator">|</div>
+                <div className="complete-match-field-right">
+                  {victoryType === "defeat" ? (
+                    <div className="complete-match-field-none">Nessuno</div>
+                  ) : winnerId ? (
+                    <button
+                      type="button"
+                      className="complete-match-field-value-display"
+                      onClick={() => setShowWinnerSelect(true)}
+                    >
+                      <div className="complete-match-winner-avatar">
+                        {getWinnerData()
+                          ?.username?.substring(0, 2)
+                          .toUpperCase() || "?"}
+                      </div>
+                      <span className="complete-match-value-text">
+                        {getWinnerName()}
+                      </span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="complete-match-assign-btn"
+                      onClick={() => setShowWinnerSelect(true)}
+                    >
+                      Assegna
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -380,6 +568,39 @@ export function CompleteMatchModal({ isOpen, onClose, match, onConfirm }) {
         mode="assign"
         currentBonusTags={currentUserId ? bonusTags[currentUserId] || [] : []}
         onAssign={handleAssignBonuses}
+      />
+
+      {/* Overflow Bonus Info Modal */}
+      <BonusInfoModal
+        key="bonus-overflow-info"
+        isOpen={showOverflowBonusInfo}
+        onClose={() => {
+          setShowOverflowBonusInfo(false);
+          setOverflowBonusList([]);
+          setCurrentUserId(null);
+        }}
+        mode="overflow"
+        currentBonusTags={overflowBonusList}
+        onRemove={handleRemoveFromOverflow}
+      />
+
+      {/* Winner Select Modal */}
+      <WinnerSelectModal
+        isOpen={showWinnerSelect}
+        onClose={() => setShowWinnerSelect(false)}
+        onConfirm={handleSelectWinner}
+        participants={participants}
+        leaders={leaders}
+        selectedWinnerId={winnerId}
+      />
+
+      {/* Victory Type Select Modal */}
+      <VictoryTypeSelectModal
+        isOpen={showVictoryTypeSelect}
+        onClose={() => setShowVictoryTypeSelect(false)}
+        onConfirm={handleSelectVictoryType}
+        victoryCounts={victoryCounts}
+        selectedVictoryType={victoryType}
       />
     </>
   );

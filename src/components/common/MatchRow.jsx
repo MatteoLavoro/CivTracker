@@ -9,7 +9,6 @@ import "./MatchRow.css";
  * @param {Object} draft - Draft data for real-time leader selection
  * @param {Function} onStartDraft - Handler for starting draft
  * @param {Function} onCompleteMatch - Handler for completing match
- * @param {Function} onUpdateScore - Handler for updating score
  * @param {boolean} isCurrentMatch - Whether this is the current active match
  * @param {boolean} isDraftInProgress - Whether draft is in progress
  * @param {boolean} hasUserCompletedDraft - Whether current user has completed draft
@@ -22,7 +21,6 @@ export function MatchRow({
   draft,
   onStartDraft,
   onCompleteMatch,
-  onUpdateScore,
   isCurrentMatch,
   isDraftInProgress,
   hasUserCompletedDraft,
@@ -171,12 +169,7 @@ export function MatchRow({
         })}
       </div>
 
-      {/* Column 3: Bonus */}
-      <div className="match-col match-col-bonus">
-        <div className="match-bonus-placeholder">-</div>
-      </div>
-
-      {/* Column 4: Winner */}
+      {/* Column 3: Winner */}
       <div className="match-col match-col-winner">
         {isCompleted && winner && victoryInfo ? (
           <>
@@ -192,36 +185,39 @@ export function MatchRow({
         ) : null}
       </div>
 
-      {/* Column 5: Scores */}
+      {/* Column 4: Scores */}
       <div className="match-col match-col-scores">
-        {participants.map(([userId, participant]) => (
-          <div key={userId} className="match-score-item">
-            {isCompleted ? (
-              <div className="match-score-display">
-                {participant.finalScore !== undefined
-                  ? participant.finalScore
-                  : participant.processedScore !== undefined
-                    ? participant.processedScore
-                    : participant.score > 0
-                      ? participant.score
-                      : "-"}
-              </div>
-            ) : (
-              <button
-                className="match-score-btn"
-                onClick={() =>
-                  onUpdateScore(match.id, userId, participant.score)
-                }
-                type="button"
-              >
-                {participant.score > 0 ? participant.score : "Imposta"}
-              </button>
-            )}
-          </div>
-        ))}
+        {participants.map(([userId, participant]) => {
+          // Check if any participant has a raw score set
+          const hasAnyRawScores = participants.some(
+            ([, p]) => p.score !== undefined && p.score > 0,
+          );
+
+          return (
+            <div key={userId} className="match-score-item">
+              {isCompleted ? (
+                <div className="match-score-display">
+                  {participant.finalScore !== undefined
+                    ? participant.finalScore
+                    : participant.processedScore !== undefined
+                      ? participant.processedScore
+                      : participant.score > 0
+                        ? participant.score
+                        : "-"}
+                </div>
+              ) : hasAnyRawScores ? (
+                <div className="match-score-display">
+                  {participant.score > 0 ? participant.score : "-"}
+                </div>
+              ) : (
+                <div className="match-score-display match-score-pending">?</div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Column 6: Actions */}
+      {/* Column 5: Actions */}
       <div className="match-col match-col-actions">
         {!match.draftCompleted && isCurrentMatch && (
           <>

@@ -178,6 +178,7 @@ export const updateParticipantScore = async (
 
 /**
  * Complete match (mark as finished) with all details
+ * Also recalculates all completed matches with new victory counts
  * @param {string} campaignId - Campaign ID
  * @param {string} matchId - Match ID
  * @param {number} turns - Final turn count
@@ -207,7 +208,8 @@ export const completeMatch = async (
     const campaign = campaignDoc.data();
     const matches = campaign.matches || [];
 
-    const updatedMatches = matches.map((match) => {
+    // First, complete/update the current match
+    const matchesAfterUpdate = matches.map((match) => {
       if (match.id === matchId) {
         // Update participant raw scores and bonus tags
         const updatedParticipants = { ...match.participants };
@@ -215,34 +217,6 @@ export const completeMatch = async (
           if (updatedParticipants[userId]) {
             updatedParticipants[userId].score = scores[userId];
             updatedParticipants[userId].bonusTags = bonusTags[userId] || [];
-          }
-        });
-
-        // Calculate victory counts (excluding this match)
-        const victoryCounts = getVictoryCounts(
-          matches.filter((m) => m.id !== matchId),
-        );
-
-        // Calculate processed scores
-        const processedScores = calculateProcessedScores(
-          updatedParticipants,
-          winnerId,
-          victoryType,
-          victoryCounts,
-        );
-
-        // Calculate final scores with bonus tags (now fully manual)
-        const finalScores = calculateFinalScores(
-          processedScores,
-          updatedParticipants,
-        );
-
-        // Add processed and final scores to participants
-        Object.keys(processedScores).forEach((userId) => {
-          if (updatedParticipants[userId]) {
-            updatedParticipants[userId].processedScore =
-              processedScores[userId];
-            updatedParticipants[userId].finalScore = finalScores[userId];
           }
         });
 
@@ -254,6 +228,44 @@ export const completeMatch = async (
           participants: updatedParticipants,
           winnerId: winnerId,
           victoryType: victoryType,
+        };
+      }
+      return match;
+    });
+
+    // Calculate NEW victory counts (including the newly completed match)
+    const newVictoryCounts = getVictoryCounts(matchesAfterUpdate);
+
+    // Recalculate ALL completed matches with the new victory counts
+    const updatedMatches = matchesAfterUpdate.map((match) => {
+      if (match.status === "completed" && match.winnerId && match.victoryType) {
+        // Recalculate processed scores with NEW victory counts
+        const processedScores = calculateProcessedScores(
+          match.participants,
+          match.winnerId,
+          match.victoryType,
+          newVictoryCounts,
+        );
+
+        // Calculate final scores with bonus tags
+        const finalScores = calculateFinalScores(
+          processedScores,
+          match.participants,
+        );
+
+        // Update participants with new scores
+        const updatedParticipants = { ...match.participants };
+        Object.keys(processedScores).forEach((userId) => {
+          if (updatedParticipants[userId]) {
+            updatedParticipants[userId].processedScore =
+              processedScores[userId];
+            updatedParticipants[userId].finalScore = finalScores[userId];
+          }
+        });
+
+        return {
+          ...match,
+          participants: updatedParticipants,
         };
       }
       return match;

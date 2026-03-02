@@ -15,7 +15,6 @@ import {
   selectFinalLeader,
   createMatch,
   updateMatchTurns,
-  updateParticipantScore,
   completeMatch,
 } from "../../services/firebase";
 import {
@@ -48,13 +47,13 @@ export function Campaign() {
 
   // Match system state
   const [turnsModalOpen, setTurnsModalOpen] = useState(false);
-  const [scoreModalOpen, setScoreModalOpen] = useState(false);
   const [completeMatchModalOpen, setCompleteMatchModalOpen] = useState(false);
+  const [scoreModalOpen, setScoreModalOpen] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
-  const [currentParticipantId, setCurrentParticipantId] = useState(null);
   const [currentTurns, setCurrentTurns] = useState(0);
   const [currentScore, setCurrentScore] = useState(0);
+  const [currentParticipantId, setCurrentParticipantId] = useState(null);
 
   // Load campaign data with real-time updates
   const {
@@ -233,31 +232,20 @@ export function Campaign() {
     setCurrentMatchId(null);
   };
 
-  const handleUpdateScoreRequest = (matchId, participantId, currentScore) => {
-    setCurrentMatchId(matchId);
-    setCurrentParticipantId(participantId);
-    setCurrentScore(currentScore);
-    setScoreModalOpen(true);
-  };
-
   const handleUpdateScoreConfirm = async (scoreValue) => {
     if (!currentMatchId || !currentParticipantId) return;
 
-    const { error } = await updateParticipantScore(
-      campaignId,
-      currentMatchId,
-      currentParticipantId,
-      scoreValue,
-    );
-
-    if (error) {
-      console.error("Errore aggiornamento punteggio:", error);
-      alert("Errore nell'aggiornamento del punteggio. Riprova.");
-    }
+    // TODO: Implement score update functionality
+    console.log("Update score:", {
+      matchId: currentMatchId,
+      participantId: currentParticipantId,
+      score: scoreValue,
+    });
 
     setScoreModalOpen(false);
     setCurrentMatchId(null);
     setCurrentParticipantId(null);
+    setCurrentScore(0);
   };
 
   const handleCompleteMatch = (matchId) => {
@@ -488,7 +476,6 @@ export function Campaign() {
               draft={draft}
               onStartDraft={handleOpenDraftModal}
               onCompleteMatch={handleCompleteMatch}
-              onUpdateScore={handleUpdateScoreRequest}
               isCurrentMatch={match.id === currentMatch?.id}
               isDraftInProgress={isDraftInProgress}
               hasUserCompletedDraft={hasUserCompletedDraft}
@@ -597,6 +584,8 @@ export function Campaign() {
         }}
         match={selectedMatch}
         onConfirm={handleCompleteMatchConfirm}
+        leaders={leaders}
+        victoryCounts={victoryCounts}
       />
     </div>
   );

@@ -2,7 +2,7 @@
 
 .match-row {
   display: grid;
-  grid-template-columns: 120px minmax(400px, 1fr) 80px 150px 120px 140px;
+  grid-template-columns: 120px minmax(400px, 1fr) 150px 120px 140px;
   gap: 16px;
   padding: 20px;
   background: linear-gradient(
@@ -235,20 +235,6 @@
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
 }
 
-/* Column 3: Bonus */
-.match-col-bonus {
-  justify-content: center;
-  align-items: center;
-  padding-right: 16px;
-  border-right: 1px solid rgba(212, 175, 55, 0.08);
-}
-
-.match-bonus-placeholder {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.3);
-  font-weight: 300;
-}
-
 /* Column 4: Winner */
 .match-col-winner {
   justify-content: center;
@@ -308,7 +294,7 @@
   font-size: 24px;
 }
 
-/* Column 5: Scores - aligned with participants */
+/* Column 4: Scores - aligned with participants */
 .match-col-scores {
   display: flex;
   flex-direction: column;
@@ -362,7 +348,13 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Column 6: Actions */
+.match-score-pending {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+/* Column 5: Actions */
 .match-col-actions {
   justify-content: center;
   align-items: center;
@@ -529,7 +521,7 @@
 /* Responsive Design */
 @media (max-width: 1400px) {
   .match-row {
-    grid-template-columns: 100px minmax(350px, 1fr) 60px 130px 100px 120px;
+    grid-template-columns: 100px minmax(350px, 1fr) 130px 100px 120px;
     gap: 12px;
     padding: 16px;
   }

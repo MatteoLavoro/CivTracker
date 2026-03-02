@@ -1,6 +1,6 @@
 // Bonus Info Modal - Display bonus tags and their effects
 import { useState } from "react";
-import { Award, Swords, Medal } from "lucide-react";
+import { Award, Swords, Medal, X } from "lucide-react";
 import { Modal } from "./";
 import "./BonusInfoModal.css";
 
@@ -10,9 +10,10 @@ import "./BonusInfoModal.css";
  *
  * @param {boolean} isOpen - Whether the modal is open
  * @param {Function} onClose - Callback when modal closes
- * @param {string} mode - 'info' for display only, 'assign' for selection
+ * @param {string} mode - 'info' for display only, 'assign' for selection, 'overflow' for assigned list
  * @param {Array} currentBonusTags - Current bonus tags (for assign mode)
  * @param {Function} onAssign - Callback when confirming assignment (bonus tag ids array)
+ * @param {Function} onRemove - Callback when removing a bonus from overflow (index)
  */
 export function BonusInfoModal({
   isOpen,
@@ -20,6 +21,7 @@ export function BonusInfoModal({
   mode = "info",
   currentBonusTags = [],
   onAssign = null,
+  onRemove = null,
 }) {
   // Initialize with currentBonusTags - will reset on unmount/remount via key prop
   const [selectedTags, setSelectedTags] = useState(
@@ -58,7 +60,7 @@ export function BonusInfoModal({
       bonus: "+15%",
       color: "rgba(192, 192, 192, 1)", // Silver
       description:
-        "Assegnato al secondo classificato. Ricevi un bonus del 15% sui punti elaborati. Può essere assegnato manualmente.",
+        "Assegnato al secondo classificato. Ricevi un bonus del 15% sui punti elaborati.",
       icon: "medal",
     },
     {
@@ -67,7 +69,7 @@ export function BonusInfoModal({
       bonus: "+10%",
       color: "rgba(76, 175, 80, 1)", // Green
       description:
-        "Assegnato a chi vince mentre in guerra da meno di 30 turni. Ricevi un bonus del 10% sui punti elaborati. Può essere assegnato multiplo (uno per ogni guerra attiva).",
+        "Assegnato a chi vince mentre in guerra con un giocatore (non bot) da meno di 30 turni. Ricevi un bonus del 10% sui punti elaborati. Può essere assegnato multiplo (uno per ogni guerra attiva con giocatori).",
       icon: "swords",
     },
   ];
@@ -76,7 +78,13 @@ export function BonusInfoModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === "assign" ? "Assegna Bonus" : "Bonus Disponibili"}
+      title={
+        mode === "assign"
+          ? "Assegna Bonus"
+          : mode === "overflow"
+            ? "Bonus Applicati"
+            : "Bonus Disponibili"
+      }
       footer={
         mode === "assign"
           ? {
@@ -89,13 +97,15 @@ export function BonusInfoModal({
       }
     >
       <div className="bonus-info-content">
-        <div className="bonus-info-description">
-          <p>
-            I bonus sono modificatori percentuali che si applicano ai{" "}
-            <strong>punteggi elaborati</strong> per calcolare i{" "}
-            <strong>punteggi finali</strong>. I bonus si sommano tra loro.
-          </p>
-        </div>
+        {mode !== "overflow" && (
+          <div className="bonus-info-description">
+            <p>
+              I bonus sono modificatori percentuali che si applicano ai{" "}
+              <strong>punteggi elaborati</strong> per calcolare i{" "}
+              <strong>punteggi finali</strong>.
+            </p>
+          </div>
+        )}
 
         {mode === "assign" && selectedTags.length > 0 && (
           <div className="bonus-selected-section">
@@ -127,40 +137,76 @@ export function BonusInfoModal({
         )}
 
         <div className="bonus-list">
-          {bonusTags.map((bonus) => (
-            <div
-              key={bonus.id}
-              className={`bonus-card ${mode === "assign" ? "clickable" : ""}`}
-              onClick={
-                mode === "assign" ? () => handleToggleTag(bonus.id) : undefined
-              }
-            >
-              <div className="bonus-header">
-                <div
-                  className="bonus-icon-wrapper"
-                  style={{ borderColor: bonus.color }}
-                >
-                  <div style={{ color: bonus.color }}>
-                    {getIconForBonus(bonus.id)}
+          {mode === "overflow"
+            ? // Overflow mode: show assigned tags in compact form
+              currentBonusTags.map((tagId, index) => {
+                const bonus = bonusTags.find((b) => b.id === tagId);
+                if (!bonus) return null;
+                return (
+                  <div key={index} className="bonus-overflow-item">
+                    <div className="bonus-overflow-content">
+                      <div
+                        className="bonus-overflow-icon"
+                        style={{ color: bonus.color }}
+                      >
+                        {getIconForBonus(bonus.id)}
+                      </div>
+                      <span className="bonus-overflow-name">{bonus.name}</span>
+                      <span
+                        className="bonus-overflow-value"
+                        style={{ color: bonus.color }}
+                      >
+                        {bonus.bonus}
+                      </span>
+                    </div>
+                    {onRemove && (
+                      <button
+                        type="button"
+                        className="bonus-overflow-remove"
+                        onClick={() => onRemove(index)}
+                        title="Rimuovi bonus"
+                      >
+                        <X size={18} />
+                      </button>
+                    )}
                   </div>
+                );
+              })
+            : // Info or assign mode: show all available bonuses
+              bonusTags.map((bonus) => (
+                <div
+                  key={bonus.id}
+                  className={`bonus-card ${
+                    mode === "assign" ? "clickable" : ""
+                  }`}
+                  onClick={
+                    mode === "assign"
+                      ? () => handleToggleTag(bonus.id)
+                      : undefined
+                  }
+                >
+                  <div className="bonus-header">
+                    <div
+                      className="bonus-icon-wrapper"
+                      style={{ borderColor: bonus.color }}
+                    >
+                      <div style={{ color: bonus.color }}>
+                        {getIconForBonus(bonus.id)}
+                      </div>
+                    </div>
+                    <div className="bonus-title-section">
+                      <h3 className="bonus-name">{bonus.name}</h3>
+                      <span
+                        className="bonus-value"
+                        style={{ color: bonus.color }}
+                      >
+                        {bonus.bonus}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="bonus-description">{bonus.description}</p>
                 </div>
-                <div className="bonus-title-section">
-                  <h3 className="bonus-name">{bonus.name}</h3>
-                  <span className="bonus-value" style={{ color: bonus.color }}>
-                    {bonus.bonus}
-                  </span>
-                </div>
-              </div>
-              <p className="bonus-description">{bonus.description}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="bonus-info-footer">
-          <p className="bonus-info-note">
-            <strong>Nota:</strong> Puoi assegnare lo stesso bonus più volte. Le
-            percentuali si sommano.
-          </p>
+              ))}
         </div>
       </div>
     </Modal>
