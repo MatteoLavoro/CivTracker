@@ -24,41 +24,63 @@ function getBaseLeaderName(leader) {
 }
 
 /**
- * Draft leaders for all players ensuring uniqueness and variant rules
- * @param {Array} allLeaders - Array of all 77 leaders
+ * Draft leaders for all players from their individual pools, minimizing duplicates
+ * @param {Object} playerAvailableLeaders - Object with { playerId: [available leaders array] }
  * @param {Array} playerIds - Array of player IDs
  * @param {number} leadersPerPlayer - Number of leaders per player (default: 5)
  * @returns {Object} Object with playerDrafts { playerId: [leaderIds] }
  */
 export function draftLeadersForPlayers(
-  allLeaders,
+  playerAvailableLeaders,
   playerIds,
   leadersPerPlayer = 5,
 ) {
-  const totalNeeded = playerIds.length * leadersPerPlayer;
-
-  if (allLeaders.length < totalNeeded) {
-    throw new Error(
-      `Non ci sono abbastanza leader. Necessari: ${totalNeeded}, Disponibili: ${allLeaders.length}`,
-    );
-  }
-
-  // Shuffle all leaders
-  const shuffledLeaders = shuffleArray(allLeaders);
-
-  // Draft leaders for each player
+  // Track which leaders have been assigned in this draft
+  const assignedLeaderIds = new Set();
   const playerDrafts = {};
-  let leaderIndex = 0;
 
+  // Process each player
   for (const playerId of playerIds) {
-    const draftedLeaders = [];
+    const availableLeaders = playerAvailableLeaders[playerId];
 
-    for (let i = 0; i < leadersPerPlayer; i++) {
-      draftedLeaders.push(shuffledLeaders[leaderIndex].id);
-      leaderIndex++;
+    if (!availableLeaders || availableLeaders.length < leadersPerPlayer) {
+      throw new Error(
+        `Il giocatore ${playerId} non ha abbastanza leader disponibili. Necessari: ${leadersPerPlayer}, Disponibili: ${availableLeaders?.length || 0}`,
+      );
     }
 
-    playerDrafts[playerId] = draftedLeaders;
+    // Shuffle this player's available leaders
+    const shuffledLeaders = shuffleArray(availableLeaders);
+
+    // Prefer leaders not yet assigned to other players
+    const unassignedLeaders = shuffledLeaders.filter(
+      (leader) => !assignedLeaderIds.has(leader.id),
+    );
+
+    const selectedLeaders = [];
+
+    // First, try to pick from unassigned leaders
+    for (
+      let i = 0;
+      i < Math.min(leadersPerPlayer, unassignedLeaders.length);
+      i++
+    ) {
+      selectedLeaders.push(unassignedLeaders[i].id);
+      assignedLeaderIds.add(unassignedLeaders[i].id);
+    }
+
+    // If we still need more leaders, pick from already assigned ones
+    if (selectedLeaders.length < leadersPerPlayer) {
+      for (const leader of shuffledLeaders) {
+        if (selectedLeaders.length >= leadersPerPlayer) break;
+        if (!selectedLeaders.includes(leader.id)) {
+          selectedLeaders.push(leader.id);
+          assignedLeaderIds.add(leader.id);
+        }
+      }
+    }
+
+    playerDrafts[playerId] = selectedLeaders;
   }
 
   return playerDrafts;

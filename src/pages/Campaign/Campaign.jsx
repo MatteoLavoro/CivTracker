@@ -9,6 +9,7 @@ import {
   BarChart3,
   ScrollText,
   Activity,
+  Users,
 } from "lucide-react";
 import { useDocument, useLeaders } from "../../hooks";
 import { useAuthContext } from "../../contexts";
@@ -39,6 +40,7 @@ import {
   MatchRow,
   AddMatchButton,
   ResultsModal,
+  LeaderPoolModal,
 } from "../../components/common";
 import "./Campaign.css";
 
@@ -55,6 +57,7 @@ export function Campaign() {
   const [victoryInfoModalOpen, setVictoryInfoModalOpen] = useState(false);
   const [rulesModalOpen, setRulesModalOpen] = useState(false);
   const [resultsModalOpen, setResultsModalOpen] = useState(false);
+  const [leaderPoolModalOpen, setLeaderPoolModalOpen] = useState(false);
   const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
@@ -513,6 +516,17 @@ export function Campaign() {
               <button
                 className="campaign-kebab-item"
                 onClick={() => {
+                  setLeaderPoolModalOpen(true);
+                  setKebabMenuOpen(false);
+                }}
+                type="button"
+              >
+                <Users size={18} />
+                <span>Pool Personaggi</span>
+              </button>
+              <button
+                className="campaign-kebab-item"
+                onClick={() => {
                   setVictoryInfoModalOpen(true);
                   setKebabMenuOpen(false);
                 }}
@@ -629,6 +643,14 @@ export function Campaign() {
         onClose={() => setResultsModalOpen(false)}
         matches={campaign?.matches || []}
         memberDetails={campaign?.memberDetails || {}}
+      />
+
+      {/* Leader Pool Modal */}
+      <LeaderPoolModal
+        isOpen={leaderPoolModalOpen}
+        onClose={() => setLeaderPoolModalOpen(false)}
+        campaign={campaign}
+        leaders={leaders}
       />
 
       {/* Draft Modal */}

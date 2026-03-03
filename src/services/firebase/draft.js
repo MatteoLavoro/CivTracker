@@ -126,36 +126,47 @@ export const executeDraft = async (campaignId, playerIds) => {
       };
     }
 
-    // Collect all leaders that have been drafted in previous matches
-    const usedLeaderIds = new Set();
+    // Collect leaders used by EACH player individually
+    const playerUsedLeaders = {};
+    playerIds.forEach((playerId) => {
+      playerUsedLeaders[playerId] = new Set();
+    });
+
     matches.forEach((match) => {
       if (match.draftHistory) {
-        Object.values(match.draftHistory).forEach((playerDraft) => {
-          if (playerDraft.draftedLeaders) {
-            playerDraft.draftedLeaders.forEach((leaderId) => {
-              usedLeaderIds.add(leaderId);
-            });
-          }
-        });
+        Object.entries(match.draftHistory).forEach(
+          ([playerId, playerDraft]) => {
+            if (playerDraft.draftedLeaders && playerUsedLeaders[playerId]) {
+              playerDraft.draftedLeaders.forEach((leaderId) => {
+                playerUsedLeaders[playerId].add(leaderId);
+              });
+            }
+          },
+        );
       }
     });
 
-    // Filter out leaders that have already been drafted
-    const availableLeaders = allLeaders.filter(
-      (leader) => !usedLeaderIds.has(leader.id),
+    // Create individual pools for each player
+    const playerAvailableLeaders = {};
+    playerIds.forEach((playerId) => {
+      playerAvailableLeaders[playerId] = allLeaders.filter(
+        (leader) => !playerUsedLeaders[playerId].has(leader.id),
+      );
+
+      // Check if this player has enough available leaders
+      if (playerAvailableLeaders[playerId].length < 5) {
+        throw new Error(
+          `Il giocatore ${playerId} non ha abbastanza leader disponibili. Necessari: 5, Disponibili: ${playerAvailableLeaders[playerId].length}`,
+        );
+      }
+    });
+
+    // Draft leaders for each player from their individual pool
+    const playerDrafts = draftLeadersForPlayers(
+      playerAvailableLeaders,
+      playerIds,
+      5,
     );
-
-    // Check if we have enough available leaders
-    const requiredLeaders = playerIds.length * 5;
-    if (availableLeaders.length < requiredLeaders) {
-      return {
-        success: false,
-        error: `Non ci sono abbastanza leader disponibili. Necessari: ${requiredLeaders}, Disponibili: ${availableLeaders.length}. Alcuni leader sono già stati usati in precedenti draft.`,
-      };
-    }
-
-    // Draft leaders for each player from available pool
-    const playerDrafts = draftLeadersForPlayers(availableLeaders, playerIds, 5);
 
     // Initialize player states
     const playerStates = {};
