@@ -12,6 +12,17 @@ Documentazione completa dei componenti riutilizzabili di CivTracker.
   - [ConfirmModal](#confirmmodal)
   - [ProfileModal](#profilemodal)
   - [CampaignInfoModal](#campaigninfomodal)
+  - [CampaignStatusModal](#campaignstatusmodal)
+  - [ResultsModal](#resultsmodal)
+  - [LeaderPoolModal](#leaderpoolmodal)
+  - [VictoryInfoModal](#victoryinfomodal)
+  - [RulesModal](#rulesmodal)
+  - [CompleteMatchModal](#completematchmodal)
+  - [BonusInfoModal](#bonusinfomodal)
+  - [DraftModal](#draftmodal)
+  - [LeaderConfirmModal](#leaderconfirmmodal)
+  - [MatchRow](#matchrow)
+  - [AddMatchButton](#addmatchbutton)
   - [InstallPrompt](#installprompt)
 - [Layout Components](#layout-components)
   - [AuthLayout](#authlayout)
@@ -39,85 +50,24 @@ Componente bottone riutilizzabile con varianti e stati.
 | `disabled`  | boolean   | `false`     | Stato disabilitato                          |
 | `fullWidth` | boolean   | `false`     | Bottone a larghezza piena                   |
 | `loading`   | boolean   | `false`     | Mostra spinner di loading                   |
-| `className` | string    | `''`        | Classi CSS aggiuntive                       |
 
 #### Varianti
 
-**Primary** - Azioni principali
+| Variant     | Uso                    | Stile                           |
+| ----------- | ---------------------- | ------------------------------- |
+| `primary`   | Azioni principali      | Blu scuro `rgba(15, 50, 82, 1)` |
+| `secondary` | Azioni secondarie      | Grigio scuro                    |
+| `outline`   | Azioni meno importanti | Trasparente con bordo           |
+
+#### Esempio
 
 ```jsx
-<Button variant="primary" onClick={handleSave}>
-  Salva
+<Button variant="primary" loading={isSaving} onClick={handleSave}>
+  {isSaving ? "Salvando..." : "Salva"}
 </Button>
 ```
 
-- Background: `rgba(15, 50, 82, 1)`
-- Hover: Più chiaro
-- Uso: Azioni principali, conferme
-
-**Secondary** - Azioni alternative
-
-```jsx
-<Button variant="secondary" onClick={handleCancel}>
-  Annulla
-</Button>
-```
-
-- Background: Grigio scuro
-- Uso: Azioni secondarie, annullamenti
-
-**Outline** - Azioni terziarie
-
-```jsx
-<Button variant="outline" onClick={handleEdit}>
-  Modifica
-</Button>
-```
-
-- Background: Trasparente con bordo
-- Uso: Azioni meno importanti
-
-#### Stati
-
-**Loading**
-
-```jsx
-<Button loading={isSubmitting}>{isSubmitting ? "Salvando..." : "Salva"}</Button>
-```
-
-**Disabled**
-
-```jsx
-<Button disabled={!isValid}>Continua</Button>
-```
-
-#### Esempio Completo
-
-```jsx
-import { Button } from "./components/common";
-
-function MyForm() {
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    await saveData();
-    setLoading(false);
-  };
-
-  return (
-    <Button
-      type="submit"
-      variant="primary"
-      fullWidth
-      loading={loading}
-      onClick={handleSubmit}
-    >
-      Salva Modifiche
-    </Button>
-  );
-}
-```
+````
 
 ---
 
@@ -141,73 +91,24 @@ Componente input con validazione integrata, icone, e gestione errori.
 | `disabled`    | boolean   | `false`  | Campo disabilitato    |
 | `icon`        | ReactNode | `null`   | Icona da mostrare     |
 | `maxLength`   | number    | -        | Lunghezza massima     |
-| `className`   | string    | `''`     | Classi CSS aggiuntive |
 
 #### Features
 
-**Validazione con Errori**
+- **Validazione**: Mostra errore con bordo rosso e messaggio
+- **Password Toggle**: Icona occhio per visibilità automatica
+- **Icons**: Supporto icone left-aligned
+- **Mobile-friendly**: Font-size 16px previene zoom iOS
 
-```jsx
-<Input
-  label="Email"
-  type="email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  error={errors.email}
-  required
-/>
-```
-
-**Password con Toggle Visibilità**
-
-```jsx
-<Input
-  label="Password"
-  type="password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-/>
-```
-
-- Mostra automaticamente icona occhio
-- Click per toggle visibilità
-
-**Con Icona**
-
-```jsx
-<Input
-  label="Username"
-  icon={<User size={20} />}
-  value={username}
-  onChange={handleChange}
-/>
-```
-
-#### Styling
-
-- **Focus**: Bordo blu animato
-- **Error**: Bordo rosso + messaggio sotto
-- **Disabled**: Opacità 50%
-- **Mobile**: Font-size 16px (previene zoom iOS)
-
-#### Esempio Form Completo
+#### Esempio
 
 ```jsx
 import { Input } from "./components/common";
-import { Mail, User, Lock } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 
-function RegisterForm() {
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    password: "",
-  });
+function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-
-  const handleChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
-    setErrors({ ...errors, [field]: "" }); // Clear error
-  };
 
   return (
     <form>
@@ -215,36 +116,24 @@ function RegisterForm() {
         label="Email"
         type="email"
         icon={<Mail size={20} />}
-        value={formData.email}
-        onChange={handleChange("email")}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         error={errors.email}
-        placeholder="your@email.com"
         required
       />
-
-      <Input
-        label="Username"
-        icon={<User size={20} />}
-        value={formData.username}
-        onChange={handleChange("username")}
-        error={errors.username}
-        maxLength={30}
-        required
-      />
-
       <Input
         label="Password"
         type="password"
         icon={<Lock size={20} />}
-        value={formData.password}
-        onChange={handleChange("password")}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         error={errors.password}
         required
       />
     </form>
   );
 }
-```
+````
 
 ---
 
@@ -289,20 +178,14 @@ footer={{
 **Responsive**
 
 - **Desktop**: Centered dialog con backdrop
-- **Mobile**: Full-screen con header sticky
-
-**Keyboard**
+  **Keyboard & Browser**
 
 - **Escape**: Chiude modale (gestito da Context)
+- **History**: Browser back button chiude modale
 
-**Body Scroll Lock**
+**Body Scroll Lock**: Previene scroll della pagina quando modale è aperto
 
-- Previene scroll when open
-- Ripristina position on close
-
-#### Esempi
-
-**Modal Semplice**
+#### Esempio
 
 ```jsx
 import { Modal } from "./components/common";
@@ -310,55 +193,27 @@ import { Modal } from "./components/common";
 function MyComponent() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleClose = () => {
-    window.history.back(); // Usa history per chiudere
-  };
-
   return (
     <>
       <button onClick={() => setIsOpen(true)}>Apri</button>
 
-      <Modal isOpen={isOpen} onClose={handleClose} title="Informazioni">
-        <p>Contenuto del modale</p>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => window.history.back()}
+        title="Modifica Profilo"
+        footer={{
+          onConfirm: handleSave,
+          disabled: !isValid,
+          label: "Salva",
+          dangerous: true, // Mostra conferma nested
+          dangerousMessage: "Salvare le modifiche?",
+        }}
+      >
+        <ProfileForm data={profile} onChange={setProfile} />
       </Modal>
     </>
   );
 }
-```
-
-**Modal con Footer**
-
-```jsx
-<Modal
-  isOpen={isOpen}
-  onClose={handleClose}
-  title="Modifica Profilo"
-  footer={{
-    onConfirm: handleSave,
-    disabled: !isValid,
-    label: "Salva Modifiche",
-  }}
->
-  <ProfileForm data={profile} onChange={setProfile} />
-</Modal>
-```
-
-**Azione Pericolosa con Conferma**
-
-```jsx
-<Modal
-  isOpen={isOpen}
-  onClose={handleClose}
-  title="Elimina Account"
-  footer={{
-    onConfirm: handleDelete,
-    dangerous: true,
-    dangerousMessage: "Eliminare definitivamente l'account?",
-    label: "Elimina",
-  }}
->
-  <p>Questa azione non può essere annullata.</p>
-</Modal>
 ```
 
 ---
@@ -503,7 +358,7 @@ function Header() {
 
 **Path:** `src/components/common/CampaignInfoModal.jsx`
 
-Modal per informazioni e gestione campagna.
+Modal per visualizzare e gestire informazioni campagna.
 
 #### Props
 
@@ -513,31 +368,324 @@ Modal per informazioni e gestione campagna.
 | `onClose`         | function | -       | Handler chiusura           |
 | `campaign`        | object   | -       | Oggetto campagna           |
 | `onUpdateName`    | function | -       | Handler aggiornamento nome |
-| `onLeaveCampaign` | function | -       | Handler uscita             |
+| `onLeaveCampaign` | function | -       | Handler uscita da campagna |
 
 #### Features
 
-- Mostra nome campagna (editabile)
-- Codice condivisibile con bottone copia
+- Visualizza nome campagna (modificabile)
+- Codice condivisibile con pulsante copia
 - Conteggio membri
-- Bottone "Esci" (dangerous action)
+- Lista membri con avatar
+- Pulsante esci dal gruppo (pericoloso)
 
-#### Esempio
+---
 
-```jsx
-<CampaignInfoModal
-  isOpen={isOpen}
-  onClose={() => setIsOpen(false)}
-  campaign={selectedCampaign}
-  onUpdateName={async (newName) => {
-    await updateCampaignName(campaign.id, newName);
-  }}
-  onLeaveCampaign={async () => {
-    await leaveCampaign(campaign.id, user.uid);
-    navigate("/home");
-  }}
-/>
+### CampaignStatusModal
+
+**Path:** `src/components/common/CampaignStatusModal.jsx`
+
+Modal per votare e cambiare lo stato della campagna.
+
+#### Props
+
+| Prop           | Type     | Default | Descrizione                  |
+| -------------- | -------- | ------- | ---------------------------- |
+| `isOpen`       | boolean  | -       | Stato aperto/chiuso          |
+| `onClose`      | function | -       | Handler chiusura             |
+| `campaign`     | object   | -       | Oggetto campagna             |
+| `userId`       | string   | -       | User ID corrente             |
+| `onVote`       | function | -       | Handler voto (status)        |
+| `onRevokeVote` | function | -       | Handler revoca voto (status) |
+
+#### Stati Campagna
+
+- **not-started**: Campagna non iniziata
+- **in-progress**: Campagna in corso
+- **completed**: Campagna terminata
+
+#### Features
+
+- Visualizza stato attuale
+- Mostra descrizione per ogni stato
+- Visualizza voti correnti
+- Pulsanti per votare ogni stato
+- Revoca voto automatica quando si vota altro stato
+- Indicatore votanti (es: "2/4 voti")
+
+---
+
+### ResultsModal
+
+**Path:** `src/components/common/ResultsModal.jsx`
+
+Modal per visualizzare classifica generale della campagna.
+
+#### Props
+
+| Prop            | Type     | Default | Descrizione               |
+| --------------- | -------- | ------- | ------------------------- |
+| `isOpen`        | boolean  | -       | Stato aperto/chiuso       |
+| `onClose`       | function | -       | Handler chiusura          |
+| `matches`       | Array    | -       | Array di tutte le partite |
+| `memberDetails` | object   | -       | Dettagli membri           |
+
+#### Features
+
+- Classifica ordinata per punteggio totale
+- Visualizza avatar e username
+- Badge trofeo per il primo classificato
+- Badge 2°/3° per argento/bronzo
+- Dettaglio punteggi per ogni partita
+- Totale punti con indicatore PT
+
+---
+
+### LeaderPoolModal
+
+**Path:** `src/components/common/LeaderPoolModal.jsx`
+
+Modal per visualizzare i leader disponibili per ogni giocatore.
+
+#### Props
+
+| Prop       | Type     | Default | Descrizione             |
+| ---------- | -------- | ------- | ----------------------- |
+| `isOpen`   | boolean  | -       | Stato aperto/chiuso     |
+| `onClose`  | function | -       | Handler chiusura        |
+| `campaign` | object   | -       | Oggetto campagna        |
+| `leaders`  | Array    | -       | Array di tutti i leader |
+
+#### Features
+
+- Tabs per ogni giocatore
+- Lista leader disponibili con icone
+- Indicatore leader già usati
+- Contatore leader disponibili
+- Scroll verticale per liste lunghe
+
+---
+
+### VictoryInfoModal
+
+**Path:** `src/components/common/VictoryInfoModal.jsx`
+
+Modal informativo sui punteggi vittorie dinamici.
+
+#### Props
+
+| Prop            | Type     | Default | Descrizione         |
+| --------------- | -------- | ------- | ------------------- |
+| `isOpen`        | boolean  | -       | Stato aperto/chiuso |
+| `onClose`       | function | -       | Handler chiusura    |
+| `victoryCounts` | object   | -       | Conteggi vittorie   |
+
+#### Features
+
+- Tabella tipi vittoria con icone
+- Calcolo dinamico punti vittoria (50-150)
+- Formula logaritmica visualizzata
+- Spiegazione sistema punti
+- Contatori per ogni tipo di vittoria
+
+---
+
+### RulesModal
+
+**Path:** `src/components/common/RulesModal.jsx`
+
+Modal informativo con le regole complete del gioco.
+
+#### Props
+
+| Prop      | Type     | Default | Descrizione         |
+| --------- | -------- | ------- | ------------------- |
+| `isOpen`  | boolean  | -       | Stato aperto/chiuso |
+| `onClose` | function | -       | Handler chiusura    |
+
+#### Features
+
+- Regole del gioco step-by-step
+- Sistema draft spiegato
+- Sistema punteggi spiegato
+- Sistema bonus spiegato
+- Esempi pratici
+
+---
+
+### CompleteMatchModal
+
+**Path:** `src/components/common/CompleteMatchModal.jsx`
+
+Modal complesso per completare una partita con tutti i dettagli.
+
+#### Props
+
+| Prop            | Type     | Default | Descrizione                  |
+| --------------- | -------- | ------- | ---------------------------- |
+| `isOpen`        | boolean  | -       | Stato aperto/chiuso          |
+| `onClose`       | function | -       | Handler chiusura             |
+| `match`         | object   | -       | Oggetto partita              |
+| `onConfirm`     | function | -       | Handler conferma (matchData) |
+| `leaders`       | Array    | -       | Array di tutti i leader      |
+| `victoryCounts` | object   | -       | Conteggi vittorie            |
+
+#### Features
+
+- Input turni giocati
+- Selezione vincitore (o nessuno per defeat/canceled)
+- Selezione tipo vittoria con icone
+- Input punteggi grezzi per ogni giocatore
+- Assegnazione bonus tags
+- Preview punteggi elaborati e finali
+- Validazione completa
+
+**Match Data Object:**
+
+```javascript
+{
+  turns: number,
+  winnerId: string,
+  victoryType: string,
+  scores: { userId: rawScore },
+  bonusTags: { userId: [tagId, ...] }
+}
 ```
+
+---
+
+### BonusInfoModal
+
+**Path:** `src/components/common/BonusInfoModal.jsx`
+
+Modal multi-purpose per bonus tags (info/assign/overflow).
+
+#### Props
+
+| Prop               | Type     | Default  | Descrizione                      |
+| ------------------ | -------- | -------- | -------------------------------- |
+| `isOpen`           | boolean  | -        | Stato aperto/chiuso              |
+| `onClose`          | function | -        | Handler chiusura                 |
+| `mode`             | string   | `'info'` | 'info' / 'assign' / 'overflow'   |
+| `currentBonusTags` | Array    | `[]`     | Bonus attuali (per assign mode)  |
+| `onAssign`         | function | `null`   | Handler assegnazione (array ids) |
+| `onRemove`         | function | `null`   | Handler rimozione (index)        |
+
+#### Modes
+
+- **info**: Visualizza tutti i bonus disponibili con descrizioni
+- **assign**: Permette selezione multipla di bonus
+- **overflow**: Mostra lista bonus assegnati (compatta)
+
+#### Bonus Tags
+
+- **second-place** (+15%): Secondo posto
+- **survivor** (+10%): In guerra con giocatore <30 turni (multiplo)
+
+---
+
+### DraftModal
+
+**Path:** `src/components/common/DraftModal.jsx`
+
+Modal per sistema draft multi-fase.
+
+#### Props
+
+| Prop             | Type     | Default | Descrizione                     |
+| ---------------- | -------- | ------- | ------------------------------- |
+| `isOpen`         | boolean  | -       | Stato aperto/chiuso             |
+| `onClose`        | function | -       | Handler chiusura                |
+| `campaign`       | object   | -       | Oggetto campagna                |
+| `draft`          | object   | -       | Oggetto draft                   |
+| `leaders`        | Array    | -       | Array di tutti i leader         |
+| `user`           | object   | -       | User corrente                   |
+| `onToggleReady`  | function | -       | Handler toggle ready            |
+| `onSubmitBan`    | function | -       | Handler submit ban vote         |
+| `onSelectLeader` | function | -       | Handler selezione finale leader |
+
+#### Fasi Draft
+
+1. **Waiting**: Giocatori si dichiarano pronti
+2. **Countdown**: 5 secondi quando tutti pronti
+3. **Active**: Fase banning (vota leader da bannare per ogni avversario)
+4. **Completed**: Selezione leader finale dalla pool
+
+---
+
+### LeaderConfirmModal
+
+**Path:** `src/components/common/LeaderConfirmModal.jsx`
+
+Modal di conferma per selezione leader finale.
+
+#### Props
+
+| Prop        | Type     | Default | Descrizione         |
+| ----------- | -------- | ------- | ------------------- |
+| `isOpen`    | boolean  | -       | Stato aperto/chiuso |
+| `onClose`   | function | -       | Handler chiusura    |
+| `onConfirm` | function | -       | Handler conferma    |
+| `leader`    | object   | -       | Oggetto leader      |
+
+#### Features
+
+- Visualizza icona e nome leader
+- Visualizza civiltà
+- Pulsanti Annulla/Conferma
+
+---
+
+### MatchRow
+
+**Path:** `src/components/common/MatchRow.jsx`
+
+Componente per visualizzare una singola partita nella lista.
+
+#### Props
+
+| Prop                    | Type     | Default | Descrizione                   |
+| ----------------------- | -------- | ------- | ----------------------------- |
+| `match`                 | object   | -       | Oggetto partita               |
+| `matchNumber`           | number   | -       | Numero partita (ordinale)     |
+| `leaders`               | Array    | -       | Array di tutti i leader       |
+| `draft`                 | object   | -       | Oggetto draft                 |
+| `onStartDraft`          | function | -       | Handler avvio draft           |
+| `onCompleteMatch`       | function | -       | Handler completamento partita |
+| `isCurrentMatch`        | boolean  | -       | Se è la partita corrente      |
+| `isDraftInProgress`     | boolean  | -       | Se draft è in corso           |
+| `hasUserCompletedDraft` | boolean  | -       | Se user ha completato draft   |
+| `readyPlayersCount`     | number   | -       | Numero giocatori pronti       |
+| `totalPlayersCount`     | number   | -       | Totale giocatori              |
+
+#### Features
+
+- Stati visivi (in-progress/completed)
+- Pulsante draft (dinamico in base a fase)
+- Lista partecipanti con leader e punteggi
+- Indicatore vincitore con tipo vittoria
+- Pulsante completa (solo se in-progress)
+
+---
+
+### AddMatchButton
+
+**Path:** `src/components/common/AddMatchButton.jsx`
+
+Pulsante specializzato per aggiungere nuova partita.
+
+#### Props
+
+| Prop       | Type     | Default | Descrizione        |
+| ---------- | -------- | ------- | ------------------ |
+| `onClick`  | function | -       | Handler click      |
+| `disabled` | boolean  | `false` | Stato disabilitato |
+
+#### Features
+
+- Design dotted border
+- Icona Plus
+- Tooltip quando disabled
+- Animazione hover
 
 ---
 
@@ -676,173 +824,41 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 
 ---
 
-## Best Practices
+## 📋 Guidelines
 
-### 1. Import da Index
+### Best Practices
 
 ```jsx
-// ✅ Corretto
+// ✅ Import da index
 import { Button, Input, Modal } from "./components/common";
 
-// ❌ Evitare
-import Button from "./components/common/Button";
-import Input from "./components/common/Input";
+// ✅ Controlled components sempre
+const [value, setValue] = useState("");
+<Input value={value} onChange={(e) => setValue(e.target.value)} />;
+
+// ✅ Modal chiusura con history
+const handleClose = () => window.history.back();
+
+// ✅ Loading states per async operations
+<Button loading={isSaving}>Save</Button>;
 ```
 
-### 2. Controlled Components
+### Styling
 
-```jsx
-// ✅ Sempre controlled
-const [value, setValue] = useState('');
-<Input value={value} onChange={(e) => setValue(e.target.value)} />
+- **CSS Modules**: Ogni componente ha il proprio `.css`
+- **Tailwind**: Usa utilities per layout (`flex`, `gap-4`, `p-4`)
+- **Responsive**: Mobile-first con breakpoints `md:` e `lg:`
 
-// ❌ Evitare uncontrolled
-<Input defaultValue="test" />
-```
+### Accessibilità
 
-### 3. Error Handling
-
-```jsx
-// ✅ Gestisci errori
-const [error, setError] = useState("");
-<Input error={error} />;
-
-// ✅ Clear errors on change
-const handleChange = (e) => {
-  setValue(e.target.value);
-  setError(""); // Clear error
-};
-```
-
-### 4. Loading States
-
-```jsx
-// ✅ Mostra loading durante async
-const [loading, setLoading] = useState(false);
-<Button loading={loading}>Save</Button>;
-```
-
-### 5. Modal History
-
-```jsx
-// ✅ Usa history.back() per chiudere
-const handleClose = () => {
-  window.history.back();
-};
-
-// ❌ Non impostare direttamente isOpen
-const handleClose = () => {
-  setIsOpen(false); // Bypassa history!
-};
-```
+- **ARIA labels**: Per icone senza testo
+- **Semantic HTML**: `<button>`, `<header>`, `<main>`
+- **Keyboard**: Tab, Enter, Escape supportati
 
 ---
 
-## Styling Guidelines
+Per maggiori dettagli, consulta:
 
-### CSS Modules
-
-Ogni componente ha il proprio file `.css`:
-
-```jsx
-import "./Button.css";
-
-export function Button({ variant }) {
-  return <button className={`btn btn-${variant}`}>Click</button>;
-}
-```
-
-### Tailwind Classes
-
-Usa Tailwind per utility rapide:
-
-```jsx
-<div className="flex items-center gap-4 p-4">
-  <Button />
-</div>
-```
-
-### Responsive
-
-Mobile-first approach:
-
-```css
-/* Mobile */
-.component {
-  width: 100%;
-}
-
-/* Tablet */
-@media (min-width: 768px) {
-  .component {
-    width: 50%;
-  }
-}
-
-/* Desktop */
-@media (min-width: 1024px) {
-  .component {
-    width: 33%;
-  }
-}
-```
-
----
-
-## Accessibilità
-
-### ARIA Labels
-
-```jsx
-<button aria-label="Chiudi modale" onClick={onClose}>
-  <X size={20} />
-</button>
-```
-
-### Keyboard Navigation
-
-- `Tab`: Navigazione focus
-- `Enter`/`Space`: Attivazione buttons
-- `Escape`: Chiusura modali (gestita da Context)
-
-### Semantic HTML
-
-```jsx
-// ✅ Semantic
-<header>, <main>, <footer>
-<button type="button">
-
-// ❌ Non-semantic
-<div onClick={handleClick}>Click</div>
-```
-
----
-
-## Testing (Future)
-
-### Unit Tests
-
-```jsx
-import { render, screen, fireEvent } from "@testing-library/react";
-import { Button } from "./Button";
-
-test("renders button with text", () => {
-  render(<Button>Click me</Button>);
-  expect(screen.getByText("Click me")).toBeInTheDocument();
-});
-
-test("calls onClick when clicked", () => {
-  const handleClick = jest.fn();
-  render(<Button onClick={handleClick}>Click</Button>);
-  fireEvent.click(screen.getByText("Click"));
-  expect(handleClick).toHaveBeenCalledTimes(1);
-});
-```
-
----
-
-Per maggiori dettagli su hooks e contexts, consulta:
-
-- [Hooks Documentation](HOOKS.md)
-- [Contexts Documentation](CONTEXTS.md)
-- [API Reference](API_REFERENCE.md)
+- [Hooks Documentation](HOOKS.md) - Custom hooks
+- [Contexts Documentation](CONTEXTS.md) - Global state
+- [API Reference](API_REFERENCE.md) - Firebase services

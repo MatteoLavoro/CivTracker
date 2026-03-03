@@ -8,6 +8,8 @@ Documentazione completa dei custom React hooks utilizzati in CivTracker.
 - [useCollection](#usecollection)
 - [useDocument](#usedocument)
 - [useFileUpload](#usefileupload)
+- [useLeaders](#useleaders)
+- [useLeader](#useleader)
 - [useModal](#usemodal)
 
 ---
@@ -52,7 +54,7 @@ const { user, loading, error } = useAuth();
 3. Aggiorna `user` quando stato auth cambia
 4. Cleanup subscription on unmount
 
-### Esempio Uso
+### Esempio
 
 ```jsx
 import { useAuth } from "./hooks";
@@ -60,38 +62,26 @@ import { useAuth } from "./hooks";
 function MyComponent() {
   const { user, loading, error } = useAuth();
 
-  if (loading) {
-    return <div>Caricamento...</div>;
-  }
-
-  if (error) {
-    return <div>Errore: {error}</div>;
-  }
-
-  if (!user) {
-    return <div>Non autenticato</div>;
-  }
+  if (loading) return <div>Caricamento...</div>;
+  if (error) return <div>Errore: {error}</div>;
+  if (!user) return <div>Non autenticato</div>;
 
   return <div>Ciao, {user.displayName || user.email}!</div>;
 }
 ```
 
-### Note
-
-- **Preferire `useAuthContext`** da `contexts/AuthContext` per evitare subscribe multipli
-- Hook usato internamente da `AuthProvider`
-- Real-time: aggiornamento automatico al cambio stato
-
 ### Best Practice
 
-```jsx
-// ✅ Usa Context (consigliato)
-import { useAuthContext } from "./contexts";
-const { user, loading } = useAuthContext();
+⚠️ **Preferire `useAuthContext`** per evitare subscribe multipli:
 
-// ❌ Evita uso diretto del hook (crea subscribe addizionali)
+```jsx
+// ✅ Consigliato
+import { useAuthContext } from "./contexts";
+const { user } = useAuthContext();
+
+// ❌ Da evitare
 import { useAuth } from "./hooks";
-const { user } = useAuth();
+const { user } = useAuth(); // Crea subscribe addizionale
 ```
 
 ---
@@ -287,17 +277,20 @@ const { document, loading, error } = useDocument(collectionName, documentId);
 
 ### Esempi
 
-**Carica singolo documento**
-
 ```jsx
 import { useDocument } from "./hooks";
 import { useParams } from "react-router-dom";
 
 function CampaignPage() {
   const { campaignId } = useParams();
-  const { document: campaign, loading } = useDocument("campaigns", campaignId);
+  const {
+    document: campaign,
+    loading,
+    error,
+  } = useDocument("campaigns", campaignId);
 
-  if (loading) return <div>Caricamento campagna...</div>;
+  if (loading) return <div>Caricamento...</div>;
+  if (error) return <div>Errore: {error}</div>;
   if (!campaign) return <div>Campagna non trovata</div>;
 
   return (
@@ -310,55 +303,11 @@ function CampaignPage() {
 }
 ```
 
-**Real-time updates**
-
-```jsx
-function CampaignDetails({ campaignId }) {
-  const { document: campaign } = useDocument("campaigns", campaignId);
-
-  // Se un altro utente modifica il nome della campagna,
-  // questo componente si aggiorna automaticamente!
-
-  return <h1>{campaign?.name}</h1>;
-}
-```
-
-**Condizionale su ID**
-
-```jsx
-function UserProfile({ userId }) {
-  const { document: user, loading } = useDocument(
-    "users",
-    userId || "placeholder", // Evita errore se userId è null
-  );
-
-  if (!userId) return <div>Nessun utente selezionato</div>;
-  if (loading) return <div>Caricamento...</div>;
-
-  return <div>{user?.name}</div>;
-}
-```
-
 ### Note
 
-- **Real-time**: Subscribe a `onSnapshot`
-- **Null handling**: Document null se non esiste
-- **Cleanup**: Unsubscribe on unmount
-- **Re-fetch**: Cambia subscription se `documentId` cambia
-
-### Error Handling
-
-```jsx
-function SafeDocumentView({ docId }) {
-  const { document, loading, error } = useDocument("items", docId);
-
-  if (loading) return <Spinner />;
-  if (error) return <ErrorMessage error={error} />;
-  if (!document) return <NotFound />;
-
-  return <DocumentView data={document} />;
-}
-```
+- ⚡ **Real-time**: Si aggiorna automaticamente quando il documento cambia
+- 💭 **Null handling**: Ritorna `null` se documento non esiste
+- 🧹 **Cleanup**: Unsubscribe automatico on unmount
 
 ---
 
@@ -398,15 +347,13 @@ const url = await uploadFile(file, path);
 
 - `url`: URL pubblico del file uploadato
 
-### Esempi
-
-**Upload Avatar**
+### Esempio
 
 ```jsx
 import { useFileUpload } from "./hooks";
 
-function AvatarUploader() {
-  const { uploadFile, progress, uploading } = useFileUpload();
+function AvatarUploader({ userId, onUploadComplete }) {
+  const { uploadFile, progress, uploading, error } = useFileUpload();
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -414,9 +361,8 @@ function AvatarUploader() {
 
     try {
       const url = await uploadFile(file, `avatars/${userId}.jpg`);
-      console.log("File uploaded:", url);
-      // Salva URL nel profilo utente
       await updateUserProfile({ photoURL: url });
+      onUploadComplete(url);
     } catch (error) {
       console.error("Upload error:", error);
     }
@@ -430,100 +376,13 @@ function AvatarUploader() {
         disabled={uploading}
         accept="image/*"
       />
-
-      {uploading && (
-        <div>
-          Upload in corso: {progress}%
-          <progress value={progress} max="100" />
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-**Upload con Preview**
-
-```jsx
-function ImageUploader() {
-  const { uploadFile, progress, uploading, error } = useFileUpload();
-  const [preview, setPreview] = useState(null);
-  const [uploadedUrl, setUploadedUrl] = useState(null);
-
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Preview locale
-      setPreview(URL.createObjectURL(file));
-    }
-  };
-
-  const handleUpload = async (file) => {
-    try {
-      const url = await uploadFile(file, `images/${Date.now()}.jpg`);
-      setUploadedUrl(url);
-      alert("Upload completato!");
-    } catch (err) {
-      alert("Errore upload");
-    }
-  };
-
-  return (
-    <div>
-      <input type="file" onChange={handleFileSelect} />
-
-      {preview && <img src={preview} alt="Preview" />}
-
       {uploading && (
         <div>
           <progress value={progress} max="100" />
           <span>{progress}%</span>
         </div>
       )}
-
-      {error && <div style={{ color: "red" }}>{error}</div>}
-
-      {uploadedUrl && (
-        <div>
-          Upload completato!
-          <img src={uploadedUrl} alt="Uploaded" />
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-**Multiple Files**
-
-```jsx
-function MultipleFilesUploader() {
-  const { uploadFile, progress, uploading } = useFileUpload();
-  const [urls, setUrls] = useState([]);
-
-  const handleMultipleUpload = async (files) => {
-    const uploadPromises = Array.from(files).map((file, index) =>
-      uploadFile(
-        file,
-        `documents/${Date.now()}-${index}.${file.name.split(".").pop()}`,
-      ),
-    );
-
-    try {
-      const uploadedUrls = await Promise.all(uploadPromises);
-      setUrls(uploadedUrls);
-    } catch (error) {
-      console.error("Upload error:", error);
-    }
-  };
-
-  return (
-    <div>
-      <input
-        type="file"
-        multiple
-        onChange={(e) => handleMultipleUpload(e.target.files)}
-      />
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
@@ -531,25 +390,253 @@ function MultipleFilesUploader() {
 
 ### Note
 
-- **Progress tracking**: Aggiorna `progress` durante upload
-- **File types**: Supporta tutti i tipi di file
-- **Path**: Organizza file con path strutturati
-- **Security**: Firestore Storage Rules controllano accesso
+- Progress tracking automatico da 0 a 100%
+- Supporta tutti i tipi di file
+- Security gestita da Firebase Storage Rules
 
-### Storage Rules
+---
 
-Esempio regole per avatars:
+## useLeaders
+
+**Path:** `src/hooks/useLeaders.js`
+
+Hook per recuperare tutti i leader di Civilization VI con aggiornamenti real-time.
+
+### Signature
 
 ```javascript
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /avatars/{userId} {
-      allow read: if true; // Pubblicamente leggibili
-      allow write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
+const { leaders, loading, error } = useLeaders();
+```
+
+### Returns
+
+| Property  | Type           | Descrizione                            |
+| --------- | -------------- | -------------------------------------- |
+| `leaders` | array          | Array di 77 leader ordinati per numero |
+| `loading` | boolean        | `true` durante caricamento             |
+| `error`   | string \| null | Messaggio errore                       |
+
+### Leader Object Structure
+
+```javascript
+{
+  id: "leader-id",
+  number: 1,
+  name: "Abraham Lincoln",
+  civilization: "America",
+  icon: "/IconePersonaggi/Abraham_Lincoln.webp",
+  // ...altri campi
 }
+```
+
+### Esempi
+
+**Lista tutti i leader**
+
+```jsx
+import { useLeaders } from "./hooks";
+
+function LeadersList() {
+  const { leaders, loading, error } = useLeaders();
+
+  if (loading) return <div>Caricamento leader...</div>;
+  if (error) return <div>Errore: {error}</div>;
+
+  return (
+    <div>
+      <h2>Leader disponibili ({leaders.length})</h2>
+      {leaders.map((leader) => (
+        <div key={leader.id}>
+          <img src={leader.icon} alt={leader.name} />
+          <span>
+            {leader.name} - {leader.civilization}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+**Select leader per draft**
+
+```jsx
+function LeaderPicker() {
+  const { leaders } = useLeaders();
+  const [selectedLeader, setSelectedLeader] = useState(null);
+
+  return (
+    <select onChange={(e) => setSelectedLeader(e.target.value)}>
+      <option value="">Seleziona un leader</option>
+      {leaders.map((leader) => (
+        <option key={leader.id} value={leader.id}>
+          {leader.name} ({leader.civilization})
+        </option>
+      ))}
+    </select>
+  );
+}
+```
+
+**Filtra leader per civiltà**
+
+```jsx
+function LeadersByCivilization({ civilization }) {
+  const { leaders } = useLeaders();
+
+  const filtered = leaders.filter((l) => l.civilization === civilization);
+
+  return (
+    <div>
+      <h3>Leader di {civilization}</h3>
+      {filtered.map((leader) => (
+        <div key={leader.id}>{leader.name}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Note
+
+- **Real-time**: Aggiornamenti automatici se i leader cambiano in Firestore
+- **Ordinamento**: Leader già ordinati per numero (campo `number`)
+- **Performance**: Tutti i 77 leader sono caricati, usa memoization se necessario
+- **Internamente usa**: `useCollection("leaders", [orderBy number asc])`
+
+### Database Structure
+
+I leader sono memorizzati nella collection `leaders` in Firestore:
+
+```
+leaders/
+  ├─ abraham-lincoln/
+  │   ├─ number: 1
+  │   ├─ name: "Abraham Lincoln"
+  │   ├─ civilization: "America"
+  │   └─ icon: "/IconePersonaggi/Abraham_Lincoln.webp"
+  ├─ amanitore/
+  └─ ...77 leader totali
+```
+
+---
+
+## useLeader
+
+**Path:** `src/hooks/useLeader.js`
+
+Hook per recuperare un singolo leader con aggiornamenti real-time.
+
+### Signature
+
+```javascript
+const { leader, loading, error } = useLeader(leaderId);
+```
+
+### Parameters
+
+| Parameter  | Type   | Required | Descrizione          |
+| ---------- | ------ | -------- | -------------------- |
+| `leaderId` | string | ✅       | ID del leader (slug) |
+
+### Returns
+
+| Property  | Type           | Descrizione                          |
+| --------- | -------------- | ------------------------------------ |
+| `leader`  | object \| null | Oggetto leader o null se non trovato |
+| `loading` | boolean        | `true` durante caricamento           |
+| `error`   | string \| null | Messaggio errore                     |
+
+### Esempi
+
+**Visualizza singolo leader**
+
+```jsx
+import { useLeader } from "./hooks";
+import { useParams } from "react-router-dom";
+
+function LeaderDetailsPage() {
+  const { leaderId } = useParams();
+  const { leader, loading, error } = useLeader(leaderId);
+
+  if (loading) return <div>Caricamento...</div>;
+  if (error) return <div>Errore: {error}</div>;
+  if (!leader) return <div>Leader non trovato</div>;
+
+  return (
+    <div>
+      <img src={leader.icon} alt={leader.name} />
+      <h1>{leader.name}</h1>
+      <p>Civiltà: {leader.civilization}</p>
+      <p>Numero: {leader.number}</p>
+    </div>
+  );
+}
+```
+
+**Mostra leader selezionato nel draft**
+
+```jsx
+function SelectedLeaderCard({ leaderId }) {
+  const { leader, loading } = useLeader(leaderId);
+
+  if (loading) return <div className="skeleton-card" />;
+  if (!leader) return null;
+
+  return (
+    <div className="leader-card">
+      <img src={leader.icon} alt={leader.name} />
+      <h3>{leader.name}</h3>
+      <span>{leader.civilization}</span>
+    </div>
+  );
+}
+```
+
+**Confronto tra leader**
+
+```jsx
+function LeaderComparison({ leader1Id, leader2Id }) {
+  const { leader: leader1 } = useLeader(leader1Id);
+  const { leader: leader2 } = useLeader(leader2Id);
+
+  if (!leader1 || !leader2) return <div>Caricamento...</div>;
+
+  return (
+    <div className="comparison">
+      <div>
+        <h3>{leader1.name}</h3>
+        <p>{leader1.civilization}</p>
+      </div>
+      <div className="vs">VS</div>
+      <div>
+        <h3>{leader2.name}</h3>
+        <p>{leader2.civilization}</p>
+      </div>
+    </div>
+  );
+}
+```
+
+### Note
+
+- **Real-time**: Aggiornamenti automatici se il leader cambia
+- **Null handling**: Ritorna `null` se leader non esiste
+- **Internamente usa**: `useDocument("leaders", leaderId)`
+- **Leader ID format**: Slug lowercase (es: `"abraham-lincoln"`)
+
+### Common Leader IDs
+
+Esempi di ID leader validi:
+
+```javascript
+"abraham-lincoln";
+"amanitore";
+"catherine-de-medici-black-queen";
+"catherine-de-medici-magnificence";
+"cleopatra";
+"gandhi";
+// ... 77 leader totali
 ```
 
 ---
@@ -674,123 +761,33 @@ function LogoutButton() {
 
 ---
 
-## Best Practices
+## 💡 Best Practices & Performance
 
-### 1. Cleanup Subscriptions
+### Hooks Rules
 
 ```jsx
-// ✅ Hooks gestiscono cleanup automaticamente
-const { documents } = useCollection("items");
+// ✅ Sempre top-level, mai condizionali
+const { user } = useAuth();
 
-// ❌ Non servono cleanup manuali
+// ❌ Mai hooks condizionali
+if (needsData) const { documents } = useCollection("items");
 ```
 
-### 2. Conditional Hooks
+### Error Handling
 
 ```jsx
-// ❌ Non usare hooks condizionalmente
-if (userId) {
-  const { document } = useDocument("users", userId);
-}
+const { documents, error, loading } = useCollection("items");
 
-// ✅ Passa sempre, gestisci condizione dentro
-const { document } = useDocument("users", userId || "placeholder");
-if (!userId) return null;
-```
-
-### 3. Dependency Arrays
-
-```jsx
-// ✅ Dependencies gestite automaticamente
-useCollection("items", conditions); // Re-subscribe se conditions cambia
-
-// ❌ Non wrappare in useMemo/useCallback senza motivo
-const memoConditions = useMemo(() => conditions, []); // Inutile
-```
-
-### 4. Error Handling
-
-```jsx
-// ✅ Gestisci sempre errori
-const { documents, error } = useCollection("items");
-if (error) return <ErrorMessage error={error} />;
-
-// ✅ Loading states
 if (loading) return <Spinner />;
+if (error) return <ErrorMessage error={error} />;
+return <DataView data={documents} />;
 ```
 
-### 5. Real-time Awareness
+### Performance
 
-```jsx
-// ✅ Ricorda che i dati sono real-time
-const { documents: campaigns } = useCollection("campaigns");
-
-// I dati si aggiornano automaticamente!
-// Non serve refresh manuale o polling
-```
-
----
-
-## Performance Tips
-
-### 1. Evita Query Nested
-
-```jsx
-// ❌ Query nested causano molte subscribe
-{
-  campaigns.map((campaign) => (
-    <div key={campaign.id}>
-      <CampaignMembers campaignId={campaign.id} />
-    </div>
-  ));
-}
-
-// ✅ Carica dati necessari in un'unica query
-const { documents: campaigns } = useCollection("campaigns");
-// campaign.memberDetails già contiene i dati
-```
-
-### 2. Usa Limit per Liste Lunghe
-
-```jsx
-// ✅ Limita risultati per performance
-const { documents } = useCollection("posts", [
-  { type: "orderBy", field: "createdAt", direction: "desc" },
-  { type: "limit", value: 20 },
-]);
-```
-
-### 3. Unsubscribe su Unmount
-
-```jsx
-// ✅ Hooks gestiscono automaticamente
-// Return cleanup function
-useEffect(() => {
-  const unsubscribe = subscribe();
-  return () => unsubscribe();
-}, []);
-```
-
----
-
-## Testing Hooks (Future)
-
-```jsx
-import { renderHook, waitFor } from "@testing-library/react";
-import { useCollection } from "./useCollection";
-
-test("loads collection data", async () => {
-  const { result } = renderHook(() => useCollection("test"));
-
-  expect(result.current.loading).toBe(true);
-
-  await waitFor(() => {
-    expect(result.current.loading).toBe(false);
-  });
-
-  expect(result.current.documents).toHaveLength(3);
-});
-```
+- **Limita liste lunghe**: Usa `{ type: "limit", value: 20 }`
+- **Evita query nested**: Carica dati in un'unica query quando possibile
+- **Cleanup automatico**: Hooks gestiscono unsubscribe on unmount
 
 ---
 

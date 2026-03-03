@@ -10,13 +10,16 @@
 ## ✨ Caratteristiche Principali
 
 - 🔐 **Autenticazione completa** con Firebase Authentication
-- 🎮 **Sistema campagne collaborative** con codici condivisibili
+- 🎮 **Sistema campagne collaborative** con codici condivisibili e voto democratico
+- 🎲 **Sistema draft leader avanzato** con banning phase e pool personalizzate
+- 📊 **Sistema punteggi dinamico** con victory points logaritmici e bonus moltiplicativi
+- 🏆 **Gestione partite completa** con tracking turni, vincitori e classifiche
 - 📱 **PWA installabile** su mobile e desktop
-- ⚡ **Real-time updates** con Firestore
-- 🎨 **Dark theme** con design moderno
-- 🔄 **Gestione modali centralizzata** con history integration
-- 📡 **Supporto offline** con Service Worker
-- 🛡️ **Sicurezza avanzata** con Firestore Rules
+- ⚡ **Real-time updates** con Firestore per sincronizzazione istantanea
+- 🎨 **Dark theme** con design moderno e glassmorphism
+- 🔄 **Gestione modali centralizzata** con history integration e nested modals
+- 📡 **Supporto offline** con Service Worker e caching intelligente
+- 🛡️ **Sicurezza avanzata** con Firestore Rules granulari
 
 ## 🚀 Tech Stack
 
@@ -54,218 +57,90 @@
 - **[Firebase Deployment](FIREBASE_DEPLOYMENT.md)** - Deploy Firestore rules/indexes
 - **[Firebase Services](src/services/firebase/README.md)** - Firebase integration
 
-## 📱 Design System
+## 📱 Quick Reference
 
-### Colori
+**Design:** Dark theme, glassmorphism, responsive mobile-first  
+**Colori:** Primary `rgba(15, 50, 82, 1)`, Gold `rgba(212, 175, 55, 1)`  
+**Breakpoints:** sm: 640px, md: 768px, lg: 1024px
 
-- **Primary**: `rgba(15, 50, 82, 1)` - Azioni principali
-- **Gold**: `rgba(212, 175, 55, 1)` - Accenti e highlight
-- **Background**: Gradient `#0a1929` → `#1a2332`
-- **Surface**: `rgba(20, 30, 40, 0.95)` + backdrop blur
+**Struttura:** React components → Firebase services → Firestore DB  
+**Stack:** React 19 + Vite 7 + Firebase 12 + Tailwind 4 + React Router 7
 
-### Breakpoints
-
-- **sm**: 640px (Mobile landscape)
-- **md**: 768px (Tablet)
-- **lg**: 1024px (Desktop)
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── common/           # Button, Input with variants and validation
-│   ├── layout/           # AuthLayout wrapper
-│   └── ProtectedRoute.jsx
-├── contexts/             # AuthContext for global auth state
-├── hooks/                # useAuth, useCollection, useDocument, useFileUpload
-├── pages/
-│   ├── Auth/             # Login/Register page (landing page)
-│   └── Home/             # Protected dashboard (WIP)
-├── services/
-│   └── firebase/         # Firebase config and modular services
-├── utils/                # Helper functions
-└── assets/               # Static assets
-```
-
-## 📦 Installazione
-
-### Prerequisites
-
-- **Node.js** >= 18.0.0
-- **npm** >= 9.0.0
-- **Firebase Account** con progetto configurato
-
-### Setup
-
-1. **Clone il repository**
-
-   ```bash
-   git clone https://github.com/tuousername/civtracker.git
-   cd civtracker
-   ```
-
-2. **Installa dipendenze**
-
-   ```bash
-   npm install
-   ```
-
-3. **Configura Firebase**
-
-   Crea `src/services/firebase/config.js` con la tua configurazione:
-
-   ```javascript
-   export const firebaseConfig = {
-     apiKey: "YOUR_API_KEY",
-     authDomain: "YOUR_AUTH_DOMAIN",
-     projectId: "YOUR_PROJECT_ID",
-     storageBucket: "YOUR_STORAGE_BUCKET",
-     messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-     appId: "YOUR_APP_ID",
-   };
-   ```
-
-   Oppure usa variabili d'ambiente in `.env`:
-
-   ```env
-   VITE_FIREBASE_API_KEY=your_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
-   ```
-
-4. **Deploya Firestore Rules**
-
-   ```bash
-   firebase deploy --only firestore:rules,firestore:indexes
-   ```
-
-5. **Avvia dev server**
-
-   ```bash
-   npm run dev
-   ```
-
-6. **Apri browser**
-
-   Naviga su `http://localhost:5173`
-
-## 🛠️ Scripts
+## � Installazione Rapida
 
 ```bash
-# Sviluppo
-npm run dev          # Avvia dev server (http://localhost:5173)
-npm run build        # Build per produzione
-npm run preview      # Preview della build di produzione
-npm run lint         # Linting con ESLint
+# 1. Clone e installa
+git clone https://github.com/tuousername/civtracker.git
+cd civtracker
+npm install
 
-# Firebase
-firebase deploy --only hosting              # Deploy hosting
-firebase deploy --only firestore:rules      # Deploy regole Firestore
-firebase deploy --only firestore:indexes    # Deploy indici Firestore
-firebase deploy                             # Deploy completo
+# 2. Configura Firebase
+# Crea .env con le tue credenziali Firebase
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_PROJECT_ID=your_project_id
+# ... altre variabili
+
+# 3. Deploy rules e avvia
+firebase deploy --only firestore:rules,firestore:indexes
+npm run dev
 ```
 
-## 🤝 Contribuire
+Apri `http://localhost:5173`
 
-1. Fork il progetto
-2. Crea un branch per la tua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit le modifiche (`git commit -m 'Add some AmazingFeature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Apri una Pull Request
+### Scripts Disponibili
 
-Leggi [DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) per le best practices.
+```bash
+npm run dev      # Dev server
+npm run build    # Build produzione
+npm run preview  # Preview build
+firebase deploy  # Deploy completo
+```
 
-## 📝 License
+## �� Funzionalità Principali
 
-Questo progetto è distribuito sotto la licenza MIT. Vedi `LICENSE` per maggiori informazioni.
+### 🔐 Autenticazione
 
-## 👨‍💻 Autore
+- Registrazione/login con email e password
+- Profilo utente modificabile
+- Protected routes con loading states
+- Sessioni persistenti
 
-**Matteo** - CivTracker Development Team
+### 🎮 Gestione Campagne
 
-## 🙏 Ringraziamenti
+- **Codici univoci** di 8 caratteri per condivisione
+- **Sistema voto democratico** per cambio stato (not-started → in-progress → completed)
+- **Campagne importanti** con stella e ordinamento prioritario
+- **Real-time sync** tra tutti i membri
+- **Auto-eliminazione** quando ultimo membro esce
 
-- React Team per React 19
-- Firebase Team per gli strumenti eccezionali
-- Lucide per le icone moderne
-- Tailwind CSS per il framework CSS
+### 🏆 Sistema Partite
 
-## 🎮 Funzionalità
+- **9 tipi di vittoria** (science, culture, diplomatic, domination, religious, score, forfait, defeat, canceled)
+- **Sistema punteggi avanzato** con victory points logaritmici (50-150)
+- **Bonus moltiplicativi** stackabili (+15% secondo posto, +10% sopravvissuto)
+- **Ricalcolo automatico** di tutte le partite dopo ogni completamento
+- **Classifiche** con badge oro/argento/bronzo
 
-### Sistema Autenticazione
+### 🎲 Draft Leader (77 Leader Civ VI)
 
-- ✅ Registrazione con email, username e password
-- ✅ Login con email/password
-- ✅ Validazione form completa
-- ✅ Sessioni persistenti
-- ✅ Protected routes con loading states
-- ✅ Password visibility toggle
+- **5 fasi**: Waiting → Countdown → Active → Banning → Completed
+- **Pool personalizzate** escludono leader già usati
+- **Banning phase** democratico per bannare 1 leader per avversario
+- **Minimizzazione duplicati** tra giocatori
+- **Draft history** salvata per ogni partita
 
-### Gestione Campagne
+### 📱 Progressive Web App
 
-- ✅ Creazione campagne con nome personalizzato
-- ✅ Codici univoci di 8 caratteri (ABC12345)
-- ✅ Join campagna tramite codice
-- ✅ Lista membri con classifica
-- ✅ Modifica nome (da tutti i membri)
-- ✅ Condivisione codice con pulsante copia
-- ✅ Uscita volontaria dal gruppo
-- ✅ Auto-eliminazione campagna vuota
-- ✅ Real-time synchronization
+- Installabile su mobile e desktop
+- Supporto offline con Service Worker
+- Prompt installazione custom
+- Standalone app experience
 
-### Progressive Web App
+## 📊 Versione Attuale: 2.0.0
 
-- ✅ Installabile su mobile e desktop
-- ✅ Supporto offline con Service Worker
-- ✅ Prompt installazione custom (Android/iOS)
-- ✅ Cache intelligente delle risorse
-- ✅ Standalone app experience
-- ✅ Icone home screen ottimizzate
-
-### UI/UX
-
-- ✅ Dark theme con gradienti
-- ✅ Responsive design (mobile-first)
-- ✅ Modali con history integration
-- ✅ Animazioni fluide
-- ✅ Loading states e error handling
-- ✅ Glassmorphism effects
-- ✅ Toast notifications
-
-## 📊 Stato Progetto
-
-**Versione Attuale**: 1.0.0 (MVP)
-
-### ✅ Completato
-
-- Sistema autenticazione completo
-- CRUD campagne con codici univoci
-- Sistema modale centralizzato
-- PWA installabile
-- Real-time updates Firestore
-- Auto-eliminazione campagne
-- Responsive design
-- Documentazione completa
-
-### 🚧 In Sviluppo
-
-- Contenuto pagina Campaign (features specifiche)
-- Sistema statistiche nelle card
-- Notifiche push
-- Temi personalizzabili
-
-### 🔮 Roadmap Futura
-
-- Chat di gruppo nelle campagne
-- Sistema achievements/trofei
-- Esportazione dati
-- Grafici e analytics
-- Integrazione mappe
-- Modalità torneo
+✅ **Completato:** Sistema completo di campagne, partite, draft, punteggi e classifiche  
+🚧 **In Sviluppo:** Notifiche push, statistiche avanzate, esportazione dati  
+🔮 **Roadmap:** Chat gruppi, achievements, temi custom, modalità torneo
 
 ---
 

@@ -245,11 +245,323 @@ Cliccando su una card campagna entri nella **pagina dedicata**:
 
 - **← Freccia indietro** (torna alla dashboard)
 - **Nome campagna**
-- **ⓘ Info button**
+- **⋮ Menu kebab** (opzioni avanzate)
 
 **Contenuto:**
 
-- 🚧 **In arrivo:** Features specifiche della campagna
+- **Lista partite** (cronologica)
+- **Bottone "Aggiungi Partita"**
+- **Aggiornamenti real-time**
+
+### Segnare Campagne Importanti (Stella)
+
+Puoi marcare le campagne preferite con una ⭐ stella:
+
+1. **Nella card campagna** (dashboard)
+2. **Clicca sull'icona stella** (in alto a destra nella card)
+3. **La stella diventa dorata** ⭐
+
+✅ **Campagne importanti appaiono sempre per prime** nella griglia!
+
+**Rimuovere stella:** Click nuovamente sull'icona stella.
+
+---
+
+## Stati Campagna e Sistema di Voto
+
+Ogni campagna ha uno **stato** che determina cosa puoi fare:
+
+### Stati Disponibili
+
+**🔵 Not Started** (Non Iniziata)
+
+- Stato iniziale dopo creazione
+- I giocatori possono unirsi liberamente
+- Non si possono creare partite
+
+**🟢 In Progress** (In Corso)
+
+- Campagna attiva
+- Nessuno può più unirsi
+- Si possono creare e giocare partite
+- Il draft è attivo
+
+**🔴 Completed** (Completata)
+
+- Campagna terminata
+- Non si possono creare nuove partite
+- Lo stato non può più essere cambiato
+
+### Cambiare Stato (Sistema Voto)
+
+⚠️ **Tutti i membri devono votare** per cambiare stato!
+
+1. **Pagina campagna** → **Menu kebab (⋮)** → **"Stato Campagna"**
+2. **Si apre modal** con stato attuale e opzioni
+3. **Clicca sul bottone** dello stato desiderato
+4. **Il tuo voto è registrato**
+5. **Quando TUTTI votano per lo stesso stato** → cambio automatico!
+
+**Revocare voto:**
+
+- Clicca nuovamente sul bottone dello stato per cui hai votato
+- Oppure vota per un altro stato (revoca automatica)
+
+**Indicatore voti:**
+
+- Mostra quanti hanno votato (es: "2/4 voti per In Progress")
+
+**Esempio:**
+
+```
+Campagna con 4 membri:
+- Mario vota "In Progress" → 1/4
+- Luigi vota "In Progress" → 2/4
+- Peach vota "In Progress" → 3/4
+- Bowser vota "In Progress" → 4/4 ✅ CAMBIO STATO!
+```
+
+---
+
+## Gestione Partite
+
+### Creare una Partita
+
+⚠️ **Prerequisiti:**
+
+- Campagna deve essere **In Progress**
+- Non ci devono essere partite attive
+
+**Steps:**
+
+1. **Pagina campagna**
+2. **Scroll in basso** nella lista partite
+3. **Clicca "Aggiungi Partita"** (+ button)
+
+✅ **Nuova partita creata!** Appare nella lista come ultima partita.
+
+### Stati Partita
+
+**🟡 In Progress** (In Corso)
+
+- Partita attiva
+- Si può avviare il draft
+- Non si può creare altra partita
+
+**🟢 Completed** (Completata)
+
+- Partita terminata con risultati salvati
+- Punteggi calcolati
+- Si può creare nuova partita
+
+### Sistema Draft Leader
+
+Il **draft** assegna leader casuali ai giocatori prima della partita.
+
+#### Fasi Draft
+
+**1. Waiting (Attesa)**
+
+- Ogni giocatore clicca "Pronto" nel modal draft
+- Quando **tutti** sono pronti → Countdown
+
+**2. Countdown (5 secondi)**
+
+- Conto alla rovescia prima dell'estrazione
+- Puoi annullare cliccando "Annulla"
+
+**3. Active (Banning)**
+
+- Ogni giocatore riceve **5 leader random**
+- Esclusi i leader già usati in campagne precedenti
+- **Banning Phase:** Vota 1 leader da bannare per ogni avversario
+- Il leader più votato viene rimosso dalla pool dell'avversario
+
+**4. Completed (Selezione)**
+
+- Scegli il tuo leader finale tra quelli rimasti
+- Click leader → Conferma → Fatto!
+
+#### Avviare Draft
+
+1. **Partita in corso** → Click **"Avvia Draft"** nella card partita
+2. **Si apre DraftModal**
+3. **Click "Pronto"**
+4. **Aspetta altri giocatori**
+5. **Countdown automatico**
+6. **Vota ban per ogni avversario**
+7. **Scegli leader finale**
+
+✅ **Draft completato!** Il tuo leader è assegnato alla partita.
+
+**Note:**
+
+- Solo player: Skip automatico fase banning
+- Leader pool personalizzata per evitare ripetizioni
+
+### Completare una Partita
+
+Quando finisci una partita nel gioco:
+
+1. **Card partita** → Click **"Completa Partita"**
+2. **Si apre modal complesso** con tutti i campi
+
+**Dati da Inserire:**
+
+**A) Turni Giocati**
+
+- Es: 320 turni
+
+**B) Vincitore**
+
+- Click su giocatore vincitore
+- Oppure "Nessuno" se tutti sconfitti/annullata
+
+**C) Tipo Vittoria**
+
+- Scientifica 🔬
+- Culturale 🎭
+- Diplomatica 🤝
+- Dominio ⚔️
+- Religiosa ✝️
+- Per Punti 📊
+- Forfait (resa)
+- Sconfitta (tutti vs bot)
+- Annullata
+
+**D) Punteggi Grezzi**
+
+- Per ogni giocatore, inserisci punteggio finale del gioco
+- Es: Mario 450, Luigi 520
+
+**E) Bonus Tags (Opzionale)**
+
+- **Secondo Posto** (+15%): Assegnato al secondo classificato
+- **Sopravvissuto** (+10%): In guerra con giocatore <30 turni
+- Click "Assegna Bonus" per ogni giocatore
+- Seleziona bonus applicabili
+
+**F) Conferma**
+
+- Click **"Completa Partita"**
+
+✅ **Partita completata!**
+
+- Punteggi calcolati automaticamente
+- Tutte le partite precedenti ricalcolate con nuovi victory points
+- Classifiche aggiornate
+
+### Sistema Punteggi
+
+Il sistema calcola 3 tipi di punteggi:
+
+**1. Punteggio Grezzo (Raw Score)**
+
+- Il punteggio finale nel gioco (es: 450)
+
+**2. Punteggio Elaborato (Processed Score)**
+
+- Calcolato con pool di punti dinamico:
+  - Vittorie normali: 200 pt totali
+  - Forfait: 100 pt totali
+  - Defeat/Canceled: 100/0 pt totali
+- **Victory Points** per il vincitore (50-150 pt dinamici)
+  - Vittorie rare → più punti
+  - Vittorie comuni → meno punti
+- Punti rimanenti distribuiti proporzionalmente ai punteggi grezzi
+
+**3. Punteggio Finale (Final Score)**
+
+- Punteggio elaborato × (1 + bonus)
+- Es: 120 × 1.15 (secondo posto) = 138 pt
+
+**Bonus:**
+
+- Secondo Posto: +15%
+- Sopravvissuto: +10% (multiplo)
+- I bonus si sommano
+
+---
+
+## Menu Kebab e Opzioni Avanzate
+
+Nella **pagina campagna**, click **⋮ menu kebab** in alto a destra:
+
+### Opzioni Disponibili
+
+**📊 Classifica Generale**
+
+- Mostra ranking completo
+- Avatar, username, posizione
+- Punteggi per ogni partita
+- Totale punti accumulati
+
+**👥 Pool Personaggi**
+
+- Visualizza leader disponibili per ogni giocatore
+- Tabs per ogni membro
+- Indica leader già usati
+- Contatore disponibili
+
+**🏆 Punteggi Vittorie**
+
+- Tabella victory points dinamica
+- Mostra punti per ogni tipo vittoria
+- Formula e spiegazione
+- Contatori vittorie
+
+**📜 Regole del Gioco**
+
+- Guida completa passo-passo
+- Sistema draft spiegato
+- Sistema punteggi spiegato
+- Esempi pratici
+
+**📊 Stato Campagna**
+
+- Vota per cambiare stato
+- Vedi voti attuali
+- Revoca voto
+
+**ℹ️ Info Campagna**
+
+- Dettagli completi
+- Modifica nome
+- Copia codice
+- Esci dal gruppo
+
+---
+
+## Classifiche e Ranking
+
+### Classifica card (Dashboard)
+
+Le card campagne mostrano:
+
+- **Trofeo 🏆** per il primo classificato (se ci sono partite completate)
+- **Posizioni numerate** (2, 3, 4...) per gli altri
+- **Ordinamento alfabetico** se nessuna partita completata
+
+### Classifica Generale (Modal)
+
+Accesso: **Menu kebab → Classifica Generale**
+
+**Mostra:**
+
+1. **Badge posizione:**
+   - 🏆 Primo: Trofeo oro
+   - 🥈 Secondo: Badge argento "2°"
+   - 🥉 Terzo: Badge bronzo "3°"
+   - Numeri per gli altri
+
+2. **Dettaglio giocatore:**
+   - Avatar con iniziali
+   - Username
+   - Punteggi per ogni partita
+   - Totale punti
+
+3. **Ordinamento:**
+   - Dal più alto al più basso punteggio
 
 ---
 
@@ -437,7 +749,7 @@ A: Feature in arrivo. Per ora contatta l'admin.
 **Possibili cause:**
 
 - Ultimo membro è uscito → Campagna auto-eliminata
-- Sei stato rimosso (non ancora possibile, bug?)
+- Errore di sincronizzazione → Ricarica la pagina
 
 ---
 

@@ -51,29 +51,15 @@ const { user, error } = await signUp(email, password, displayName);
 **Example:**
 
 ```javascript
-import { signUp } from "./services/firebase";
-
-const handleRegister = async () => {
-  const { user, error } = await signUp(
-    "user@example.com",
-    "password123",
-    "Mario Rossi",
-  );
-
-  if (error) {
-    console.error("Registration error:", error);
-    return;
-  }
-
-  console.log("User registered:", user.uid);
-};
+const { user, error } = await signUp(
+  "user@example.com",
+  "password123",
+  "Mario",
+);
+if (!error) console.log("Registered:", user.uid);
 ```
 
-**Errors:**
-
-- `auth/email-already-in-use`: Email già registrata
-- `auth/invalid-email`: Formato email non valido
-- `auth/weak-password`: Password Troppo debole
+**Errors:** `auth/email-already-in-use`, `auth/invalid-email`, `auth/weak-password`
 
 ---
 
@@ -103,19 +89,10 @@ const { user, error } = await signIn(email, password);
 
 ```javascript
 const { user, error } = await signIn("user@example.com", "password123");
-
-if (error) {
-  alert("Login failed: " + error);
-} else {
-  console.log("Logged in:", user.email);
-}
+if (!error) console.log("Logged in:", user.email);
 ```
 
-**Errors:**
-
-- `auth/user-not-found`: Utente non esiste
-- `auth/wrong-password`: Password errata
-- `auth/invalid-email`: Email non valida
+**Errors:** `auth/user-not-found`, `auth/wrong-password`, `auth/invalid-email`
 
 ---
 
@@ -141,12 +118,8 @@ const { user, error } = await signInWithGoogle();
 **Example:**
 
 ```javascript
-const handleGoogleLogin = async () => {
-  const { user, error } = await signInWithGoogle();
-  if (!error) {
-    console.log("Google login success:", user.email);
-  }
-};
+const { user, error } = await signInWithGoogle();
+if (!error) console.log("Logged in:", user.email);
 ```
 
 ---
@@ -172,12 +145,8 @@ const { error } = await logOut();
 **Example:**
 
 ```javascript
-const handleLogout = async () => {
-  const { error } = await logOut();
-  if (!error) {
-    navigate("/");
-  }
-};
+const { error } = await logOut();
+if (!error) navigate("/");
 ```
 
 ---
@@ -206,9 +175,7 @@ const { error } = await resetPassword(email);
 
 ```javascript
 const { error } = await resetPassword("user@example.com");
-if (!error) {
-  alert("Email inviata! Controlla la tua casella.");
-}
+if (!error) alert("Email di reset inviata");
 ```
 
 ---
@@ -234,14 +201,9 @@ const unsubscribe = onAuthChange(callback);
 ```javascript
 useEffect(() => {
   const unsubscribe = onAuthChange((user) => {
-    if (user) {
-      console.log("User logged in:", user.email);
-    } else {
-      console.log("User logged out");
-    }
+    console.log(user ? `Logged in: ${user.email}` : "Logged out");
   });
-
-  return () => unsubscribe(); // Cleanup
+  return unsubscribe;
 }, []);
 ```
 
@@ -265,11 +227,7 @@ const user = getCurrentUser();
 
 ```javascript
 const user = getCurrentUser();
-if (user) {
-  console.log("Current user:", user.uid);
-} else {
-  console.log("No user logged in");
-}
+console.log(user ? `Current: ${user.uid}` : "No user");
 ```
 
 ---
@@ -298,9 +256,7 @@ const { error } = await updateUserProfile(displayName);
 
 ```javascript
 const { error } = await updateUserProfile("Nuovo Nome");
-if (!error) {
-  console.log("Profile updated");
-}
+if (!error) console.log("Profile updated");
 ```
 
 ---
@@ -336,18 +292,9 @@ const { id, error } = await createDocument(collectionName, data);
 **Example:**
 
 ```javascript
-const { id, error } = await createDocument("users", {
-  name: "Mario",
-  age: 30,
-  active: true,
-});
-
-if (!error) {
-  console.log("Document created:", id);
-}
+const { id, error } = await createDocument("users", { name: "Mario", age: 30 });
+if (!error) console.log("Created:", id);
 ```
-
-**Note:** Aggiunge automaticamente `createdAt` e `updatedAt` timestamps.
 
 ---
 
@@ -377,10 +324,7 @@ const { error } = await setDocument(collectionName, documentId, data, merge);
 **Example:**
 
 ```javascript
-// Crea o aggiorna
 await setDocument("users", "user123", { name: "Mario" });
-
-// Sovrascrivi completo
 await setDocument("users", "user123", { name: "Luigi" }, false);
 ```
 
@@ -412,10 +356,7 @@ const { data, error } = await getDocument(collectionName, documentId);
 
 ```javascript
 const { data: user, error } = await getDocument("users", "user123");
-
-if (user) {
-  console.log("User:", user.name);
-}
+if (user) console.log("User:", user.name);
 ```
 
 ---
@@ -445,10 +386,7 @@ const { data, error } = await getCollection(collectionName);
 
 ```javascript
 const { data: users, error } = await getCollection("users");
-
-if (users) {
-  users.forEach((user) => console.log(user.name));
-}
+if (users) users.forEach((u) => console.log(u.name));
 ```
 
 ---
@@ -482,13 +420,8 @@ const { error } = await updateDocument("users", "user123", {
   age: 31,
   city: "Rome",
 });
-
-if (!error) {
-  console.log("User updated");
-}
+if (!error) console.log("Updated");
 ```
-
-**Note:** Aggiorna solo i campi specificati, non sovrascrive l'intero documento.
 
 ---
 
@@ -517,10 +450,7 @@ const { error } = await deleteDocument(collectionName, documentId);
 
 ```javascript
 const { error } = await deleteDocument("users", "user123");
-
-if (!error) {
-  console.log("User deleted");
-}
+if (!error) console.log("Deleted");
 ```
 
 ---
@@ -563,7 +493,7 @@ const { data, error } = await queryDocuments(collectionName, conditions);
 **Example:**
 
 ```javascript
-const { data: adults, error } = await queryDocuments("users", [
+const { data: adults } = await queryDocuments("users", [
   { type: "where", field: "age", operator: ">=", value: 18 },
   { type: "orderBy", field: "name", direction: "asc" },
   { type: "limit", value: 50 },
@@ -599,24 +529,15 @@ const unsubscribe = subscribeToCollection(collectionName, callback, conditions);
 **Example:**
 
 ```javascript
-const unsubscribe = subscribeToCollection(
-  "campaigns",
-  (campaigns) => {
-    console.log("Campaigns updated:", campaigns.length);
-    setCampaigns(campaigns);
+const unsubscribe = subscribeToCollection("campaigns", setCampaigns, [
+  {
+    type: "where",
+    field: "members",
+    operator: "array-contains",
+    value: userId,
   },
-  [
-    {
-      type: "where",
-      field: "members",
-      operator: "array-contains",
-      value: userId,
-    },
-  ],
-);
-
-// Cleanup
-return () => unsubscribe();
+]);
+return unsubscribe;
 ```
 
 ---
@@ -642,16 +563,8 @@ const unsubscribe = subscribeToDocument(collectionName, documentId, callback);
 **Example:**
 
 ```javascript
-const unsubscribe = subscribeToDocument("campaigns", campaignId, (campaign) => {
-  if (campaign) {
-    console.log("Campaign updated:", campaign.name);
-    setCampaign(campaign);
-  } else {
-    console.log("Campaign deleted");
-  }
-});
-
-return () => unsubscribe();
+const unsubscribe = subscribeToDocument("campaigns", campaignId, setCampaign);
+return unsubscribe;
 ```
 
 ---
@@ -703,14 +616,11 @@ const { campaign, error } = await createCampaign(name, userId, username);
 
 ```javascript
 const { campaign, error } = await createCampaign(
-  "Campagna Italia",
+  "Italia 2024",
   user.uid,
   user.displayName,
 );
-
-if (!error) {
-  console.log("Campaign created:", campaign.code);
-}
+if (!error) console.log("Code:", campaign.code);
 ```
 
 ---
@@ -735,12 +645,7 @@ const campaign = await getCampaignByCode(code);
 
 ```javascript
 const campaign = await getCampaignByCode("ABC12345");
-
-if (campaign) {
-  console.log("Found:", campaign.name);
-} else {
-  console.log("Campaign not found");
-}
+console.log(campaign ? campaign.name : "Not found");
 ```
 
 ---
@@ -776,16 +681,10 @@ const { campaign, error } = await joinCampaign(
   user.uid,
   user.displayName,
 );
-
-if (error) {
-  alert(error); // "Campagna non trovata" o "Sei già membro"
-}
+if (error) alert(error);
 ```
 
-**Errors:**
-
-- "Campagna non trovata"
-- "Sei già membro di questa campagna"
+**Errors:** "Campagna non trovata", "Sei già membro di questa campagna"
 
 ---
 
@@ -814,15 +713,9 @@ const { success, error } = await leaveCampaign(campaignId, userId);
 **Example:**
 
 ```javascript
-const { success, error } = await leaveCampaign(campaign.id, user.uid);
-
-if (success) {
-  console.log("Left campaign");
-  // Se era ultimo membro, campagna auto-eliminata
-}
+const { success } = await leaveCampaign(campaign.id, user.uid);
+if (success) console.log("Left campaign");
 ```
-
-**Note:** Se utente è l'ultimo membro, la campagna viene eliminata.
 
 ---
 
@@ -851,11 +744,652 @@ const { success, error } = await updateCampaignName(campaignId, newName);
 **Example:**
 
 ```javascript
-const { error } = await updateCampaignName(campaign.id, "Nuovo Nome Campagna");
+const { error } = await updateCampaignName(campaign.id, "Nuovo Nome");
+```
 
-if (!error) {
-  console.log("Name updated");
+---
+
+#### toggleCampaignImportant
+
+Segna/rimuovi campagna come importante (stella).
+
+```javascript
+const { success, error } = await toggleCampaignImportant(
+  campaignId,
+  isImportant,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `isImportant` (boolean): Stato importante
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
 }
+```
+
+**Example:**
+
+```javascript
+const { error } = await toggleCampaignImportant(campaign.id, true);
+```
+
+---
+
+#### voteForCampaignStatus
+
+Vota per cambiare stato campagna.
+
+```javascript
+const { success, statusChanged, error } = await voteForCampaignStatus(
+  campaignId,
+  userId,
+  desiredStatus,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `userId` (string): UID votante
+- `desiredStatus` (string): "not-started" | "in-progress" | "completed"
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  statusChanged: boolean,  // true se tutti hanno votato e stato è cambiato
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { statusChanged } = await voteForCampaignStatus(
+  campaignId,
+  user.uid,
+  "in-progress",
+);
+alert(statusChanged ? "Campagna avviata!" : "Voto registrato");
+```
+
+**Errors:** "La campagna è già in questo stato", "Non si può cambiare lo stato di una campagna terminata", "Hai già votato per questo stato"
+
+---
+
+#### revokeStatusVote
+
+Revoca voto per cambio stato.
+
+```javascript
+const { success, error } = await revokeStatusVote(
+  campaignId,
+  userId,
+  statusVotedFor,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `userId` (string): UID votante
+- `statusVotedFor` (string): Stato per cui aveva votato
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { error } = await revokeStatusVote(campaignId, user.uid, "in-progress");
+```
+
+---
+
+#### getUserCampaigns
+
+Recupera tutte le campagne di cui l'utente è membro.
+
+**Parameters:**
+
+- `userId` (string): ID utente
+
+**Returns:**
+
+```javascript
+{
+  campaigns: Array<Campaign>,
+  error: string | null
+}
+```
+
+**Esempio:**
+
+```javascript
+const { campaigns } = await getUserCampaigns(user.uid);
+console.log(`Found ${campaigns.length} campaigns`);
+```
+
+---
+
+### Matches
+
+**Path:** `src/services/firebase/matches.js`
+
+Servizi per gestione partite all'interno delle campagne.
+
+#### createMatch
+
+Crea nuova partita in una campagna.
+
+```javascript
+const { success, match, error } = await createMatch(
+  campaignId,
+  memberIds,
+  memberDetails,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `memberIds` (Array<string>): Array di user IDs
+- `memberDetails` (object): Dettagli membri dalla campagna
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  match: {
+    id: string,
+    status: "in-progress",
+    turns: 0,
+    participants: {...},
+    draftCompleted: false,
+    createdAt: string
+  } | null,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { match, error } = await createMatch(
+  campaignId,
+  campaign.members,
+  campaign.memberDetails,
+);
+if (error) alert(error);
+```
+
+**Errors:** "Campaign not found", "Completa la partita corrente prima di crearne una nuova"
+
+---
+
+#### updateMatchTurns
+
+Aggiorna numero turni della partita.
+
+```javascript
+const { success, error } = await updateMatchTurns(campaignId, matchId, turns);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `matchId` (string): ID partita
+- `turns` (number): Numero turni
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { error } = await updateMatchTurns(campaignId, matchId, 300);
+```
+
+---
+
+#### completeMatch
+
+Completa partita con tutti i dettagli e calcola punteggi.
+
+```javascript
+const { success, error } = await completeMatch(
+  campaignId,
+  matchId,
+  turns,
+  scores,
+  bonusTags,
+  winnerId,
+  victoryType,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `matchId` (string): ID partita
+- `turns` (number): Turni finali
+- `scores` (object): `{ userId: rawScore }`
+- `bonusTags` (object): `{ userId: [tagId, ...] }`
+- `winnerId` (string): User ID vincitore (o "" per defeat/canceled)
+- `victoryType` (string): Tipo vittoria
+
+**Victory Types:**
+
+- "science", "culture", "diplomatic", "domination", "religious", "score"
+- "forfait" - Vittoria per resa avversari
+- "defeat" - Tutti sconfitti da bot
+- "canceled" - Partita annullata
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { error } = await completeMatch(
+  campaignId,
+  matchId,
+  320,
+  { user1: 450, user2: 520 },
+  { user1: ["second-place"], user2: ["survivor"] },
+  "user2",
+  "science",
+);
+```
+
+---
+
+#### updateParticipantScore
+
+Aggiorna manualmente il punteggio grezzo di un partecipante in una partita.
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `matchId` (string): ID partita
+- `participantId` (string): ID partecipante
+- `score` (number): Punteggio grezzo
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Esempio:**
+
+```javascript
+const { success } = await updateParticipantScore(
+  campaignId,
+  matchId,
+  userId,
+  150,
+);
+```
+
+---
+
+#### linkDraftToMatch
+
+Collega i leader selezionati dal draft ai partecipanti di una partita.
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `matchId` (string): ID partita
+- `selectedLeaders` (object): `{ userId: leaderId, ... }`
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Esempio:**
+
+```javascript
+const { success } = await linkDraftToMatch(campaignId, matchId, {
+  user1: "abraham-lincoln",
+  user2: "cleopatra",
+});
+```
+
+---
+
+### Draft
+
+**Path:** `src/services/firebase/draft.js`
+
+Servizi per sistema draft leader.
+
+#### initializeDraft
+
+Inizializza draft per una campagna.
+
+```javascript
+const { success, error } = await initializeDraft(campaignId);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+await initializeDraft(campaignId);
+```
+
+---
+
+#### togglePlayerReady
+
+Segna/rimuovi giocatore come pronto per il draft.
+
+```javascript
+const { success, error } = await togglePlayerReady(
+  campaignId,
+  playerId,
+  isReady,
+  allMembers,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `playerId` (string): User ID giocatore
+- `isReady` (boolean): Stato ready
+- `allMembers` (Array<string>): Tutti i membri della campagna
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { error } = await togglePlayerReady(
+  campaignId,
+  user.uid,
+  true,
+  campaign.members,
+);
+```
+
+---
+
+#### executeDraft
+
+Esegue il draft assegnando leader random ai giocatori.
+
+```javascript
+const { success, error } = await executeDraft(campaignId, playerIds);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `playerIds` (Array<string>): Array di user IDs
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+await executeDraft(campaignId, campaign.members);
+```
+
+---
+
+#### submitBanVote
+
+Vota per bannare un leader di un avversario.
+
+```javascript
+const { success, error } = await submitBanVote(
+  campaignId,
+  voterId,
+  targetPlayerId,
+  bannedLeaderId,
+  allMembers,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `voterId` (string): User ID votante
+- `targetPlayerId` (string): User ID target del ban
+- `bannedLeaderId` (string): ID leader da bannare
+- `allMembers` (Array<string>): Tutti i membri
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { error } = await submitBanVote(
+  campaignId,
+  user.uid,
+  targetId,
+  leaderId,
+  campaign.members,
+);
+```
+
+---
+
+#### finalizeBans
+
+Finalizza i ban votati e passa alla fase completata.
+
+```javascript
+const { success, error } = await finalizeBans(campaignId, playerIds);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `playerIds` (Array<string>): Array di user IDs
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+await finalizeBans(campaignId, campaign.members);
+```
+
+---
+
+#### selectFinalLeader
+
+Seleziona leader finale dopo il draft.
+
+```javascript
+const { success, error } = await selectFinalLeader(
+  campaignId,
+  playerId,
+  leaderId,
+);
+```
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `playerId` (string): User ID giocatore
+- `leaderId` (string): ID leader scelto
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Example:**
+
+```javascript
+const { error } = await selectFinalLeader(
+  campaignId,
+  user.uid,
+  selectedLeader.id,
+);
+if (!error) console.log("Leader selected");
+```
+
+---
+
+#### markPlayerSeenDraft
+
+Segna che un giocatore ha visualizzato il risultato del draft.
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `playerId` (string): ID giocatore
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Esempio:**
+
+```javascript
+const { success } = await markPlayerSeenDraft(campaignId, user.uid);
+```
+
+---
+
+#### voteResetDraft
+
+Vota per resettare il draft e ricominciare da capo.
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+- `playerId` (string): ID giocatore votante
+- `votesReset` (boolean): `true` per votare reset, `false` per annullare voto
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Esempio:**
+
+```javascript
+const { success } = await voteResetDraft(campaignId, user.uid, true);
+```
+
+---
+
+#### resetDraft
+
+Resetta manualmente il draft allo stato iniziale.
+
+**Parameters:**
+
+- `campaignId` (string): ID campagna
+
+**Returns:**
+
+```javascript
+{
+  success: boolean,
+  error: string | null
+}
+```
+
+**Esempio:**
+
+```javascript
+const { success } = await resetDraft(campaignId);
 ```
 
 ---
@@ -892,13 +1426,8 @@ const { url, error } = await uploadFile(file, path);
 
 ```javascript
 const file = document.querySelector('input[type="file"]').files[0];
-
-const { url, error } = await uploadFile(file, `avatars/${userId}.jpg`);
-
-if (url) {
-  console.log("File uploaded:", url);
-  await updateUserProfile({ photoURL: url });
-}
+const { url } = await uploadFile(file, `avatars/${userId}.jpg`);
+if (url) await updateUserProfile({ photoURL: url });
 ```
 
 ---
@@ -920,11 +1449,10 @@ const { url, error } = await uploadFileWithProgress(file, path, onProgress);
 **Example:**
 
 ```javascript
-const { url, error } = await uploadFileWithProgress(
+const { url } = await uploadFileWithProgress(
   file,
   `images/${Date.now()}.jpg`,
   (progress) => {
-    console.log(`Upload: ${progress}%`);
     setUploadProgress(progress);
   },
 );
@@ -957,7 +1485,6 @@ const { url, error } = await getFileURL(path);
 
 ```javascript
 const { url } = await getFileURL("avatars/user123.jpg");
-console.log("File URL:", url);
 ```
 
 ---
@@ -986,9 +1513,6 @@ const { error } = await deleteFile(path);
 
 ```javascript
 const { error } = await deleteFile("avatars/old-avatar.jpg");
-if (!error) {
-  console.log("File deleted");
-}
 ```
 
 ---
@@ -1018,7 +1542,6 @@ const { files, error } = await listFiles(path);
 
 ```javascript
 const { files } = await listFiles("avatars/");
-console.log("Files:", files);
 ```
 
 ---
@@ -1106,16 +1629,12 @@ const isValid = isValidCampaignCode(code);
 **Example:**
 
 ```javascript
-isValidCampaignCode("ABC12345"); // true
-isValidCampaignCode("abc123"); // false (solo 6 char)
-isValidCampaignCode("ABC@1234"); // false (carattere non valido)
+isValidCampaignCode("ABC12345");
+isValidCampaignCode("abc123");
+isValidCampaignCode("ABC@1234");
 ```
 
-**Regole:**
-
-- Esattamente 8 caratteri
-- Solo lettere (A-Z) e numeri (0-9)
-- Case-insensitive
+**Regole:** 8 caratteri, solo lettere (A-Z) e numeri (0-9), case-insensitive
 
 ---
 
@@ -1138,7 +1657,7 @@ const formatted = formatCampaignCode(code);
 **Example:**
 
 ```javascript
-formatCampaignCode("ABC12345"); // "AB C1 23 45"
+formatCampaignCode("ABC12345");
 ```
 
 ---

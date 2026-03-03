@@ -268,7 +268,48 @@ Vai direttamente al documento specifico usando questo indice o la ricerca.
 
 ## 🔄 Aggiornamenti Documentazione
 
-**Ultima revisione:** 1 Marzo 2026
+**Ultima revisione:** 3 Marzo 2026
+
+### Changelog Recente
+
+**Fase 2 - Ottimizzazione (3 Marzo 2026):**
+
+- ✅ Ottimizzato: HOOKS.md ridotto da 1049 a ~800 linee (-25%)
+  - Consolidati esempi useFileUpload da 3 a 1
+  - Semplificati esempi useCollection da 5 a 2
+  - Consolidati esempi useDocument da 3 a 1
+  - Unificate sezioni Best Practices e Performance
+- ✅ Ottimizzato: COMPONENTS.md ridotto da 1184 a ~900 linee (-24%)
+  - Convertite descrizioni variant Button in tabella
+  - Semplificati esempi Input e Modal
+  - Unificate sezioni Best Practices, Styling, Accessibilità in Guidelines
+- ✅ Ottimizzato: README.md ridotto da 388 a ~250 linee (-35%)
+  - Condensate 74+ feature bullets in sezioni high-level
+  - Semplificato Design System in Quick Reference
+  - Ridotto Stato Progetto da 135+ a 30 linee
+- ✅ Ottimizzato: API_REFERENCE.md ridotto da 2034 a ~1600 linee (-21%)
+  - Rimossi commenti ridondanti in tutti gli esempi
+  - Condensate sezioni Returns verbose
+  - Unificate liste Errors in formato compatto
+
+**Fase 1 - Correzioni (3 Marzo 2026):**
+
+- ✅ Aggiunto: Sistema voto stato campagna
+- ✅ Aggiunto: Sistema marcatura campagne importanti (stella)
+- ✅ Aggiunto: Sistema gestione partite completo
+- ✅ Aggiunto: Sistema draft leader multi-fase
+- ✅ Aggiunto: Sistema punteggi dinamico con victory points
+- ✅ Aggiunto: Sistema bonus tags moltiplicativi
+- ✅ Aggiunto: Documentazione 15+ componenti modali
+- ✅ Aggiunto: API reference per matches e draft
+- ✅ Aggiunto: Documentazione hooks useLeaders e useLeader
+- ✅ Aggiunto: API reference per funzioni getUserCampaigns, updateParticipantScore, linkDraftToMatch
+- ✅ Aggiunto: API reference per funzioni markPlayerSeenDraft, voteResetDraft, resetDraft
+- ✅ Aggiornato: User guide con tutte le nuove funzionalità
+- ✅ Aggiornato: Campaigns system con struttura dati completa
+- ✅ Aggiornato: Indice COMPONENTS.md con tutti i 18 componenti documentati
+- ✅ Corretto: Rimosso riferimento a bug nella USER_GUIDE
+- ✅ Corretto: Rimosso duplicato CampaignInfoModal in COMPONENTS.md
 
 ### Quando Aggiornare
 
