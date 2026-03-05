@@ -136,14 +136,40 @@ export const joinCampaign = async (code, userId, username) => {
 
     // Add user to campaign
     const campaignRef = doc(db, "campaigns", campaign.id);
-    await updateDoc(campaignRef, {
+
+    // Prepare base update object
+    const updateData = {
       members: arrayUnion(userId),
       [`memberDetails.${userId}`]: {
         username,
         joinedAt: new Date().toISOString(),
       },
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    // If there's an active match, add the new member to it
+    const matches = Array.isArray(campaign.matches) ? campaign.matches : [];
+    if (matches.length > 0) {
+      const currentMatch = matches[matches.length - 1];
+      if (currentMatch.status === "in-progress") {
+        // Clone the matches array and add the new participant to the last match
+        const updatedMatches = [...matches];
+        updatedMatches[updatedMatches.length - 1] = {
+          ...currentMatch,
+          participants: {
+            ...currentMatch.participants,
+            [userId]: {
+              username,
+              leaderId: null,
+              score: 0,
+            },
+          },
+        };
+        updateData.matches = updatedMatches;
+      }
+    }
+
+    await updateDoc(campaignRef, updateData);
 
     // Get updated campaign
     const updatedCampaign = await getDoc(campaignRef);
@@ -174,6 +200,14 @@ export const leaveCampaign = async (campaignId, userId) => {
     }
 
     const campaign = campaignDoc.data();
+
+    // Check if campaign is in progress - block leaving
+    if (campaign.status === "in-progress") {
+      return {
+        success: false,
+        error: "Non puoi uscire da una campagna in corso",
+      };
+    }
 
     // If user is the last member, delete the campaign
     if (campaign.members.length === 1 && campaign.members[0] === userId) {

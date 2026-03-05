@@ -8,8 +8,8 @@ import {
   Trophy,
   BarChart3,
   ScrollText,
-  Activity,
   Users,
+  Power,
 } from "lucide-react";
 import { useDocument, useLeaders } from "../../hooks";
 import { useAuthContext } from "../../contexts";
@@ -80,6 +80,17 @@ export function Campaign() {
     loading,
     error: _error,
   } = useDocument("campaigns", campaignId);
+
+  // Debug: Log when campaign data changes
+  useEffect(() => {
+    if (campaign) {
+      console.log("[Campaign] Data updated:", {
+        membersCount: campaign.members?.length,
+        matchesCount: campaign.matches?.length,
+        lastMatch: campaign.matches?.[campaign.matches.length - 1],
+      });
+    }
+  }, [campaign]);
 
   // Load all leaders
   const {
@@ -249,12 +260,6 @@ export function Campaign() {
   const handleCreateMatch = async () => {
     if (!campaign || !user) return;
 
-    // Check if campaign is in-progress
-    if (campaign.status !== "in-progress") {
-      alert("Non puoi creare una nuova partita se la campagna non è in corso.");
-      return;
-    }
-
     const { success, error } = await createMatch(
       campaignId,
       campaign.members,
@@ -385,23 +390,27 @@ export function Campaign() {
   };
 
   const handleOpenDraftModal = () => {
-    // Check if campaign is in-progress
-    if (campaign?.status !== "in-progress") {
-      alert("Non puoi avviare un draft se la campagna non è in corso.");
-      return;
-    }
     setDraftModalOpen(true);
   };
 
   // Match system logic
-  const matches = campaign?.matches || [];
+  const matches = Array.isArray(campaign?.matches) ? campaign.matches : [];
   const hasMatches = matches.length > 0;
   const currentMatch = hasMatches ? matches[matches.length - 1] : null;
   const isCurrentMatchActive =
     currentMatch && currentMatch.status === "in-progress";
-  const canCreateNewMatch =
-    (!hasMatches || !isCurrentMatchActive) &&
-    campaign?.status === "in-progress";
+  const canCreateNewMatch = !hasMatches || !isCurrentMatchActive;
+
+  // Debug: Log match participants
+  useEffect(() => {
+    if (currentMatch) {
+      console.log(
+        "[Campaign] Current match participants:",
+        Object.keys(currentMatch.participants || {}).length,
+        currentMatch.participants,
+      );
+    }
+  }, [currentMatch]);
 
   // Calculate victory counts from completed matches
   const victoryCounts = matches
@@ -554,8 +563,8 @@ export function Campaign() {
                 }}
                 type="button"
               >
-                <Activity size={18} />
-                <span>Stato Campagna</span>
+                <Power size={18} />
+                <span>Termina Campagna</span>
               </button>
               <button
                 className="campaign-kebab-item"

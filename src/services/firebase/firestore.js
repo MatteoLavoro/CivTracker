@@ -146,7 +146,12 @@ export const subscribeToDocument = (collectionName, documentId, callback) => {
     doc(db, collectionName, documentId),
     (doc) => {
       if (doc.exists()) {
-        callback({ id: doc.id, ...doc.data() });
+        const data = { id: doc.id, ...doc.data() };
+        console.log(
+          `[Real-time Update] ${collectionName}/${documentId}:`,
+          data,
+        );
+        callback(data);
       } else {
         callback(null);
       }

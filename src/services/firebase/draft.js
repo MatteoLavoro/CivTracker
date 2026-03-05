@@ -178,13 +178,14 @@ export const executeDraft = async (campaignId, playerIds) => {
       };
     });
 
-    // Update campaign
+    // Update campaign and automatically change status to in-progress
     await updateDoc(campaignRef, {
       "draft.phase": "active",
       "draft.playerDrafts": playerDrafts,
       "draft.playerStates": playerStates,
       "draft.banVotes": {},
       "draft.bannedLeaders": {},
+      status: "in-progress",
       updatedAt: new Date().toISOString(),
     });
 

@@ -39,7 +39,7 @@ service cloud.firestore {
                          // Case 2: User is adding themselves to the campaign (not yet a member)
                          (!(request.auth.uid in resource.data.members) &&
                           request.auth.uid in request.resource.data.members &&
-                          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberDetails', 'updatedAt']) &&
+                          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberDetails', 'updatedAt', 'matches']) &&
                           request.resource.data.members.size() == resource.data.members.size() + 1)
                        );
       

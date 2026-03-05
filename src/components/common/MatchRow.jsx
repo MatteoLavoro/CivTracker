@@ -1,5 +1,5 @@
 // Match Row Component
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, Users, Pencil, Clock, Info } from "lucide-react";
 import { PlayerDraftInfoModal } from "./PlayerDraftInfoModal";
 import "./MatchRow.css";
@@ -83,6 +83,15 @@ export function MatchRow({
     return nameA.localeCompare(nameB);
   });
   const isCompleted = match.status === "completed";
+
+  // Debug: Log when participants change
+  useEffect(() => {
+    console.log(
+      `[MatchRow #${matchNumber}] Participants updated:`,
+      participants.length,
+      participants,
+    );
+  }, [match.participants, matchNumber]);
 
   // Get winner from match data
   const winner =

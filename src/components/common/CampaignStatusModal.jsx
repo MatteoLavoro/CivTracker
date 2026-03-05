@@ -1,18 +1,17 @@
 // Campaign Status Modal - Manage campaign lifecycle status
 import { useState } from "react";
-import { Play, Pause, CheckCircle, Users, Vote } from "lucide-react";
+import { CheckCircle, Users, Vote } from "lucide-react";
 import { Modal } from "./Modal";
 import { ConfirmModal } from "./ConfirmModal";
 import "./CampaignStatusModal.css";
 
 /**
  * CampaignStatusModal Component
- * Allows campaign members to vote unanimously on campaign status changes
+ * Allows campaign members to vote unanimously to end the campaign
  *
  * Status flow:
- * - not-started: Campaign hasn't started, members can join/leave freely
- * - in-progress: Campaign is active, no one can join or leave
- * - completed: Campaign is finished, members can join/leave, but status cannot change back
+ * - Campaigns automatically go to "in-progress" when draft countdown finishes
+ * - This modal allows voting to end the campaign (in-progress → completed)
  *
  * @param {boolean} isOpen - Whether the modal is open
  * @param {Function} onClose - Callback when modal closes
@@ -40,34 +39,17 @@ export function CampaignStatusModal({
   const members = campaign.members || [];
   const memberDetails = campaign.memberDetails || {};
 
-  // Status definitions
-  const statuses = [
-    {
-      id: "not-started",
-      name: "Non Iniziata",
-      icon: Pause,
-      color: "blue",
-      description:
-        "La campagna non è ancora iniziata. I membri possono entrare e uscire liberamente.",
-    },
-    {
-      id: "in-progress",
-      name: "In Corso",
-      icon: Play,
-      color: "gold",
-      description:
-        "La campagna è attiva. Nessuno può entrare o uscire fino al termine.",
-    },
-    {
-      id: "completed",
-      name: "Terminata",
-      icon: CheckCircle,
-      color: "green",
-      description: "La campagna è conclusa. I membri possono entrare e uscire.",
-    },
-  ];
+  // Only show end campaign voting when campaign is in-progress
+  const canEndCampaign = currentStatus === "in-progress";
 
-  const currentStatusInfo = statuses.find((s) => s.id === currentStatus);
+  // Status definition for completed
+  const completedStatus = {
+    id: "completed",
+    name: "Terminata",
+    icon: CheckCircle,
+    color: "green",
+    description: "La campagna è conclusa.",
+  };
 
   // Get vote info for each status
   const getVoteInfo = (statusId) => {
@@ -109,68 +91,68 @@ export function CampaignStatusModal({
     setConfirmModalOpen(false);
   };
 
-  // Get next possible status
-  const getNextStatus = () => {
-    if (currentStatus === "not-started") return "in-progress";
-    if (currentStatus === "in-progress") return "completed";
-    return null; // completed has no next status
-  };
-
-  const nextStatusId = getNextStatus();
-  const nextStatusInfo = statuses.find((s) => s.id === nextStatusId);
-  const nextVoteInfo = nextStatusId ? getVoteInfo(nextStatusId) : null;
+  // Get vote info for end campaign
+  const endVoteInfo = canEndCampaign ? getVoteInfo("completed") : null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Stato Campagna">
+    <Modal isOpen={isOpen} onClose={onClose} title="Termina Campagna">
       <div className="campaign-status-content">
-        {/* Current Status Display */}
-        <div className="status-current-card">
-          <div className="status-current-header">
-            <div className="status-current-icon-wrapper">
-              {currentStatusInfo && (
-                <currentStatusInfo.icon size={28} strokeWidth={2.5} />
-              )}
+        {/* Campaign Already Completed */}
+        {currentStatus === "completed" && (
+          <div className="status-info-footer">
+            <div className="status-completed-icon">
+              <CheckCircle size={48} strokeWidth={2} />
             </div>
-            <div className="status-current-info">
-              <span className="status-current-label">Stato Attuale</span>
-              <h3 className="status-current-name">
-                {currentStatusInfo?.name || "Sconosciuto"}
-              </h3>
-            </div>
+            <p className="status-completed-title">
+              <strong>Campagna Terminata</strong>
+            </p>
+            <p>La campagna è già conclusa.</p>
           </div>
-          <p className="status-current-description">
-            {currentStatusInfo?.description}
-          </p>
-        </div>
+        )}
 
-        {/* Next Status Section */}
-        {nextStatusInfo && nextVoteInfo && (
+        {/* Campaign Not Started Yet */}
+        {currentStatus === "not-started" && (
+          <div className="status-info-footer">
+            <p className="status-info-title">
+              <strong>Campagna Non Ancora Iniziata</strong>
+            </p>
+            <p>
+              La campagna passerà automaticamente a "In Corso" quando il
+              countdown del primo draft finisce. Potrai terminare la campagna
+              solo dopo che sarà iniziata.
+            </p>
+          </div>
+        )}
+
+        {/* Vote to End Campaign (in-progress only) */}
+        {canEndCampaign && endVoteInfo && (
           <div className="status-change-section">
             <div className="status-change-header">
               <Vote size={20} />
-              <h4 className="status-change-title">Cambia Stato</h4>
+              <h4 className="status-change-title">Vota per Terminare</h4>
             </div>
             <p className="status-change-description">
-              Tutti i membri devono votare per passare allo stato successivo.
+              Tutti i membri devono votare per terminare la campagna. Una volta
+              terminata, la campagna non può più essere modificata.
             </p>
 
-            {/* Next Status Option */}
+            {/* End Campaign Option */}
             <div className="status-options-list">
               <div
-                className={`status-option ${nextVoteInfo.hasVoted ? "status-option-voted" : ""}`}
+                className={`status-option ${endVoteInfo.hasVoted ? "status-option-voted" : ""}`}
               >
                 <div className="status-option-header">
                   <div
-                    className={`status-option-icon-wrapper status-icon-${nextStatusInfo.color}`}
+                    className={`status-option-icon-wrapper status-icon-${completedStatus.color}`}
                   >
-                    <nextStatusInfo.icon size={24} />
+                    <completedStatus.icon size={24} />
                   </div>
                   <div className="status-option-info">
                     <h5 className="status-option-name">
-                      {nextStatusInfo.name}
+                      {completedStatus.name}
                     </h5>
                     <p className="status-option-description">
-                      {nextStatusInfo.description}
+                      {completedStatus.description}
                     </p>
                   </div>
                 </div>
@@ -180,24 +162,24 @@ export function CampaignStatusModal({
                   <div className="status-vote-count">
                     <Users size={16} />
                     <span>
-                      {nextVoteInfo.votesCount}/{nextVoteInfo.totalMembers}
+                      {endVoteInfo.votesCount}/{endVoteInfo.totalMembers}
                     </span>
                   </div>
 
                   <button
                     type="button"
-                    className={`status-vote-btn ${nextVoteInfo.hasVoted ? "status-vote-btn-active" : ""}`}
-                    onClick={() => handleVote(nextStatusId)}
+                    className={`status-vote-btn ${endVoteInfo.hasVoted ? "status-vote-btn-active" : ""}`}
+                    onClick={() => handleVote("completed")}
                     disabled={isVoting}
                   >
-                    {nextVoteInfo.hasVoted ? "Revoca Voto" : "Vota"}
+                    {endVoteInfo.hasVoted ? "Revoca Voto" : "Vota"}
                   </button>
                 </div>
 
                 {/* Voters List (if any) */}
-                {nextVoteInfo.votesCount > 0 && (
+                {endVoteInfo.votesCount > 0 && (
                   <div className="status-voters-list">
-                    {nextVoteInfo.voters.map((voterId) => (
+                    {endVoteInfo.voters.map((voterId) => (
                       <span key={voterId} className="status-voter-badge">
                         {memberDetails[voterId]?.username || "Sconosciuto"}
                       </span>
@@ -206,16 +188,6 @@ export function CampaignStatusModal({
                 )}
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Completed Status Message */}
-        {currentStatus === "completed" && (
-          <div className="status-info-footer">
-            <p>
-              <strong>Campagna Terminata</strong>
-            </p>
-            <p>La campagna è conclusa. Non è possibile cambiarla stato.</p>
           </div>
         )}
       </div>
@@ -230,8 +202,8 @@ export function CampaignStatusModal({
         onConfirm={handleConfirmVote}
         title="Conferma Voto"
         message={
-          statusToVote
-            ? `Sei sicuro di voler votare per cambiare lo stato della campagna a "${statuses.find((s) => s.id === statusToVote)?.name || "Sconosciuto"}"? Questa azione richiede il consenso di tutti i membri.`
+          statusToVote === "completed"
+            ? "Sei sicuro di voler votare per terminare la campagna? Una volta terminata, non potrai più creare partite o modificare i dati. Questa azione richiede il consenso di tutti i membri."
             : ""
         }
         confirmLabel="Conferma"

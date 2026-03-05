@@ -39,10 +39,9 @@ export function Home() {
   const calculatePlayerRankings = (campaign) => {
     if (!campaign.members || !campaign.memberDetails) return [];
 
-    // Get completed matches
-    const completedMatches = (campaign.matches || []).filter(
-      (m) => m.status === "completed",
-    );
+    // Get completed matches - ensure matches is an array
+    const matches = Array.isArray(campaign.matches) ? campaign.matches : [];
+    const completedMatches = matches.filter((m) => m.status === "completed");
 
     // If no completed matches, return alphabetically sorted list
     if (completedMatches.length === 0) {
