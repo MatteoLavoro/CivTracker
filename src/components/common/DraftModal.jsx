@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Check, X, Clock, Ban } from "lucide-react";
 import { Modal } from "./Modal";
+import { Avatar } from "./Avatar";
 import "./DraftModal.css";
 
 /**
@@ -134,10 +135,12 @@ export function DraftModal({
                     key={memberId}
                     className={`ready-player ${isPlayerReady ? "ready" : ""}`}
                   >
-                    <div className="ready-player-avatar">
-                      {memberData?.username?.substring(0, 2).toUpperCase() ||
-                        "?"}
-                    </div>
+                    <Avatar
+                      photoURL={memberData?.photoURL}
+                      displayName={memberData?.username}
+                      email={null}
+                      size={32}
+                    />
                     <span className="ready-player-name">
                       {memberData?.username || "Sconosciuto"}
                     </span>
@@ -298,9 +301,12 @@ export function DraftModal({
       <>
         <div className="draft-modal-body">
           <div className="ban-target-player">
-            <div className="ban-target-avatar">
-              {targetMemberData?.username?.substring(0, 2).toUpperCase() || "?"}
-            </div>
+            <Avatar
+              photoURL={targetMemberData?.photoURL}
+              displayName={targetMemberData?.username}
+              email={null}
+              size={40}
+            />
             <div className="ban-target-name">
               {targetMemberData?.username || "Sconosciuto"}
             </div>

@@ -1,5 +1,6 @@
 // Winner Select Modal - Select winner from participants
 import { Modal } from "./Modal";
+import { Avatar } from "./Avatar";
 import "./WinnerSelectModal.css";
 
 /**
@@ -48,9 +49,12 @@ export function WinnerSelectModal({
                 onClick={() => handleSelectWinner(userId)}
               >
                 <div className="winner-select-player">
-                  <div className="winner-select-avatar">
-                    {participant.username?.substring(0, 2).toUpperCase() || "?"}
-                  </div>
+                  <Avatar
+                    photoURL={participant.photoURL}
+                    displayName={participant.username}
+                    email={null}
+                    size={32}
+                  />
                   <span className="winner-select-username">
                     {participant.username}
                   </span>

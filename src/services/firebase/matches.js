@@ -44,6 +44,7 @@ export const createMatch = async (campaignId, memberIds, memberDetails) => {
     memberIds.forEach((memberId) => {
       participants[memberId] = {
         username: memberDetails[memberId]?.username || "Sconosciuto",
+        photoURL: memberDetails[memberId]?.photoURL || null,
         leaderId: null,
         score: 0,
       };

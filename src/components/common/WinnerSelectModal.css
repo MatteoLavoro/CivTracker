@@ -54,26 +54,6 @@
   min-width: 0;
 }
 
-.winner-select-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(212, 175, 55, 0.3),
-    rgba(184, 134, 11, 0.2)
-  );
-  border: 2px solid rgba(212, 175, 55, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
 .winner-select-username {
   font-size: 1rem;
   font-weight: 600;

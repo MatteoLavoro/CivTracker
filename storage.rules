@@ -1,0 +1,31 @@
+rules_version = '2';
+
+// Firebase Storage Security Rules for CivTracker
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Profile images - users can only upload/delete their own
+    match /profile-images/{userId}/{allPaths=**} {
+      allow read: if true; // Everyone can read profile images
+      allow write: if request.auth != null && request.auth.uid == userId; // Only owner can write
+      allow delete: if request.auth != null && request.auth.uid == userId; // Only owner can delete
+      
+      // Validation: max 5MB, only images
+      allow create: if request.auth != null 
+                    && request.auth.uid == userId
+                    && request.resource.size < 5 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+    
+    // Public assets (leader icons, civilization icons, etc.)
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Only admins via console
+    }
+    
+    // Default: deny all
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -7,6 +7,7 @@ import { useCollection } from "../../hooks";
 import {
   logOut,
   updateUserProfile,
+  updateMemberDetailsInCampaigns,
   createCampaign,
   joinCampaign,
   leaveCampaign,
@@ -14,10 +15,12 @@ import {
   toggleCampaignImportant,
 } from "../../services/firebase";
 import {
+  Avatar,
   TextInputModal,
   ProfileModal,
   CampaignInfoModal,
 } from "../../components/common";
+import { preloadImages } from "../../utils/imagePreloader";
 import "./Home.css";
 
 /**
@@ -99,6 +102,25 @@ export function Home() {
     },
   ]);
 
+  // Preload all member profile images when campaigns load
+  useEffect(() => {
+    if (campaigns && campaigns.length > 0) {
+      const photoURLs = campaigns.flatMap((campaign) => {
+        if (!campaign.memberDetails) return [];
+        return Object.values(campaign.memberDetails)
+          .filter((member) => member) // Filter out null/undefined members
+          .map((member) => member.photoURL)
+          .filter(Boolean);
+      });
+
+      if (photoURLs.length > 0) {
+        preloadImages(photoURLs).then(() => {
+          console.log(`Preloaded ${photoURLs.length} profile images`);
+        });
+      }
+    }
+  }, [campaigns]);
+
   const handleLogout = async () => {
     await logOut();
     navigate("/");
@@ -114,6 +136,7 @@ export function Home() {
       campaignName,
       user.uid,
       username,
+      user.photoURL || null,
     );
 
     setIsCreating(false);
@@ -130,7 +153,12 @@ export function Home() {
     setIsJoining(true);
     const username = user.displayName || user.email?.split("@")[0] || "Utente";
 
-    const { campaign, error } = await joinCampaign(code, user.uid, username);
+    const { campaign, error } = await joinCampaign(
+      code,
+      user.uid,
+      username,
+      user.photoURL || null,
+    );
 
     setIsJoining(false);
 
@@ -193,26 +221,20 @@ export function Home() {
   };
 
   const handleUpdateUsername = async (newUsername) => {
-    const { error } = await updateUserProfile(newUsername);
+    if (!user) return;
+
+    const { error } = await updateUserProfile(newUsername, user.photoURL);
     if (error) {
       console.error("Errore aggiornamento username:", error);
     } else {
       console.log("Username aggiornato con successo:", newUsername);
-    }
-  };
 
-  const getUserInitials = () => {
-    if (user?.displayName) {
-      const names = user.displayName.split(" ");
-      if (names.length >= 2) {
-        return (names[0][0] + names[1][0]).toUpperCase();
-      }
-      return user.displayName.substring(0, 2).toUpperCase();
+      // Update member details in all campaigns
+      await updateMemberDetailsInCampaigns(user.uid, {
+        username: newUsername,
+        photoURL: user.photoURL || null,
+      });
     }
-    if (user?.email) {
-      return user.email.substring(0, 2).toUpperCase();
-    }
-    return "U";
   };
 
   const loading = authLoading || campaignsLoading;
@@ -239,7 +261,12 @@ export function Home() {
             aria-label="Apri profilo"
             type="button"
           >
-            <div className="profile-avatar-initials">{getUserInitials()}</div>
+            <Avatar
+              photoURL={user?.photoURL}
+              displayName={user?.displayName}
+              email={user?.email}
+              size={48}
+            />
           </button>
         </header>
 
@@ -324,9 +351,16 @@ export function Home() {
                               )}
                             </div>
                             <span className="campaign-member-divider">|</span>
-                            <div className="campaign-member-avatar">
-                              {player.username.substring(0, 2).toUpperCase()}
-                            </div>
+                            <Avatar
+                              photoURL={
+                                campaign.memberDetails[player.memberId]
+                                  ?.photoURL
+                              }
+                              displayName={player.username}
+                              email={null}
+                              size={32}
+                              className="campaign-member-avatar"
+                            />
                             <span className="campaign-member-name">
                               {player.username}
                             </span>

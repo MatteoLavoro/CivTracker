@@ -1,6 +1,7 @@
 // Match Row Component
 import { useState, useEffect } from "react";
 import { Check, Users, Pencil, Clock, Info } from "lucide-react";
+import { Avatar } from "./Avatar";
 import { PlayerDraftInfoModal } from "./PlayerDraftInfoModal";
 import "./MatchRow.css";
 
@@ -162,9 +163,13 @@ export function MatchRow({
             <div key={userId} className="match-participant-row">
               {/* 4/9 - Player Section */}
               <div className="match-participant-player">
-                <div className="match-participant-avatar">
-                  {participant.username?.substring(0, 2).toUpperCase() || "?"}
-                </div>
+                <Avatar
+                  photoURL={participant.photoURL}
+                  displayName={participant.username}
+                  email={null}
+                  size={32}
+                  className="match-participant-avatar"
+                />
                 <span className="match-participant-name">
                   {participant.username}
                 </span>

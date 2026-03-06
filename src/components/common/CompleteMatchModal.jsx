@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import {
   Modal,
+  Avatar,
   BonusInfoModal,
   WinnerSelectModal,
   VictoryTypeSelectModal,
@@ -349,11 +350,13 @@ export function CompleteMatchModal({
                     {/* Player Name */}
                     <td>
                       <div className="complete-match-player-cell">
-                        <div className="complete-match-player-avatar">
-                          {participant.username
-                            ?.substring(0, 2)
-                            .toUpperCase() || "?"}
-                        </div>
+                        <Avatar
+                          photoURL={participant.photoURL}
+                          displayName={participant.username}
+                          email={null}
+                          size={32}
+                          className="complete-match-player-avatar"
+                        />
                         <span className="complete-match-player-name">
                           {participant.username}
                         </span>
@@ -537,11 +540,13 @@ export function CompleteMatchModal({
                       className="complete-match-field-value-display"
                       onClick={() => setShowWinnerSelect(true)}
                     >
-                      <div className="complete-match-winner-avatar">
-                        {getWinnerData()
-                          ?.username?.substring(0, 2)
-                          .toUpperCase() || "?"}
-                      </div>
+                      <Avatar
+                        photoURL={getWinnerData()?.photoURL}
+                        displayName={getWinnerData()?.username}
+                        email={null}
+                        size={32}
+                        className="complete-match-winner-avatar"
+                      />
                       <span className="complete-match-value-text">
                         {getWinnerName()}
                       </span>

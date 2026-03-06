@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Modal } from "./Modal";
 import { PlayerLeaderPoolModal } from "./PlayerLeaderPoolModal";
+import { Avatar } from "./Avatar";
 import { ChevronRight } from "lucide-react";
 import "./LeaderPoolModal.css";
 
@@ -57,9 +58,12 @@ export function LeaderPoolModal({ isOpen, onClose, campaign, leaders }) {
                     onClick={() => handleSelectPlayer(playerId)}
                     type="button"
                   >
-                    <div className="leader-pool-player-avatar">
-                      {player?.username?.substring(0, 2).toUpperCase() || "?"}
-                    </div>
+                    <Avatar
+                      photoURL={player?.photoURL}
+                      displayName={player?.username}
+                      email={null}
+                      size={32}
+                    />
                     <span className="leader-pool-player-name">
                       {player?.username || "Sconosciuto"}
                     </span>

@@ -128,15 +128,6 @@ input[type="number"] {
 .complete-match-player-avatar {
   width: 36px;
   height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(212, 175, 55, 0.15);
-  border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 50%;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(212, 175, 55, 1);
   flex-shrink: 0;
 }
 
@@ -465,20 +456,6 @@ input[type="number"] {
 .complete-match-winner-avatar {
   width: 32px;
   height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(
-    135deg,
-    rgba(212, 175, 55, 0.2),
-    rgba(184, 134, 11, 0.2)
-  );
-  border: 2px solid rgba(212, 175, 55, 0.4);
-  border-radius: 50%;
-  font-weight: 700;
-  font-size: 0.75rem;
-  color: rgba(212, 175, 55, 1);
-  text-transform: uppercase;
   flex-shrink: 0;
 }
 

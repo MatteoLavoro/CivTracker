@@ -91,14 +91,23 @@ export const getCurrentUser = () => {
 
 // Update user profile (displayName)
 // LIMIT: Maximum 30 characters for displayName (validated in UI)
-export const updateUserProfile = async (displayName) => {
+export const updateUserProfile = async (displayName, photoURL = null) => {
   try {
     const user = auth.currentUser;
     if (!user) {
       return { error: "No user logged in" };
     }
 
-    await updateProfile(user, { displayName });
+    const updates = { displayName };
+    if (photoURL !== null) {
+      updates.photoURL = photoURL;
+    }
+
+    await updateProfile(user, updates);
+
+    // Force reload to sync the context
+    await user.reload();
+
     return { error: null };
   } catch (error) {
     return { error: error.message };

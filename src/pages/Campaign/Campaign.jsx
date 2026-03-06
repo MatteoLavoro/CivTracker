@@ -27,6 +27,7 @@ import {
   completeMatch,
   voteForCampaignStatus,
   revokeStatusVote,
+  migrateMatchParticipantsPhotoURL,
 } from "../../services/firebase";
 import {
   CampaignInfoModal,
@@ -42,6 +43,7 @@ import {
   ResultsModal,
   LeaderPoolModal,
 } from "../../components/common";
+import { preloadImages } from "../../utils/imagePreloader";
 import "./Campaign.css";
 
 /**
@@ -91,6 +93,37 @@ export function Campaign() {
       });
     }
   }, [campaign]);
+
+  // Preload all member profile images when campaign loads
+  useEffect(() => {
+    if (campaign?.memberDetails) {
+      const photoURLs = Object.values(campaign.memberDetails)
+        .filter((member) => member) // Filter out null/undefined members
+        .map((member) => member.photoURL)
+        .filter(Boolean);
+
+      if (photoURLs.length > 0) {
+        preloadImages(photoURLs).then(() => {
+          console.log(
+            `[Campaign] Preloaded ${photoURLs.length} profile images`,
+          );
+        });
+      }
+    }
+  }, [campaign?.memberDetails]);
+
+  // Migrate match participants to include photoURL (one-time fix for old matches)
+  useEffect(() => {
+    if (campaign && campaignId) {
+      migrateMatchParticipantsPhotoURL(campaignId).then((result) => {
+        if (result.success && result.updatedCount > 0) {
+          console.log(
+            `[Campaign] Migrated ${result.updatedCount} matches with photoURL`,
+          );
+        }
+      });
+    }
+  }, [campaign?.id, campaignId]);
 
   // Load all leaders
   const {

@@ -1,7 +1,13 @@
-import { useState } from "react";
-import { Mail, User, LogOut } from "lucide-react";
-import { Modal, TextInputModal } from "./";
+import { useState, useEffect } from "react";
+import { Mail, User, LogOut, Upload, Camera, Trash2 } from "lucide-react";
+import { Modal, TextInputModal, Avatar } from "./";
 import { ReadOnlyField, EditableField } from "./ModalField";
+import { useFileUpload } from "../../hooks";
+import {
+  updateUserProfile,
+  updateMemberDetailsInCampaigns,
+} from "../../services/firebase";
+import { deleteFile } from "../../services/firebase/storage";
 import "./ProfileModal.css";
 
 /**
@@ -34,9 +40,18 @@ export function ProfileModal({
   const [editUsernameOpen, setEditUsernameOpen] = useState(false);
   // Optimistic username: null means use real data, string means show optimistic value
   const [optimisticOverride, setOptimisticOverride] = useState(null);
+  const { uploadFile, uploading, progress } = useFileUpload();
+  const [uploadError, setUploadError] = useState(null);
 
   const displayUsername =
     optimisticOverride ?? user?.displayName ?? "Non impostato";
+
+  // Clear errors when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setUploadError(null);
+    }
+  }, [isOpen]);
 
   const handleUsernameSubmit = async (newUsername) => {
     // Optimistic update: show immediately in UI
@@ -62,6 +77,99 @@ export function ProfileModal({
     }
   };
 
+  const handlePhotoUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setUploadError("Seleziona un'immagine valida");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("L'immagine deve essere massimo 5MB");
+      return;
+    }
+
+    setUploadError(null);
+
+    try {
+      // Upload to Firebase Storage
+      const path = `profile-images/${user.uid}/${Date.now()}-${file.name}`;
+      const result = await uploadFile(file, path);
+
+      if (result.error) {
+        setUploadError(result.error);
+        return;
+      }
+
+      // Update user profile with new photo URL
+      const { error } = await updateUserProfile(user.displayName, result.url);
+
+      if (error) {
+        setUploadError("Errore nell'aggiornamento del profilo");
+        return;
+      }
+
+      // Update member details in all campaigns
+      await updateMemberDetailsInCampaigns(user.uid, {
+        username: user.displayName,
+        photoURL: result.url,
+      });
+
+      // Delete old photo if exists
+      if (user.photoURL && user.photoURL !== result.url) {
+        try {
+          // Extract path from URL
+          const oldPath = decodeURIComponent(
+            user.photoURL.split("/o/")[1].split("?")[0],
+          );
+          await deleteFile(oldPath);
+        } catch (e) {
+          console.warn("Failed to delete old photo:", e);
+        }
+      }
+    } catch (error) {
+      setUploadError("Errore nel caricamento dell'immagine");
+      console.error("Upload error:", error);
+    }
+  };
+
+  const handlePhotoDelete = async () => {
+    if (!user?.photoURL) return;
+
+    try {
+      // Update profile to remove photo
+      const { error } = await updateUserProfile(user.displayName, "");
+
+      if (error) {
+        setUploadError("Errore nella rimozione dell'immagine");
+        return;
+      }
+
+      // Update member details in all campaigns
+      await updateMemberDetailsInCampaigns(user.uid, {
+        username: user.displayName,
+        photoURL: null,
+      });
+
+      // Delete from storage
+      try {
+        const photoPath = decodeURIComponent(
+          user.photoURL.split("/o/")[1].split("?")[0],
+        );
+        await deleteFile(photoPath);
+      } catch (e) {
+        console.warn("Failed to delete photo file:", e);
+      }
+    } catch (error) {
+      setUploadError("Errore nella rimozione dell'immagine");
+      console.error("Delete error:", error);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -77,6 +185,63 @@ export function ProfileModal({
         }}
       >
         <div className="profile-modal-content">
+          {/* Profile Photo Section */}
+          <div className="profile-photo-section">
+            <div className="profile-photo-label">Immagine Profilo</div>
+            <div className="profile-photo-container">
+              <Avatar
+                photoURL={user?.photoURL}
+                displayName={user?.displayName}
+                email={user?.email}
+                size={96}
+                className="profile-photo-avatar"
+              />
+              <div className="profile-photo-actions">
+                <label className="profile-photo-upload-btn">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    disabled={uploading}
+                    style={{ display: "none" }}
+                  />
+                  {uploading ? (
+                    <>
+                      <div className="btn-spinner"></div>
+                      <span>{Math.round(progress)}%</span>
+                    </>
+                  ) : user?.photoURL ? (
+                    <>
+                      <Camera size={18} />
+                      <span>Cambia</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={18} />
+                      <span>Carica</span>
+                    </>
+                  )}
+                </label>
+                {user?.photoURL && !uploading && (
+                  <button
+                    className="profile-photo-delete-btn"
+                    onClick={handlePhotoDelete}
+                    type="button"
+                  >
+                    <Trash2 size={18} />
+                    <span>Rimuovi</span>
+                  </button>
+                )}
+              </div>
+            </div>
+            {uploadError && (
+              <div className="profile-photo-error">{uploadError}</div>
+            )}
+            <div className="profile-photo-hint">
+              Immagini JPG, PNG o GIF. Max 5MB.
+            </div>
+          </div>
+
           {/* Email Field - Read Only */}
           <ReadOnlyField
             icon={<Mail size={20} />}

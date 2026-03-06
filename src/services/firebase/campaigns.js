@@ -23,9 +23,15 @@ import {
  * @param {string} name - Campaign name
  * @param {string} userId - User ID of creator
  * @param {string} username - Username of creator
+ * @param {string} photoURL - User's photo URL (optional)
  * @returns {Object} { campaign, error }
  */
-export const createCampaign = async (name, userId, username) => {
+export const createCampaign = async (
+  name,
+  userId,
+  username,
+  photoURL = null,
+) => {
   try {
     // Generate unique code
     let code = generateCampaignCode();
@@ -63,6 +69,7 @@ export const createCampaign = async (name, userId, username) => {
       memberDetails: {
         [userId]: {
           username,
+          photoURL: photoURL || null,
           joinedAt: new Date().toISOString(),
         },
       },
@@ -111,9 +118,10 @@ export const getCampaignByCode = async (code) => {
  * @param {string} code - Campaign code
  * @param {string} userId - User ID
  * @param {string} username - Username
+ * @param {string} photoURL - User's photo URL (optional)
  * @returns {Object} { campaign, error }
  */
-export const joinCampaign = async (code, userId, username) => {
+export const joinCampaign = async (code, userId, username, photoURL = null) => {
   try {
     const campaign = await getCampaignByCode(code);
 
@@ -142,6 +150,7 @@ export const joinCampaign = async (code, userId, username) => {
       members: arrayUnion(userId),
       [`memberDetails.${userId}`]: {
         username,
+        photoURL: photoURL || null,
         joinedAt: new Date().toISOString(),
       },
       updatedAt: new Date().toISOString(),

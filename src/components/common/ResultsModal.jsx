@@ -1,6 +1,7 @@
 // Results Modal Component - Campaign Leaderboard
 import { Trophy } from "lucide-react";
 import { Modal } from "./Modal";
+import { Avatar } from "./Avatar";
 import "./ResultsModal.css";
 
 /**
@@ -95,9 +96,12 @@ export function ResultsModal({ isOpen, onClose, matches, memberDetails }) {
                       <div className="results-rank-number">{index + 1}°</div>
                     )}
                   </div>
-                  <div className="results-player-avatar">
-                    {player.username.substring(0, 2).toUpperCase()}
-                  </div>
+                  <Avatar
+                    photoURL={memberDetails[player.playerId]?.photoURL}
+                    displayName={player.username}
+                    email={null}
+                    size={40}
+                  />
                   <div className="results-player-info">
                     <h3 className="results-player-name">{player.username}</h3>
                     <div className="results-player-matches">

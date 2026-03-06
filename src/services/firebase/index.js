@@ -54,6 +54,12 @@ export {
   revokeStatusVote,
 } from "./campaigns";
 
+// Member Details
+export { updateMemberDetailsInCampaigns } from "./updateMemberDetails";
+
+// Migrations
+export { migrateMatchParticipantsPhotoURL } from "./migrateMatchParticipants";
+
 // Leaders
 export {
   getAllLeaders,
