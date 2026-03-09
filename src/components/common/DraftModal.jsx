@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Check, X, Clock, Ban } from "lucide-react";
 import { Modal } from "./Modal";
 import { Avatar } from "./Avatar";
+import { LeaderTooltip } from "./LeaderTooltip";
 import "./DraftModal.css";
 
 /**
@@ -329,16 +330,20 @@ export function DraftModal({
                   className={`ban-leader-card ${isSelected ? "selected" : ""}`}
                   onClick={() => handleSelectLeaderForBan(leaderId)}
                 >
-                  <img
-                    src={leader.leaderIconPath}
-                    alt={leader.name}
-                    className="ban-leader-icon"
-                  />
-                  <img
-                    src={leader.civilizationIconPath}
-                    alt={leader.civilization}
-                    className="ban-civ-icon"
-                  />
+                  <LeaderTooltip leader={leader} type="leader">
+                    <img
+                      src={leader.leaderIconPath}
+                      alt={leader.name}
+                      className="ban-leader-icon"
+                    />
+                  </LeaderTooltip>
+                  <LeaderTooltip leader={leader} type="civilization">
+                    <img
+                      src={leader.civilizationIconPath}
+                      alt={leader.civilization}
+                      className="ban-civ-icon"
+                    />
+                  </LeaderTooltip>
                   <div className="ban-leader-info">
                     <div className="ban-leader-name">{leader.name}</div>
                     {leader.variant && (
@@ -405,16 +410,20 @@ export function DraftModal({
                   key={leaderId}
                   className={`final-leader-card ${isBanned ? "banned" : ""}`}
                 >
-                  <img
-                    src={leader.leaderIconPath}
-                    alt={leader.name}
-                    className="final-leader-icon"
-                  />
-                  <img
-                    src={leader.civilizationIconPath}
-                    alt={leader.civilization}
-                    className="final-civ-icon"
-                  />
+                  <LeaderTooltip leader={leader} type="leader">
+                    <img
+                      src={leader.leaderIconPath}
+                      alt={leader.name}
+                      className="final-leader-icon"
+                    />
+                  </LeaderTooltip>
+                  <LeaderTooltip leader={leader} type="civilization">
+                    <img
+                      src={leader.civilizationIconPath}
+                      alt={leader.civilization}
+                      className="final-civ-icon"
+                    />
+                  </LeaderTooltip>
                   <div className="final-leader-info">
                     <div className="final-leader-name">{leader.name}</div>
                     {leader.variant && (

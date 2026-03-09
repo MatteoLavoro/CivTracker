@@ -1,5 +1,6 @@
 // Player Draft Info Modal - Shows a player's draft result (all 5 leaders with banned/selected tags)
 import { Modal } from "./Modal";
+import { LeaderTooltip } from "./LeaderTooltip";
 import "./PlayerDraftInfoModal.css";
 
 /**
@@ -55,16 +56,20 @@ export function PlayerDraftInfoModal({
                   key={leaderId}
                   className={`player-draft-leader-card ${isBanned ? "banned" : ""} ${isSelected ? "selected" : ""}`}
                 >
-                  <img
-                    src={leader.leaderIconPath}
-                    alt={leader.name}
-                    className="player-draft-leader-icon"
-                  />
-                  <img
-                    src={leader.civilizationIconPath}
-                    alt={leader.civilization}
-                    className="player-draft-civ-icon"
-                  />
+                  <LeaderTooltip leader={leader} type="leader">
+                    <img
+                      src={leader.leaderIconPath}
+                      alt={leader.name}
+                      className="player-draft-leader-icon"
+                    />
+                  </LeaderTooltip>
+                  <LeaderTooltip leader={leader} type="civilization">
+                    <img
+                      src={leader.civilizationIconPath}
+                      alt={leader.civilization}
+                      className="player-draft-civ-icon"
+                    />
+                  </LeaderTooltip>
                   <div className="player-draft-leader-info">
                     <div className="player-draft-leader-name">
                       {leader.name}

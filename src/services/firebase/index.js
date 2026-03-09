@@ -95,3 +95,7 @@ export {
 
 // Database Seeding (dev only)
 export { seedLeaders, verifyLeaderIcons } from "./seedLeaders";
+export {
+  seedLeadersDescriptions,
+  seedCivilizationsDescriptions,
+} from "./seedDescriptions";

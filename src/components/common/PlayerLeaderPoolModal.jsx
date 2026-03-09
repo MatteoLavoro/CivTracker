@@ -1,6 +1,7 @@
 // Player Leader Pool Modal - Shows all leaders with used status and sorting options
 import { useState, useMemo } from "react";
 import { Modal } from "./Modal";
+import { LeaderTooltip } from "./LeaderTooltip";
 import { ArrowUpDown } from "lucide-react";
 import "./PlayerLeaderPoolModal.css";
 
@@ -123,16 +124,20 @@ export function PlayerLeaderPoolModal({
                   key={leader.id}
                   className={`player-leader-pool-card ${isUsed ? "used" : "available"}`}
                 >
-                  <img
-                    src={leader.leaderIconPath}
-                    alt={leader.name}
-                    className="player-leader-pool-leader-icon"
-                  />
-                  <img
-                    src={leader.civilizationIconPath}
-                    alt={leader.civilization}
-                    className="player-leader-pool-civ-icon"
-                  />
+                  <LeaderTooltip leader={leader} type="leader">
+                    <img
+                      src={leader.leaderIconPath}
+                      alt={leader.name}
+                      className="player-leader-pool-leader-icon"
+                    />
+                  </LeaderTooltip>
+                  <LeaderTooltip leader={leader} type="civilization">
+                    <img
+                      src={leader.civilizationIconPath}
+                      alt={leader.civilization}
+                      className="player-leader-pool-civ-icon"
+                    />
+                  </LeaderTooltip>
                   <div className="player-leader-pool-leader-info">
                     <div className="player-leader-pool-leader-name">
                       {leader.name}

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthContext } from "./contexts";
-import { Auth, Home, Campaign } from "./pages";
+import { Auth, Home, Campaign, Dev } from "./pages";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { InstallPrompt } from "./components/common";
 import "./App.css";
@@ -43,6 +43,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <Campaign />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Dev Route - Development Tools */}
+          <Route
+            path="/dev"
+            element={
+              <ProtectedRoute>
+                <Dev />
               </ProtectedRoute>
             }
           />

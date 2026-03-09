@@ -1,0 +1,11 @@
+[Padri fondatori] {Abilità esclusiva}
+
+Tutti gli slot per Politiche diplomatiche nel governo attuale sono convertiti in slot jolly. +1  Supporto diplomatico per turno per ogni slot jolly nel governo.
+
+[P-51 Mustang] {Unità speciali}
+
+Unità esclusiva americana di epoca atomica che sostituisce il Caccia. Ha +5 alla  Forza di combattimento contro gli altri caccia, +2 al raggio d'azione e guadagna il +50% di esperienza in più.
+
+[Studio cinematografico] {Infrastruttura speciale}
+
+Edificio esclusivo dell'America. +100% alla pressione del  Turismo da questa città verso le altre civiltà quando la partita entra nell'epoca moderna.

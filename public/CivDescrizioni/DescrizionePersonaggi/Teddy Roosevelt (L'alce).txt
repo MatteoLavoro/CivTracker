@@ -1,0 +1,3 @@
+[Antichità e Parchi] {Abilità esclusiva}
+
+Le caselle Mozzafiato adiacenti a una Meraviglia naturale o a una montagna ricevono +2  Scienza. Le caselle Mozzafiato adiacenti a una Meraviglia o a un bosco ricevono +2  Cultura. Tutte le caselle in una città che ha un Parco nazionale hanno +1 Appeal.

@@ -31,3 +31,4 @@ export {
   EditableField,
   CopyableField,
 } from "./ModalField";
+export { LeaderTooltip } from "./LeaderTooltip";
