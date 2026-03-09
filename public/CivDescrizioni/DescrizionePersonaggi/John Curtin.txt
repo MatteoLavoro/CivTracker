@@ -1,0 +1,3 @@
+[Baluardo di civiltà] {Abilità esclusiva}
+
++100% alla  Produzione se ha ricevuto una dichiarazione di guerra o ha liberato una città negli ultimi 10 turni.
