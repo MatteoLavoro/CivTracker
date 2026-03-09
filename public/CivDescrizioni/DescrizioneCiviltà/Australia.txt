@@ -1,10 +1,10 @@
 [Il paese agli antipodi] {Abilità esclusiva}
 
-+3  [CitizenIcon] Abitazioni nelle città sulla costa. I Pascoli fanno scattare una Bomba [CultureIcon] Culturale. Le rese da Campus, Snodi commerciali, Luoghi Santi e Piazze del Teatro ricevono +1 nelle caselle con Appeal Delizioso, +3 nelle caselle con Appeal Mozzafiato.
++3  [CitizenIcon] Abitazioni nelle città sulla costa. I Pascoli fanno scattare una Bomba [CultureIcon] Cultura. Le rese da Campus, Snodi commerciali, Luoghi Santi e Piazze del Teatro ricevono +1 nelle caselle con Appeal Delizioso, +3 nelle caselle con Appeal Mozzafiato.
 
 [Digger] {Unità speciali}
 
-Unità esclusiva australiana di epoca moderna che sostituisce la Fanteria. +10 alla  [ProductionIcon] Forza di combattimento nelle caselle costiere. +5 alla  [ProductionIcon] Forza di combattimento in territorio straniero o neutrale.
+Unità esclusiva australiana di epoca moderna che sostituisce la Fanteria. +10 alla  [StrengthIcon] Forza di combattimento nelle caselle costiere. +5 alla  [StrengthIcon] Forza di combattimento in territorio straniero o neutrale.
 
 [Allevamento nell'Outback] {Infrastruttura speciale}
 

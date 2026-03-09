@@ -1,6 +1,6 @@
 [L'ultimo Profeta] {Abilità esclusiva}
 
-Ricevi automaticamente l'ultimo  [GreatProphetIcon] Grande Profeta quando il penultimo viene preso da qualcun altro (se non hai già ottenuto un  [GreatProphetIcon] Grande Profeta). +1  [ScienceIcon] Scienza per ogni città straniera che segue la religione dell'Arabia.
+Ricevi automaticamente l'ultimo  [GreatPersonIcon] Grande Profeta quando il penultimo viene preso da qualcun altro (se non hai già ottenuto un  [GreatPersonIcon] Grande Profeta). +1  [ScienceIcon] Scienza per ogni città straniera che segue la religione dell'Arabia.
 
 [Mamelucco] {Unità speciali}
 

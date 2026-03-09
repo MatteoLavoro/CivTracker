@@ -6,25 +6,77 @@ import "./LeaderTooltip.css";
 /**
  * Parse description text and convert [IconName] into img tags
  * Example: "+2 [ScienceIcon] Scienza" -> "+2 <img src="/IconePerTooltip/ScienceIcon.webp" /> Scienza"
+ * If icon doesn't exist in map, brackets remain visible: "[MissingIcon]"
  */
 function parseDescriptionWithIcons(description) {
   if (!description) return "";
 
-  // Available icons mapping
+  // Available icons mapping (all icons in /public/IconePerTooltip/)
   const iconMap = {
+    // Resources & Yields
     ScienceIcon: "ScienceIcon.webp",
     CultureIcon: "CultureIcon.webp",
     FoodIcon: "FoodIcon.webp",
     ProductionIcon: "ProductionIcon.webp",
     GoldIcon: "GoldIcon.webp",
     FaithIcon: "FaithIcon.webp",
+    TourismIcon: "TourismIcon.webp",
+    PowerIcon: "PowerIcon.webp",
+
+    // Strategic Resources
+    IronIcon: "IronIcon.webp",
+    CoalIcon: "CoalIcon.webp",
+    OilIcon: "OilIcon.webp",
+    AluminumIcon: "AluminumIcon.webp",
+    UraniumIcon: "UraniumIcon.webp",
+
+    // City & Empire
     CitizenIcon: "CitizenIcon.webp",
     CapitalIcon: "CapitalIcon.webp",
-    IronIcon: "IronIcon.webp",
+    AmenitiesIcon: "AmenitiesIcon.webp",
+    DistrictIcon: "DistrictIcon.webp",
+
+    // Military & Combat
+    StrengthIcon: "StrengthIcon.webp",
+    ReligiousStrengthIcon: "ReligiousStrengthIcon.webp",
+    MovementIcon: "MovementIcon.webp",
+    PromotionIcon: "PromotionIcon.webp",
+    GeneralIcon: "GeneralIcon.webp",
+    NuclearDeviceIcon: "NuclearDeviceIcon.webp",
+    ThermonuclearDeviceIcon: "ThermonuclearDeviceIcon.webp",
+
+    // Diplomacy & Trade
     DiplomaticFavorIcon: "DiplomaticFavorIcon.webp",
+    DiplomaticVisibilityIcon: "DiplomaticVisibilityIcon.webp",
+    EnvoyIcon: "EnvoyIcon.webp",
+    TradeRouteIcon: "TradeRouteIcon.webp",
+    TradingPostIcon: "TradingPostIcon.webp",
+    AllianceIcon: "AllianceIcon.webp",
+    GossipIcon: "GossipIcon.webp",
+    GrievancesIcon: "GrievancesIcon.webp",
+
+    // Great People & Works
+    GreatPersonIcon: "GreatPersonIcon.webp",
+    ScientistIcon: "ScientistIcon.webp",
+    MerchantIcon: "MerchantIcon.webp",
+    GreatWorkArtIcon: "GreatWorkArtIcon.webp",
+    GreatWorkMusicIcon: "GreatWorkMusicIcon.webp",
+    GreatWorkWritingIcon: "GreatWorkWritingIcon.webp",
+    ReligiousArtIcon: "ReligiousArtIcon.webp",
+    SculptureIcon: "SculptureIcon.webp",
+    ArtifactAncientIcon: "ArtifactAncientIcon.webp",
+    RelicIcon: "RelicIcon.webp",
+    PortraitIcon: "PortraitIcon.webp",
+
+    // Game Mechanics
+    EurekaIcon: "EurekaIcon.webp",
+    InspirationIcon: "InspirationIcon.webp",
+    BuildChargesIcon: "BuildChargesIcon.webp",
+    TurnIcon: "TurnIcon.webp",
   };
 
-  // Replace [IconName] with img tags
+  // Replace [IconName] with img tags only for icons that exist
+  // Icons not in the map will keep their brackets visible: [MissingIcon]
   let processed = description;
   Object.entries(iconMap).forEach(([key, filename]) => {
     const regex = new RegExp(`\\[${key}\\]`, "g");
