@@ -1,3 +1,3 @@
 [Proclama di Emancipazione] {Abilità esclusiva}
 
-Le Zone industriali forniscono +3 Lealtà ogni turno ma le tue Piantagioni forniscono -2 Lealtà. Ricevi un'unità da mischia gratuita quando costruisci una Zona industriale o uno dei suoi edifici. Questa unità gratuita non richiede risorse per la creazione o il mantenimento e riceve +5 alla  [StrengthIcon] Forza di combattimento.
+Le Zone industriali forniscono +3 Lealtà ogni turno ma le tue Piantagioni forniscono -2 Lealtà. Ricevi un'unità da mischia gratuita quando costruisci una Zona industriale o uno dei suoi edifici. Questa unità gratuita non richiede risorse per la creazione o il mantenimento e riceve +5 alla  [StrengthIcon] [StrengthIcon] Forza di combattimento.

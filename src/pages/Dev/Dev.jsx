@@ -203,6 +203,13 @@ export function Dev() {
             <h2 className="dev-section-title">⚠️ Note Importanti</h2>
             <ul className="dev-notes-list">
               <li>
+                <strong>Icone automatiche:</strong> Le icone vengono applicate{" "}
+                <strong>automaticamente</strong> durante il caricamento! Non
+                serve più eseguire lo script <code>fix-icons.ps1</code>. Basta
+                usare doppi spazi nei file .txt (es: " Scienza" diventa
+                automaticamente "[ScienceIcon] Scienza")
+              </li>
+              <li>
                 <strong>Nuovi file:</strong> Se hai appena aggiunto nuovi file
                 .txt nella cartella <code>public/CivDescrizioni</code>, devi{" "}
                 <strong>riavviare il server dev</strong> (ferma con Ctrl+C e
@@ -215,7 +222,8 @@ export function Dev() {
               </li>
               <li>
                 <strong>Console:</strong> Controlla la console del browser (F12)
-                per vedere i dettagli del caricamento
+                per vedere i dettagli del caricamento e la conferma che le icone
+                sono state applicate
               </li>
             </ul>
           </div>

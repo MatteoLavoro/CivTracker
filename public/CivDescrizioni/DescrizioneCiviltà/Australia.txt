@@ -1,13 +1,13 @@
 [Il paese agli antipodi] {Abilità esclusiva}
 
-+3  [CitizenIcon] Abitazioni nelle città sulla costa. I Pascoli fanno scattare una Bomba [CultureIcon] Cultura. Le rese da Campus, Snodi commerciali, Luoghi Santi e Piazze del Teatro ricevono +1 nelle caselle con Appeal Delizioso, +3 nelle caselle con Appeal Mozzafiato.
++3  [CitizenIcon] [CitizenIcon] Abitazioni nelle città sulla costa. I Pascoli fanno scattare una Bomba [CultureIcon] [CultureIcon] Cultura. Le rese da Campus, Snodi commerciali, Luoghi Santi e Piazze del Teatro ricevono +1 nelle caselle con Appeal Delizioso, +3 nelle caselle con Appeal Mozzafiato.
 
 [Digger] {Unità speciali}
 
-Unità esclusiva australiana di epoca moderna che sostituisce la Fanteria. +10 alla  [StrengthIcon] Forza di combattimento nelle caselle costiere. +5 alla  [StrengthIcon] Forza di combattimento in territorio straniero o neutrale.
+Unità esclusiva australiana di epoca moderna che sostituisce la Fanteria. +10 alla  [StrengthIcon] [StrengthIcon] Forza di combattimento nelle caselle costiere. +5 alla  [StrengthIcon] [StrengthIcon] Forza di combattimento in territorio straniero o neutrale.
 
 [Allevamento nell'Outback] {Infrastruttura speciale}
 
 Sblocca l'abilità dei Costruttori di creare un Allevamento nell'Outback, esclusivo dell'Australia.
 
-+1  [FoodIcon] Cibo e +1  [ProductionIcon] Produzione. +1  [FoodIcon] Cibo per ogni Pascolo adiacente. Bonus aggiuntivi di  [FoodIcon] Cibo e  [ProductionIcon] Produzione per ogni Pascolo e Allevamento nell'Outback adiacenti man mano che percorri l'Albero delle tecnologie e quello dei Progressi civici. Può essere costruito solo su caselle di deserto, deserto con colline, pianura o prateria.
++1  [FoodIcon] [FoodIcon] Cibo e +1  [ProductionIcon] [ProductionIcon] Produzione. +1  [FoodIcon] [FoodIcon] Cibo per ogni Pascolo adiacente. Bonus aggiuntivi di  [FoodIcon] [FoodIcon] Cibo e  [ProductionIcon] [ProductionIcon] Produzione per ogni Pascolo e Allevamento nell'Outback adiacenti man mano che percorri l'Albero delle tecnologie e quello dei Progressi civici. Può essere costruito solo su caselle di deserto, deserto con colline, pianura o prateria.

@@ -1,0 +1,11 @@
+[Taxis] {Abilità esclusiva}
+
+Le unità ricevono +3 alla  Forza di combattimento o alla  Forza religiosa per ogni Città Santa convertita alla religione di Bisanzio (compresa la stessa Città Santa bizantina). Inoltre la religione di Bisanzio viene diffusa nelle città vicine ogni volta che un'unità di una civiltà o città-stato nemica viene sconfitta. +1 punto  Grande Profeta da ogni città che ha un distretto Luogo Santo.
+
+[Dromone] {unità speciali}
+
+Unità esclusiva bizantina di epoca classica. Sostituisce la Quadrireme, ma ha un raggio più ampio e riceve un bonus di +10 alla  Forza di combattimento contro le unità.
+
+[Ippodromo] {Infrastruttura speciale}
+
+Un distretto esclusivo bizantino che sostituisce il Quartiere dei divertimenti. Fornisce +3  Attrattiva ed è meno costoso da costruire. Alla costruzione dell'Ippodromo e degli edifici nel distretto ricevi un'unità di Cavalleria pesante. Le unità fornite da questo distretto non hanno alcun costo di mantenimento in risorse. Non può essere costruito in una città che ha un Parco acquatico.

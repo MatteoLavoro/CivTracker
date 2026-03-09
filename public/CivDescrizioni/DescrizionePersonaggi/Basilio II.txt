@@ -1,0 +1,7 @@
+[Porfirogenito] {Abilità esclusiva}
+
+Gli attacchi della cavalleria leggera e pesante infliggono il 100% dei danni alle città che seguono la stessa religione di Bisanzio. La scoperta del Progresso civico Diritto Divino sblocca l'unità esclusiva Tagma.
+
+[Tagma] {Unità speciali}
+
+Unità di epoca medievale, esclusiva di Basilio II, che sostituisce il Cavaliere. Le unità terrestri entro 1 casella dal Tagma hanno +4 alla  Forza di combattimento o alla  Forza religiosa.

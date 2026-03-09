@@ -1,7 +1,7 @@
 [Il corollario di Roosevelt] {Abilità esclusiva}
 
-Le unità ricevono +5 alla  [StrengthIcon] Forza di combattimento sul loro continente d'origine. Gli [EnvoyIcon] Emissari inviati nelle città-stato con cui hai una  [TradeRouteIcon] Rotta commerciale contano come 2  [EnvoyIcon] Emissari. Ottieni l'unità esclusiva Rough Rider con la Rigatura delle Canne.
+Le unità ricevono +5 alla  [StrengthIcon] [StrengthIcon] Forza di combattimento sul loro continente d'origine. Gli [EnvoyIcon] [DiplomaticFavorIcon] Emissari inviati nelle città-stato con cui hai una  [TradeRouteIcon] [GoldIcon] Rotta commerciale contano come 2  [EnvoyIcon] [DiplomaticFavorIcon] Emissari. Ottieni l'unità esclusiva Rough Rider con la Rigatura delle Canne.
 
 [Rough Rider] {Unità speciali} 
 
-Unità esclusiva americana di epoca industriale che sostituisce il Corazziere, disponibile quando il leader è Teddy Roosevelt. Permette di guadagnare  [CultureIcon] Cultura dalle uccisioni se si trova sullo stesso continente della sua  [CapitalIcon] capitale. +10 alla  [StrengthIcon] Forza di combattimento quando combatte in collina. Il suo costo di mantenimento è più basso.
+Unità esclusiva americana di epoca industriale che sostituisce il Corazziere, disponibile quando il leader è Teddy Roosevelt. Permette di guadagnare  [CultureIcon] [CultureIcon] Cultura dalle uccisioni se si trova sullo stesso continente della sua  [CapitalIcon] [CapitalIcon] capitale. +10 alla  [StrengthIcon] [StrengthIcon] Forza di combattimento quando combatte in collina. Il suo costo di mantenimento è più basso.

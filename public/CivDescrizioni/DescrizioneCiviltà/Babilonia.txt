@@ -1,0 +1,11 @@
+[Enuma Anu Enlil] {Abilità esclusiva}
+
+I momenti  Eureka forniscono la totalità della  Scienza necessaria per la scoperta di nuove tecnologie. -50% alla  Scienza per turno.
+
+[Sabum Kibittum] {Unità speciali}
+
+Unità esclusiva babilonese da mischia di epoca antica. +17 alla  Forza di combattimento contro le unità che appartengono alle classi di promozione cavalleria leggera o pesante. Quest'unità ha 3 al  movimento e al raggio di visione.
+
+[Palgum] {Infrastruttura speciale}
+
+Edificio esclusivo babilonese. +1  Abitazioni e +2 alla  Produzione. Le caselle che contengono acqua dolce forniscono +1  Cibo. La città dev'essere adiacente a un fiume.

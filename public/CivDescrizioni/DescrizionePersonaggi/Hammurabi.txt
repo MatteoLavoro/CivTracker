@@ -1,0 +1,3 @@
+[Ninu Ilu Sirum] {Abilità esclusiva}
+
+Quando viene costruito per la prima volta, ogni distretto specializzato eccetto la Piazza del Governo riceve l'edificio che ha il costo di  Produzione minore tra quelli che vi possono essere costruiti in quel momento. La prima costruzione di qualsiasi altro distretto fornisce un  Emissario.

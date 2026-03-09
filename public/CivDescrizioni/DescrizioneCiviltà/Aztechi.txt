@@ -1,0 +1,11 @@
+[La leggenda dei Cinque Soli] {Abilità esclusiva}
+
+Puoi consumare cariche dei Costruttori per completare il 20% del costo originale di un distretto.
+
+[Guerriero aquila] {Unità speciali}
+
+Unità esclusiva azteca di epoca antica che sostituisce il Guerriero. Ha la possibilità di catturare le unità militari delle altre civiltà e trasformarle in Costruttori.
+
+[Tlachtli] {Infrastruttura speciale}
+
+Edificio esclusivo degli aztechi. Fornisce 2 [AmenitiesIcon] Attrattiva, +2  [CultureIcon] Cultura, +2  [FaithIcon] Fede e un punto [GeneralIcon] Grande Generale. Fornisce +1  [CultureIcon] Turismo dopo l'acquisizione del Progresso civico Conservazione.

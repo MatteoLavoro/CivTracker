@@ -57,6 +57,7 @@ function parseDescriptionWithIcons(description) {
 
     // Great People & Works
     GreatPersonIcon: "GreatPersonIcon.webp",
+    GreatProphetIcon: "GreatProphetIcon.webp",
     ScientistIcon: "ScientistIcon.webp",
     MerchantIcon: "MerchantIcon.webp",
     GreatWorkArtIcon: "GreatWorkArtIcon.webp",

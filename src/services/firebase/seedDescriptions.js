@@ -4,6 +4,56 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "./config";
 
 /**
+ * Apply icon replacements to description text
+ * Converts double spaces + keywords into [IconName] tags
+ */
+function applyIconReplacements(text) {
+  if (!text) return text;
+
+  // Icon replacements map
+  const replacements = {
+    "  Scienza": " [ScienceIcon] Scienza",
+    "  Cultura": " [CultureIcon] Cultura",
+    "  Fede": " [FaithIcon] Fede",
+    "  Cibo": " [FoodIcon] Cibo",
+    "  Produzione": " [ProductionIcon] Produzione",
+    "  Oro": " [GoldIcon] Oro",
+    "  Forza di combattimento": " [StrengthIcon] Forza di combattimento",
+    "  Forza religiosa": " [ReligiousStrengthIcon] Forza religiosa",
+    "  Turismo": " [TourismIcon] Turismo",
+    "  Abitazioni": " [CitizenIcon] Abitazioni",
+    "  Supporto diplomatico": " [DiplomaticFavorIcon] Supporto diplomatico",
+    "  Emissari": " [EnvoyIcon] Emissari",
+    "  Rotta commerciale": " [TradeRouteIcon] Rotta commerciale",
+    "  Rotte commerciali": " [TradeRouteIcon] Rotte commerciali",
+    "  capitale": " [CapitalIcon] capitale",
+    "  Capitale": " [CapitalIcon] Capitale",
+    "  Grande Profeta": " [GreatProphetIcon] Grande Profeta",
+    "  Grande Persona": " [GreatPersonIcon] Grande Persona",
+    "  Grande Scienziato": " [ScientistIcon] Grande Scienziato",
+    "  Grande Mercante": " [MerchantIcon] Grande Mercante",
+    "  Grande Generale": " [GeneralIcon] Grande Generale",
+    "  Movimento": " [MovementIcon] Movimento",
+    "  Energia": " [PowerIcon] Energia",
+    "  Cittadini": " [CitizenIcon] Cittadini",
+    "  Amenità": " [AmenitiesIcon] Amenità",
+    "  Attrattiva": " [AmenitiesIcon] Attrattiva",
+    "  Distretti": " [DistrictIcon] Distretti",
+    "  Distretto": " [DistrictIcon] Distretto",
+    "  Alleanza": " [AllianceIcon] Alleanza",
+    "  turno": " [TurnIcon] turno",
+    "  Lagnanze": " [GrievancesIcon] Lagnanze",
+  };
+
+  let processed = text;
+  for (const [key, value] of Object.entries(replacements)) {
+    processed = processed.replaceAll(key, value);
+  }
+
+  return processed;
+}
+
+/**
  * Parse ability text to extract name, type, and description
  * Format: [Ability Name] {Ability Type}\n\nDescription...
  */
@@ -22,6 +72,10 @@ function parseAbilityText(text) {
     if (headerMatch) {
       // Save previous ability if exists
       if (currentAbility && currentAbility.description.trim()) {
+        // Apply icon replacements to description before saving
+        currentAbility.description = applyIconReplacements(
+          currentAbility.description,
+        );
         abilities.push(currentAbility);
       }
 
@@ -44,6 +98,10 @@ function parseAbilityText(text) {
 
   // Save last ability
   if (currentAbility && currentAbility.description.trim()) {
+    // Apply icon replacements to description before saving
+    currentAbility.description = applyIconReplacements(
+      currentAbility.description,
+    );
     abilities.push(currentAbility);
   }
 
@@ -127,7 +185,9 @@ export async function seedLeadersDescriptions() {
         updatedAt: new Date().toISOString(),
       });
 
-      console.log(`✅ Updated ${fullName}: ${abilities.length} abilities`);
+      console.log(
+        `✅ Updated ${fullName}: ${abilities.length} abilities (icons auto-applied)`,
+      );
       updated++;
     }
 
@@ -221,7 +281,7 @@ export async function seedCivilizationsDescriptions() {
       });
 
       console.log(
-        `✅ Updated ${leader.name} [${leader.civilization}]: ${civAbilities.length} civ abilities`,
+        `✅ Updated ${leader.name} [${leader.civilization}]: ${civAbilities.length} civ abilities (icons auto-applied)`,
       );
       updated++;
     }
