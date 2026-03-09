@@ -99,7 +99,11 @@ export async function seedLeadersDescriptions() {
       const result = await fetchDescriptionFile(filename);
 
       if (!result.success) {
-        console.warn(`❌ Not found: ${filename} (${result.error})`);
+        console.warn(`❌ Not found: ${filename}`);
+        console.warn(`   Error: ${result.error}`);
+        console.warn(
+          `   Hint: Se hai appena aggiunto il file, riavvia il server dev (npm run dev)`,
+        );
         notFound++;
         continue;
       }

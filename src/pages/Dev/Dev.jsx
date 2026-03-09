@@ -197,6 +197,28 @@ export function Dev() {
               speciale, Infrastruttura speciale, Distretto speciale, ecc.
             </p>
           </div>
+
+          {/* Important Notes */}
+          <div className="dev-section">
+            <h2 className="dev-section-title">⚠️ Note Importanti</h2>
+            <ul className="dev-notes-list">
+              <li>
+                <strong>Nuovi file:</strong> Se hai appena aggiunto nuovi file
+                .txt nella cartella <code>public/CivDescrizioni</code>, devi{" "}
+                <strong>riavviare il server dev</strong> (ferma con Ctrl+C e
+                riavvia con <code>npm run dev</code>)
+              </li>
+              <li>
+                <strong>Nomi file:</strong> I nomi dei file devono corrispondere
+                esattamente ai nomi dei personaggi nel database, incluse le
+                varianti tra parentesi
+              </li>
+              <li>
+                <strong>Console:</strong> Controlla la console del browser (F12)
+                per vedere i dettagli del caricamento
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

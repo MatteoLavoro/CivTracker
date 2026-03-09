@@ -80,30 +80,44 @@
 
 .leader-tooltip-ability-header {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  align-items: center;
   margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
 }
 
-.leader-tooltip-ability-name {
-  font-size: 0.9375rem;
+.leader-tooltip-ability-header strong {
   font-weight: 600;
   color: rgba(255, 215, 0, 1);
   letter-spacing: 0.3px;
 }
 
-.leader-tooltip-ability-type {
-  font-size: 0.8125rem;
+.leader-tooltip-ability-separator {
+  margin: 0 0.5rem;
+  color: rgba(212, 175, 55, 0.6);
+  font-weight: 400;
+}
+
+.leader-tooltip-ability-header em {
+  font-style: italic;
   font-weight: 500;
   color: rgba(150, 150, 150, 1);
-  font-style: italic;
+  font-size: 0.875rem;
 }
 
 .leader-tooltip-ability-description {
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: 1.6;
   color: rgba(220, 220, 220, 1);
-  white-space: pre-line;
+}
+
+/* Inline icons in description */
+.leader-tooltip-ability-description .tooltip-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin: 0 2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 /* Mobile adjustments */
@@ -117,11 +131,16 @@
     font-size: 1rem;
   }
 
-  .leader-tooltip-ability-name {
+  .leader-tooltip-ability-header {
     font-size: 0.875rem;
   }
 
   .leader-tooltip-ability-description {
     font-size: 0.8125rem;
+  }
+
+  .leader-tooltip-ability-description .tooltip-icon {
+    width: 16px;
+    height: 16px;
   }
 }

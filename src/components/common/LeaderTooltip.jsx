@@ -4,6 +4,43 @@ import { createPortal } from "react-dom";
 import "./LeaderTooltip.css";
 
 /**
+ * Parse description text and convert [IconName] into img tags
+ * Example: "+2 [ScienceIcon] Scienza" -> "+2 <img src="/IconePerTooltip/ScienceIcon.webp" /> Scienza"
+ */
+function parseDescriptionWithIcons(description) {
+  if (!description) return "";
+
+  // Available icons mapping
+  const iconMap = {
+    ScienceIcon: "ScienceIcon.webp",
+    CultureIcon: "CultureIcon.webp",
+    FoodIcon: "FoodIcon.webp",
+    ProductionIcon: "ProductionIcon.webp",
+    GoldIcon: "GoldIcon.webp",
+    FaithIcon: "FaithIcon.webp",
+    CitizenIcon: "CitizenIcon.webp",
+    CapitalIcon: "CapitalIcon.webp",
+    IronIcon: "IronIcon.webp",
+    DiplomaticFavorIcon: "DiplomaticFavorIcon.webp",
+  };
+
+  // Replace [IconName] with img tags
+  let processed = description;
+  Object.entries(iconMap).forEach(([key, filename]) => {
+    const regex = new RegExp(`\\[${key}\\]`, "g");
+    processed = processed.replace(
+      regex,
+      `<img src="/IconePerTooltip/${filename}" class="tooltip-icon" alt="${key}" />`,
+    );
+  });
+
+  // Convert newlines to <br>
+  processed = processed.replace(/\n/g, "<br>");
+
+  return processed;
+}
+
+/**
  * LeaderTooltip Component
  * Shows abilities when hovering over leader or civilization icons
  */
@@ -112,16 +149,19 @@ export function LeaderTooltip({ children, leader, type = "leader" }) {
                 abilities.map((ability, index) => (
                   <div key={index} className="leader-tooltip-ability">
                     <div className="leader-tooltip-ability-header">
-                      <span className="leader-tooltip-ability-name">
-                        {ability.name}
+                      <strong>{ability.name}</strong>
+                      <span className="leader-tooltip-ability-separator">
+                        {" "}
+                        |{" "}
                       </span>
-                      <span className="leader-tooltip-ability-type">
-                        {ability.type}
-                      </span>
+                      <em>{ability.type}</em>
                     </div>
-                    <div className="leader-tooltip-ability-description">
-                      {ability.description}
-                    </div>
+                    <div
+                      className="leader-tooltip-ability-description"
+                      dangerouslySetInnerHTML={{
+                        __html: parseDescriptionWithIcons(ability.description),
+                      }}
+                    />
                   </div>
                 ))
               ) : (
