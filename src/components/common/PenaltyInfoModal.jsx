@@ -60,19 +60,19 @@ export function PenaltyInfoModal({
     {
       id: "rage-quit",
       name: "Rage Quit",
-      penalty: "-20%",
+      penalty: "-30%",
       color: "rgba(244, 67, 54, 1)", // Red
       description:
-        "Assegnato a chi abbandona la partita in modo inappropriato. Ricevi una penalità del 20% sui punti elaborati.",
+        "Assegnato a chi abbandona la partita in modo inappropriato. Ricevi una penalità del 30% sui punti elaborati.",
       icon: "alert-triangle",
     },
     {
       id: "rule-violation",
       name: "Violazione Regole",
-      penalty: "-50%",
+      penalty: "-90%",
       color: "rgba(156, 39, 176, 1)", // Purple
       description:
-        "Assegnato a chi viola le regole del gioco. Ricevi una penalità del 50% sui punti elaborati.",
+        "Assegnato a chi viola le regole del gioco. Ricevi una penalità del 90% sui punti elaborati.",
       icon: "alert-triangle",
     },
   ];

@@ -253,9 +253,9 @@ export function getPenaltyMultiplier(penaltyTags = []) {
     if (tagId === PENALTY_TAGS.MAP_REROLL) {
       multiplier -= 0.1; // -10%
     } else if (tagId === PENALTY_TAGS.RAGE_QUIT) {
-      multiplier -= 0.2; // -20%
+      multiplier -= 0.3; // -30%
     } else if (tagId === PENALTY_TAGS.RULE_VIOLATION) {
-      multiplier -= 0.5; // -50%
+      multiplier -= 0.9; // -90%
     }
   });
 
