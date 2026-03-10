@@ -18,7 +18,11 @@ import {
   WinnerSelectModal,
   VictoryTypeSelectModal,
 } from "./";
-import { BONUS_TAGS } from "../../utils/scoreUtils";
+import {
+  BONUS_TAGS,
+  calculateProcessedScores,
+  determineSecondPlace,
+} from "../../utils/scoreUtils";
 import "./CompleteMatchModal.css";
 
 /**
@@ -258,11 +262,6 @@ export function CompleteMatchModal({
 
   const handleSubmit = () => {
     // Validation
-    if (turns <= 0) {
-      alert("Inserisci il turno di vittoria");
-      return;
-    }
-
     if (!victoryType) {
       alert("Seleziona l'esito della partita");
       return;
@@ -275,33 +274,88 @@ export function CompleteMatchModal({
       return;
     }
 
-    // Check if all scores are set (allow 0 for defeat victories)
-    const allScoresSet = participants.every(
-      ([userId]) => scores[userId] !== undefined && scores[userId] !== null,
-    );
+    // Scores are not required for canceled matches
+    if (victoryType !== "canceled") {
+      // Check if all scores are set (allow 0 for all victory types)
+      const allScoresSet = participants.every(
+        ([userId]) => scores[userId] !== undefined && scores[userId] !== null,
+      );
 
-    if (!allScoresSet) {
-      alert("Imposta i punteggi per tutti i giocatori");
-      return;
+      if (!allScoresSet) {
+        alert("Imposta i punteggi per tutti i giocatori");
+        return;
+      }
+    }
+
+    // Auto-assign second place bonus if completing for the first time
+    let finalBonusTags = { ...bonusTags };
+    if (
+      match?.status === "in-progress" &&
+      winnerId &&
+      victoryType !== "canceled" &&
+      victoryType !== "defeat"
+    ) {
+      // Build participants object with updated scores for calculation
+      const updatedParticipants = {};
+      Object.entries(match.participants).forEach(([userId, participant]) => {
+        updatedParticipants[userId] = {
+          ...participant,
+          score: scores[userId] || 0,
+        };
+      });
+
+      // Calculate processed scores
+      const processedScores = calculateProcessedScores(
+        updatedParticipants,
+        winnerId,
+        victoryType,
+        victoryCounts,
+      );
+
+      // Determine second place
+      const secondPlaceUserId = determineSecondPlace(processedScores, winnerId);
+
+      if (secondPlaceUserId) {
+        // Add second place bonus if not already present
+        const currentBonuses = finalBonusTags[secondPlaceUserId] || [];
+        if (!currentBonuses.includes(BONUS_TAGS.SECOND_PLACE)) {
+          finalBonusTags = {
+            ...finalBonusTags,
+            [secondPlaceUserId]: [...currentBonuses, BONUS_TAGS.SECOND_PLACE],
+          };
+        }
+      }
     }
 
     // Call confirm with all data including bonus tags
     onConfirm({
-      turns,
+      turns: turns || 0, // Allow 0 or empty turns
       scores,
-      bonusTags,
+      bonusTags: finalBonusTags,
       winnerId,
       victoryType,
     });
   };
 
-  const isValid =
-    turns > 0 &&
-    victoryType &&
-    (victoryType === "canceled" || victoryType === "defeat" || winnerId) && // Winner not required for canceled/defeat
-    participants.every(
+  const isValid = (() => {
+    // Must have victory type
+    if (!victoryType) return false;
+
+    // Winner is required only for normal victories and forfait
+    if (victoryType !== "canceled" && victoryType !== "defeat" && !winnerId) {
+      return false;
+    }
+
+    // Scores are not required for canceled matches
+    if (victoryType === "canceled") {
+      return true;
+    }
+
+    // For all other victory types, check if all scores are set
+    return participants.every(
       ([userId]) => scores[userId] !== undefined && scores[userId] !== null,
     );
+  })();
 
   const isEditing = match?.status === "completed";
   const modalTitle = isEditing ? "Modifica Partita" : "Completa Partita";
@@ -468,8 +522,8 @@ export function CompleteMatchModal({
                     value={turns}
                     onChange={(e) => setTurns(parseInt(e.target.value) || 0)}
                     onFocus={(e) => e.target.select()}
-                    placeholder="300"
-                    min="1"
+                    placeholder="300 (opzionale)"
+                    min="0"
                     max="9999"
                   />
                 </div>

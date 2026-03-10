@@ -89,8 +89,11 @@ export {
   createMatch,
   updateMatchTurns,
   updateParticipantScore,
+  updateMatchPenalties,
   completeMatch,
   linkDraftToMatch,
+  acquireMatchEditLock,
+  releaseMatchEditLock,
 } from "./matches";
 
 // Database Seeding (dev only)

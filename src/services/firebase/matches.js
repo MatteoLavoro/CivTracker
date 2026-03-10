@@ -27,17 +27,7 @@ export const createMatch = async (campaignId, memberIds, memberDetails) => {
     const campaign = campaignDoc.data();
     const matches = campaign.matches || [];
 
-    // Check if there's an active match
-    const hasActiveMatch = matches.some((m) => m.status !== "completed");
-    if (hasActiveMatch) {
-      return {
-        success: false,
-        match: null,
-        error: "Completa la partita corrente prima di crearne una nuova",
-      };
-    }
-
-    // Create new match
+    // Create new match (without checking for active matches)
     const matchId = `match-${Date.now()}`;
     const participants = {};
 
@@ -173,6 +163,122 @@ export const updateParticipantScore = async (
     return { success: true, error: null };
   } catch (error) {
     console.error("Error updating participant score:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Update match penalties for participants
+ * @param {string} campaignId - Campaign ID
+ * @param {string} matchId - Match ID
+ * @param {Object} penaltyTags - Penalty tags for all participants { userId: [tagIds] }
+ * @returns {Object} { success, error }
+ */
+export const updateMatchPenalties = async (
+  campaignId,
+  matchId,
+  penaltyTags,
+) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const matches = campaign.matches || [];
+
+    // Update penaltyTags for participants
+    const updatedMatches = matches.map((match) => {
+      if (match.id === matchId) {
+        const updatedParticipants = { ...match.participants };
+        Object.keys(penaltyTags).forEach((userId) => {
+          if (updatedParticipants[userId]) {
+            updatedParticipants[userId].penaltyTags = penaltyTags[userId] || [];
+          }
+        });
+
+        return {
+          ...match,
+          participants: updatedParticipants,
+        };
+      }
+      return match;
+    });
+
+    await updateDoc(campaignRef, {
+      matches: updatedMatches,
+      updatedAt: new Date().toISOString(),
+    });
+
+    // If match is completed, trigger recalculation of scores
+    const updatedMatch = updatedMatches.find((m) => m.id === matchId);
+    if (updatedMatch && updatedMatch.status === "completed") {
+      // Re-calculate scores in background
+      setTimeout(async () => {
+        try {
+          const latestCampaignDoc = await getDoc(campaignRef);
+          if (!latestCampaignDoc.exists()) return;
+
+          const latestCampaign = latestCampaignDoc.data();
+          const latestMatches = latestCampaign.matches || [];
+          const newVictoryCounts = getVictoryCounts(latestMatches);
+
+          // Recalculate ALL completed matches
+          const recalculatedMatches = latestMatches.map((match) => {
+            if (
+              match.status === "completed" &&
+              match.victoryType &&
+              match.victoryType !== "canceled"
+            ) {
+              const processedScores = calculateProcessedScores(
+                match.participants,
+                match.winnerId,
+                match.victoryType,
+                newVictoryCounts,
+              );
+              const finalScores = calculateFinalScores(
+                processedScores,
+                match.participants,
+              );
+
+              const updatedParticipants = {};
+              Object.entries(match.participants).forEach(
+                ([userId, participant]) => {
+                  updatedParticipants[userId] = {
+                    ...participant,
+                    processedScore: processedScores[userId] || 0,
+                    finalScore: finalScores[userId] || 0,
+                  };
+                },
+              );
+
+              return {
+                ...match,
+                participants: updatedParticipants,
+              };
+            }
+            return match;
+          });
+
+          await updateDoc(campaignRef, {
+            matches: recalculatedMatches,
+            updatedAt: new Date().toISOString(),
+          });
+        } catch (error) {
+          console.error(
+            "Error recalculating scores after penalty update:",
+            error,
+          );
+        }
+      }, 100);
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error updating match penalties:", error);
     return { success: false, error: error.message };
   }
 };
@@ -361,6 +467,116 @@ export const linkDraftToMatch = async (
     return { success: true, error: null };
   } catch (error) {
     console.error("Error linking draft to match:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Acquire lock for editing a match
+ * @param {string} campaignId - Campaign ID
+ * @param {string} matchId - Match ID
+ * @param {string} userId - User ID trying to acquire lock
+ * @param {string} username - Username of the user
+ * @returns {Object} { success, alreadyLocked, lockedBy, error }
+ */
+export const acquireMatchEditLock = async (
+  campaignId,
+  matchId,
+  userId,
+  username,
+) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return {
+        success: false,
+        alreadyLocked: false,
+        lockedBy: null,
+        error: "Campaign not found",
+      };
+    }
+
+    const campaign = campaignDoc.data();
+    const currentLock = campaign.matchEditLock;
+
+    // Check if already locked by another user
+    if (currentLock && currentLock.userId !== userId) {
+      // Check if lock is expired (older than 5 minutes)
+      const lockTime = new Date(currentLock.lockedAt).getTime();
+      const now = Date.now();
+      const lockAgeMinutes = (now - lockTime) / (1000 * 60);
+
+      if (lockAgeMinutes < 5) {
+        // Lock is still valid
+        return {
+          success: false,
+          alreadyLocked: true,
+          lockedBy: currentLock.username,
+          error: `${currentLock.username} sta già modificando questa partita`,
+        };
+      }
+      // Lock expired, continue to acquire
+    }
+
+    // Acquire lock
+    await updateDoc(campaignRef, {
+      matchEditLock: {
+        matchId,
+        userId,
+        username,
+        lockedAt: new Date().toISOString(),
+      },
+      updatedAt: new Date().toISOString(),
+    });
+
+    return {
+      success: true,
+      alreadyLocked: false,
+      lockedBy: null,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Error acquiring match edit lock:", error);
+    return {
+      success: false,
+      alreadyLocked: false,
+      lockedBy: null,
+      error: error.message,
+    };
+  }
+};
+
+/**
+ * Release lock for editing a match
+ * @param {string} campaignId - Campaign ID
+ * @param {string} userId - User ID releasing lock
+ * @returns {Object} { success, error }
+ */
+export const releaseMatchEditLock = async (campaignId, userId) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const currentLock = campaign.matchEditLock;
+
+    // Only release if this user owns the lock
+    if (currentLock && currentLock.userId === userId) {
+      await updateDoc(campaignRef, {
+        matchEditLock: null,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error releasing match edit lock:", error);
     return { success: false, error: error.message };
   }
 };

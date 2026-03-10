@@ -1,0 +1,307 @@
+/* Penalty Modal Styles - Table Layout */
+
+.penalty-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+/* Info Section */
+.penalty-modal-info {
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.2);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 8px;
+}
+
+.penalty-modal-info p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Table Container */
+.penalty-modal-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.penalty-modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(15, 50, 82, 0.15);
+}
+
+.penalty-modal-table thead {
+  background: rgba(15, 50, 82, 0.3);
+}
+
+.penalty-modal-table th {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(244, 67, 54, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.penalty-modal-table th:last-child {
+  border-right: none;
+}
+
+/* Column widths: 30% - 70% */
+.penalty-modal-table th:nth-child(1),
+.penalty-modal-table td:nth-child(1) {
+  width: 30%;
+}
+
+.penalty-modal-table th:nth-child(2),
+.penalty-modal-table td:nth-child(2) {
+  width: 70%;
+}
+
+.penalty-modal-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: middle;
+}
+
+.penalty-modal-table td:last-child {
+  border-right: none;
+}
+
+.penalty-modal-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.penalty-modal-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.penalty-modal-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Penalty Header with Info Button */
+.penalty-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.penalty-modal-info-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.penalty-modal-info-btn:hover {
+  color: rgba(244, 67, 54, 1);
+  background: rgba(244, 67, 54, 0.1);
+}
+
+/* Player Cell */
+.penalty-modal-player-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.penalty-modal-player-avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.penalty-modal-player-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Penalty Cell */
+.penalty-modal-penalty-td {
+  padding: 0.75rem 1rem !important;
+}
+
+.penalty-modal-penalty-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.penalty-modal-penalty-tags-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 36px;
+  min-width: 0;
+}
+
+.penalty-modal-penalty-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.penalty-modal-penalty-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.5rem;
+  background: rgba(20, 30, 40, 0.8);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+}
+
+.penalty-modal-penalty-tag.penalty-overflow {
+  cursor: pointer;
+  background: rgba(244, 67, 54, 0.15);
+  border-color: rgba(244, 67, 54, 0.4);
+}
+
+.penalty-modal-penalty-tag.penalty-overflow:hover {
+  background: rgba(244, 67, 54, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Penalty Color Variants */
+.penalty-modal-penalty-tag.penalty-color-orange {
+  border-color: rgba(255, 152, 0, 0.4);
+}
+
+.penalty-modal-penalty-tag.penalty-color-orange .penalty-modal-penalty-icon {
+  color: rgba(255, 152, 0, 1);
+}
+
+.penalty-modal-penalty-tag.penalty-color-red {
+  border-color: rgba(244, 67, 54, 0.4);
+}
+
+.penalty-modal-penalty-tag.penalty-color-red .penalty-modal-penalty-icon {
+  color: rgba(244, 67, 54, 1);
+}
+
+.penalty-modal-penalty-tag.penalty-color-purple {
+  border-color: rgba(156, 39, 176, 0.4);
+}
+
+.penalty-modal-penalty-tag.penalty-color-purple .penalty-modal-penalty-icon {
+  color: rgba(156, 39, 176, 1);
+}
+
+.penalty-modal-penalty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.penalty-modal-penalty-text {
+  white-space: nowrap;
+}
+
+.penalty-modal-penalty-remove {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.penalty-modal-penalty-remove:hover {
+  color: rgba(239, 68, 68, 1);
+}
+
+/* Add Penalty Button */
+.penalty-modal-penalty-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 6px;
+  color: rgba(244, 67, 54, 1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.penalty-modal-penalty-add-btn:hover {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: rgba(244, 67, 54, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .penalty-modal-table th:nth-child(1),
+  .penalty-modal-table td:nth-child(1) {
+    width: 40%;
+  }
+
+  .penalty-modal-table th:nth-child(2),
+  .penalty-modal-table td:nth-child(2) {
+    width: 60%;
+  }
+
+  .penalty-modal-player-cell {
+    gap: 0.5rem;
+  }
+
+  .penalty-modal-player-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .penalty-modal-player-name {
+    font-size: 0.9rem;
+  }
+
+  .penalty-modal-penalty-cell {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .penalty-modal-penalty-tags-container {
+    justify-content: flex-start;
+  }
+
+  .penalty-modal-penalty-tags {
+    justify-content: flex-start;
+  }
+}

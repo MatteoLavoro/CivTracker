@@ -287,10 +287,24 @@ export function Home() {
                   (m) => m.status === "completed",
                 ).length;
 
+                // Check if draft is in progress
+                const matches = Array.isArray(campaign.matches)
+                  ? campaign.matches
+                  : [];
+                const currentMatch =
+                  matches.length > 0 ? matches[matches.length - 1] : null;
+                const draft = campaign.draft || {};
+                const isDraftInProgress =
+                  currentMatch &&
+                  currentMatch.status === "in-progress" &&
+                  !currentMatch.draftCompleted &&
+                  (draft.phase !== "waiting" ||
+                    (draft.readyPlayers && draft.readyPlayers.length > 0));
+
                 return (
                   <div
                     key={campaign.id}
-                    className="campaign-card"
+                    className={`campaign-card ${isDraftInProgress ? "blinking" : ""}`}
                     role="button"
                     tabIndex={0}
                     onClick={() => navigate(`/campaign/${campaign.id}`)}

@@ -25,9 +25,12 @@ import {
   createMatch,
   updateMatchTurns,
   completeMatch,
+  updateMatchPenalties,
   voteForCampaignStatus,
   revokeStatusVote,
   migrateMatchParticipantsPhotoURL,
+  acquireMatchEditLock,
+  releaseMatchEditLock,
 } from "../../services/firebase";
 import {
   CampaignInfoModal,
@@ -35,6 +38,7 @@ import {
   VictoryInfoModal,
   RulesModal,
   CompleteMatchModal,
+  PenaltyModal,
   LeaderConfirmModal,
   TextInputModal,
   DraftModal,
@@ -69,6 +73,7 @@ export function Campaign() {
   // Match system state
   const [turnsModalOpen, setTurnsModalOpen] = useState(false);
   const [completeMatchModalOpen, setCompleteMatchModalOpen] = useState(false);
+  const [penaltyModalOpen, setPenaltyModalOpen] = useState(false);
   const [scoreModalOpen, setScoreModalOpen] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -345,10 +350,29 @@ export function Campaign() {
     setCurrentScore(0);
   };
 
-  const handleCompleteMatch = (matchId) => {
+  const handleCompleteMatch = async (matchId) => {
     // Find the match
     const match = campaign?.matches?.find((m) => m.id === matchId);
-    if (!match) return;
+    if (!match || !user) return;
+
+    // Try to acquire lock
+    const { success, alreadyLocked, lockedBy, error } =
+      await acquireMatchEditLock(
+        campaignId,
+        matchId,
+        user.uid,
+        user.displayName || "Utente",
+      );
+
+    if (!success) {
+      if (alreadyLocked) {
+        alert(`${lockedBy} sta già modificando questa partita`);
+      } else {
+        console.error("Errore acquisizione lock:", error);
+        alert("Errore nell'apertura del modale. Riprova.");
+      }
+      return;
+    }
 
     setSelectedMatch(match);
     setCurrentMatchId(matchId);
@@ -372,7 +396,52 @@ export function Campaign() {
       console.error("Errore completamento partita:", error);
       alert("Errore nel completamento della partita. Riprova.");
     } else {
+      // Release lock after successful completion
+      if (user) {
+        await releaseMatchEditLock(campaignId, user.uid);
+      }
       setCompleteMatchModalOpen(false);
+      setCurrentMatchId(null);
+      setSelectedMatch(null);
+    }
+  };
+
+  // Handler for closing complete match modal
+  const handleCloseCompleteMatchModal = async () => {
+    // Release lock before closing
+    if (user && currentMatchId) {
+      await releaseMatchEditLock(campaignId, user.uid);
+    }
+    setCompleteMatchModalOpen(false);
+    setCurrentMatchId(null);
+    setSelectedMatch(null);
+  };
+
+  // Penalty handlers
+  const handlePenalty = (matchId) => {
+    // Find the match
+    const match = campaign?.matches?.find((m) => m.id === matchId);
+    if (!match || !user) return;
+
+    setSelectedMatch(match);
+    setCurrentMatchId(matchId);
+    setPenaltyModalOpen(true);
+  };
+
+  const handlePenaltyConfirm = async (penaltyData) => {
+    if (!currentMatchId) return;
+
+    const { error } = await updateMatchPenalties(
+      campaignId,
+      currentMatchId,
+      penaltyData.penaltyTags,
+    );
+
+    if (error) {
+      console.error("Errore aggiornamento penalità:", error);
+      alert("Errore nell'aggiornamento delle penalità. Riprova.");
+    } else {
+      setPenaltyModalOpen(false);
       setCurrentMatchId(null);
       setSelectedMatch(null);
     }
@@ -432,7 +501,11 @@ export function Campaign() {
   const currentMatch = hasMatches ? matches[matches.length - 1] : null;
   const isCurrentMatchActive =
     currentMatch && currentMatch.status === "in-progress";
-  const canCreateNewMatch = !hasMatches || !isCurrentMatchActive;
+  // Can create new match only if no current match or current match has completed draft
+  const canCreateNewMatch =
+    !currentMatch ||
+    currentMatch.status === "completed" ||
+    currentMatch.draftCompleted === true;
 
   // Debug: Log match participants
   useEffect(() => {
@@ -629,11 +702,14 @@ export function Campaign() {
               draft={draft}
               onStartDraft={handleOpenDraftModal}
               onCompleteMatch={handleCompleteMatch}
+              onPenalty={handlePenalty}
               isCurrentMatch={match.id === currentMatch?.id}
               isDraftInProgress={isDraftInProgress}
               hasUserCompletedDraft={hasUserCompletedDraft}
               readyPlayersCount={readyPlayersCount}
               totalPlayersCount={totalPlayersCount}
+              editLock={campaign.matchEditLock}
+              currentUserId={user?.uid}
             />
           ))}
 
@@ -762,17 +838,26 @@ export function Campaign() {
 
       {/* Complete Match Modal */}
       <CompleteMatchModal
-        key={selectedMatch?.id || "empty"}
+        key={`complete-${selectedMatch?.id || "empty"}`}
         isOpen={completeMatchModalOpen}
-        onClose={() => {
-          setCompleteMatchModalOpen(false);
-          setCurrentMatchId(null);
-          setSelectedMatch(null);
-        }}
+        onClose={handleCloseCompleteMatchModal}
         match={selectedMatch}
         onConfirm={handleCompleteMatchConfirm}
         leaders={leaders}
         victoryCounts={victoryCounts}
+      />
+
+      {/* Penalty Modal */}
+      <PenaltyModal
+        key={`penalty-${selectedMatch?.id || "empty"}`}
+        isOpen={penaltyModalOpen}
+        onClose={() => {
+          setPenaltyModalOpen(false);
+          setCurrentMatchId(null);
+          setSelectedMatch(null);
+        }}
+        match={selectedMatch}
+        onConfirm={handlePenaltyConfirm}
       />
     </div>
   );

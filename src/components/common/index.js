@@ -12,6 +12,8 @@ export { CampaignInfoModal } from "./CampaignInfoModal";
 export { CampaignStatusModal } from "./CampaignStatusModal";
 export { VictoryInfoModal } from "./VictoryInfoModal";
 export { BonusInfoModal } from "./BonusInfoModal";
+export { PenaltyInfoModal } from "./PenaltyInfoModal";
+export { PenaltyModal } from "./PenaltyModal";
 export { RulesModal } from "./RulesModal";
 export { CompleteMatchModal } from "./CompleteMatchModal";
 export { WinnerSelectModal } from "./WinnerSelectModal";

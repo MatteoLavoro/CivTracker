@@ -210,6 +210,15 @@ export const BONUS_TAGS = {
 };
 
 /**
+ * Available penalty tags
+ */
+export const PENALTY_TAGS = {
+  MAP_REROLL: "map-reroll",
+  RAGE_QUIT: "rage-quit",
+  RULE_VIOLATION: "rule-violation",
+};
+
+/**
  * Get bonus multiplier for a player
  * Bonuses stack - each instance adds its percentage
  * @param {Array} bonusTags - Array of bonus tag IDs (can have duplicates)
@@ -231,9 +240,33 @@ export function getBonusMultiplier(bonusTags = []) {
 }
 
 /**
- * Calculate final scores with bonus tags applied
+ * Get penalty multiplier for a player
+ * Penalties stack - each instance subtracts its percentage
+ * @param {Array} penaltyTags - Array of penalty tag IDs (can have duplicates)
+ * @returns {number} Total multiplier (1.0 = no penalty, 0.9 = -10%, etc.)
+ */
+export function getPenaltyMultiplier(penaltyTags = []) {
+  let multiplier = 1.0;
+
+  // Subtract all penalties, allowing duplicates
+  penaltyTags.forEach((tagId) => {
+    if (tagId === PENALTY_TAGS.MAP_REROLL) {
+      multiplier -= 0.1; // -10%
+    } else if (tagId === PENALTY_TAGS.RAGE_QUIT) {
+      multiplier -= 0.2; // -20%
+    } else if (tagId === PENALTY_TAGS.RULE_VIOLATION) {
+      multiplier -= 0.5; // -50%
+    }
+  });
+
+  // Ensure multiplier doesn't go below 0
+  return Math.max(0, multiplier);
+}
+
+/**
+ * Calculate final scores with bonus and penalty tags applied
  * @param {Object} processedScores - Processed scores { userId: score }
- * @param {Object} participants - Match participants with bonus tags
+ * @param {Object} participants - Match participants with bonus and penalty tags
  * @returns {Object} Final scores { userId: finalScore }
  */
 export function calculateFinalScores(processedScores, participants) {
@@ -242,9 +275,18 @@ export function calculateFinalScores(processedScores, participants) {
   Object.entries(processedScores).forEach(([userId, processedScore]) => {
     const participant = participants[userId];
     const bonusTags = participant?.bonusTags || [];
-    const multiplier = getBonusMultiplier(bonusTags);
+    const penaltyTags = participant?.penaltyTags || [];
 
-    finalScores[userId] = Math.round(processedScore * multiplier);
+    const bonusMultiplier = getBonusMultiplier(bonusTags);
+    const penaltyMultiplier = getPenaltyMultiplier(penaltyTags);
+
+    // Sum bonus and penalty percentages instead of multiplying
+    // Example: +10% (1.10) and -15% (0.85) = -5% (0.95)
+    const bonusPercentage = bonusMultiplier - 1.0; // Extract bonus percentage
+    const penaltyPercentage = 1.0 - penaltyMultiplier; // Extract penalty percentage
+    const totalMultiplier = 1.0 + bonusPercentage - penaltyPercentage;
+
+    finalScores[userId] = Math.round(processedScore * totalMultiplier);
   });
 
   return finalScores;

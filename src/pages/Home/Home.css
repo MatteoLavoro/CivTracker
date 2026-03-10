@@ -522,6 +522,28 @@
   }
 }
 
+/* Campaign Card Blinking Animation (when draft is active) */
+.campaign-card.blinking {
+  animation: pulse-campaign 2s ease-in-out infinite;
+}
+
+@keyframes pulse-campaign {
+  0%,
+  100% {
+    box-shadow:
+      0 8px 20px rgba(15, 50, 82, 0.4),
+      0 0 15px rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 8px 24px rgba(15, 50, 82, 0.5),
+      0 0 30px rgba(212, 175, 55, 0.6),
+      0 0 50px rgba(212, 175, 55, 0.3);
+    border-color: rgba(212, 175, 55, 0.7);
+  }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .home-header {

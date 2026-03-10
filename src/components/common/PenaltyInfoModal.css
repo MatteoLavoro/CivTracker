@@ -1,0 +1,287 @@
+/* Penalty Info Modal Styles */
+
+.penalty-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.penalty-info-description {
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.2);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 8px;
+}
+
+.penalty-info-description p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.penalty-info-description strong {
+  color: rgba(244, 67, 54, 1);
+  font-weight: 600;
+}
+
+/* Selected Penalty Section */
+.penalty-selected-section {
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.3);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 8px;
+}
+
+.penalty-selected-section h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(244, 67, 54, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.penalty-selected-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.penalty-selected-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(20, 30, 40, 0.8);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.penalty-selected-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.penalty-remove-btn {
+  background: none;
+  border: none;
+  padding: 0 0.25rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.penalty-remove-btn:hover {
+  color: rgba(239, 68, 68, 1);
+}
+
+/* Penalty List */
+.penalty-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.penalty-item {
+  padding: 1.25rem;
+  background: rgba(20, 30, 40, 0.6);
+  border: 1px solid rgba(244, 67, 54, 0.15);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.penalty-item:hover {
+  background: rgba(20, 30, 40, 0.8);
+  border-color: rgba(244, 67, 54, 0.3);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.1);
+}
+
+.penalty-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.penalty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.penalty-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.penalty-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.penalty-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.penalty-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.penalty-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+.penalty-description p {
+  margin: 0;
+}
+
+.penalty-add-btn {
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  background: rgba(244, 67, 54, 0.15);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 6px;
+  color: rgba(244, 67, 54, 1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.penalty-add-btn:hover {
+  background: rgba(244, 67, 54, 0.25);
+  border-color: rgba(244, 67, 54, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+}
+
+/* Overflow Mode - Compact Layout */
+.penalty-overflow-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: rgba(20, 30, 40, 0.6);
+  border: 1px solid rgba(244, 67, 54, 0.15);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.penalty-overflow-item:hover {
+  background: rgba(20, 30, 40, 0.8);
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+.penalty-overflow-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.penalty-overflow-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.penalty-overflow-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.penalty-overflow-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.penalty-overflow-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+}
+
+.penalty-overflow-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 50%;
+  color: rgba(239, 68, 68, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.penalty-overflow-remove:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: rgba(239, 68, 68, 1);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .penalty-header {
+    gap: 0.75rem;
+  }
+
+  .penalty-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .penalty-name {
+    font-size: 1rem;
+  }
+
+  .penalty-value {
+    font-size: 0.85rem;
+  }
+
+  .penalty-description {
+    font-size: 0.85rem;
+  }
+}

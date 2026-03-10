@@ -1,6 +1,14 @@
 // Match Row Component
 import { useState, useEffect } from "react";
-import { Check, Users, Pencil, Clock, Info } from "lucide-react";
+import {
+  Check,
+  Users,
+  Pencil,
+  Clock,
+  Info,
+  AlertTriangle,
+  Loader2,
+} from "lucide-react";
 import { Avatar } from "./Avatar";
 import { PlayerDraftInfoModal } from "./PlayerDraftInfoModal";
 import "./MatchRow.css";
@@ -13,11 +21,14 @@ import "./MatchRow.css";
  * @param {Object} draft - Draft data for real-time leader selection
  * @param {Function} onStartDraft - Handler for starting draft
  * @param {Function} onCompleteMatch - Handler for completing match
+ * @param {Function} onPenalty - Handler for opening penalty modal
  * @param {boolean} isCurrentMatch - Whether this is the current active match
  * @param {boolean} isDraftInProgress - Whether draft is in progress
  * @param {boolean} hasUserCompletedDraft - Whether current user has completed draft
  * @param {number} readyPlayersCount - Number of ready players
  * @param {number} totalPlayersCount - Total number of players
+ * @param {Object} editLock - Current edit lock from campaign { matchId, userId, username, lockedAt }
+ * @param {string} currentUserId - Current user's ID
  */
 export function MatchRow({
   match,
@@ -26,15 +37,25 @@ export function MatchRow({
   draft,
   onStartDraft,
   onCompleteMatch,
+  onPenalty,
   isCurrentMatch,
   isDraftInProgress,
   hasUserCompletedDraft,
   readyPlayersCount,
   totalPlayersCount,
+  editLock,
+  currentUserId,
 }) {
   const [draftInfoModalOpen, setDraftInfoModalOpen] = useState(false);
   const [selectedPlayerDraft, setSelectedPlayerDraft] = useState(null);
   const [selectedPlayerName, setSelectedPlayerName] = useState("");
+
+  // Check if this match is locked by another user (real-time)
+  const isLockedByOther =
+    editLock &&
+    editLock.matchId === match.id &&
+    editLock.userId !== currentUserId;
+  const lockedByUsername = isLockedByOther ? editLock.username : null;
 
   const getLeaderById = (leaderId) => {
     return leaders?.find((l) => l.id === leaderId);
@@ -347,24 +368,70 @@ export function MatchRow({
           </>
         )}
         {match.draftCompleted && !isCompleted && (
-          <button
-            className="match-action-btn complete-btn"
-            onClick={() => onCompleteMatch(match.id)}
-            type="button"
-          >
-            <Check size={20} />
-            Segna Finita
-          </button>
+          <>
+            <button
+              className={`match-action-btn complete-btn ${
+                isLockedByOther ? "disabled-no-cursor" : ""
+              }`}
+              onClick={() => !isLockedByOther && onCompleteMatch(match.id)}
+              disabled={isLockedByOther}
+              type="button"
+            >
+              {isLockedByOther ? (
+                <>
+                  <Loader2 size={20} className="spinner-icon" />
+                  <span>In modifica da {lockedByUsername}</span>
+                </>
+              ) : (
+                <>
+                  <Check size={20} />
+                  Segna Finita
+                </>
+              )}
+            </button>
+            <button
+              className="match-action-btn penalty-btn"
+              onClick={() => onPenalty && onPenalty(match.id)}
+              type="button"
+              title="Assegna penalità"
+            >
+              <AlertTriangle size={20} />
+              Penalità
+            </button>
+          </>
         )}
         {isCompleted && (
-          <button
-            className="match-action-btn edit-btn"
-            onClick={() => onCompleteMatch(match.id)}
-            type="button"
-          >
-            <Pencil size={20} />
-            Modifica
-          </button>
+          <>
+            <button
+              className={`match-action-btn edit-btn ${
+                isLockedByOther ? "disabled-no-cursor" : ""
+              }`}
+              onClick={() => !isLockedByOther && onCompleteMatch(match.id)}
+              disabled={isLockedByOther}
+              type="button"
+            >
+              {isLockedByOther ? (
+                <>
+                  <Loader2 size={20} className="spinner-icon" />
+                  <span>In modifica da {lockedByUsername}</span>
+                </>
+              ) : (
+                <>
+                  <Pencil size={20} />
+                  Modifica
+                </>
+              )}
+            </button>
+            <button
+              className="match-action-btn penalty-btn"
+              onClick={() => onPenalty && onPenalty(match.id)}
+              type="button"
+              title="Assegna penalità"
+            >
+              <AlertTriangle size={20} />
+              Penalità
+            </button>
+          </>
         )}
       </div>
 
