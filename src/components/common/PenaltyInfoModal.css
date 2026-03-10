@@ -91,18 +91,26 @@
   gap: 1rem;
 }
 
-.penalty-item {
+.penalty-card {
   padding: 1.25rem;
   background: rgba(20, 30, 40, 0.6);
   border: 1px solid rgba(244, 67, 54, 0.15);
   border-radius: 10px;
   transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
 }
 
-.penalty-item:hover {
+.penalty-card.clickable {
+  cursor: pointer;
+}
+
+.penalty-card.clickable:hover {
+  background: rgba(20, 30, 40, 0.9);
+  border-color: rgba(244, 67, 54, 0.5);
+  box-shadow: 0 4px 16px rgba(244, 67, 54, 0.2);
+  transform: translateY(-2px);
+}
+
+.penalty-card:hover {
   background: rgba(20, 30, 40, 0.8);
   border-color: rgba(244, 67, 54, 0.3);
   box-shadow: 0 4px 12px rgba(244, 67, 54, 0.1);
@@ -112,35 +120,33 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.penalty-icon {
+.penalty-icon-wrapper {
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  border: 2px solid;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
 }
 
-.penalty-info {
+.penalty-title-section {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   flex: 1;
 }
 
-.penalty-name-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
 .penalty-name {
   font-size: 1.1rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.95);
+  margin: 0;
 }
 
 .penalty-value {
@@ -153,30 +159,7 @@
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.5;
-}
-
-.penalty-description p {
   margin: 0;
-}
-
-.penalty-add-btn {
-  align-self: flex-start;
-  padding: 0.5rem 1rem;
-  background: rgba(244, 67, 54, 0.15);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-  border-radius: 6px;
-  color: rgba(244, 67, 54, 1);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.penalty-add-btn:hover {
-  background: rgba(244, 67, 54, 0.25);
-  border-color: rgba(244, 67, 54, 0.5);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
 }
 
 /* Overflow Mode - Compact Layout */
@@ -211,14 +194,6 @@
   width: 40px;
   height: 40px;
   flex-shrink: 0;
-}
-
-.penalty-overflow-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1;
-  min-width: 0;
 }
 
 .penalty-overflow-name {
@@ -262,13 +237,33 @@
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
 }
 
+/* Footer */
+.penalty-info-footer {
+  padding: 1rem;
+  background: rgba(244, 67, 54, 0.08);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 8px;
+}
+
+.penalty-info-note {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.penalty-info-note strong {
+  color: rgba(244, 67, 54, 1);
+  font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .penalty-header {
     gap: 0.75rem;
   }
 
-  .penalty-icon {
+  .penalty-icon-wrapper {
     width: 40px;
     height: 40px;
   }

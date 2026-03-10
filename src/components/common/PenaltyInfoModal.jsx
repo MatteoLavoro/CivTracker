@@ -43,7 +43,7 @@ export function PenaltyInfoModal({
     onClose();
   };
 
-  const getIconForPenalty = () => {
+  const getIconForPenalty = (penaltyId) => {
     return <AlertTriangle size={24} />;
   };
 
@@ -152,27 +152,26 @@ export function PenaltyInfoModal({
                         className="penalty-overflow-icon"
                         style={{ color: penalty.color }}
                       >
-                        {getIconForPenalty(tagId)}
+                        {getIconForPenalty(penalty.id)}
                       </div>
-                      <div className="penalty-overflow-info">
-                        <span className="penalty-overflow-name">
-                          {penalty.name}
-                        </span>
-                        <span
-                          className="penalty-overflow-value"
-                          style={{ color: penalty.color }}
-                        >
-                          {penalty.penalty}
-                        </span>
-                      </div>
+                      <span className="penalty-overflow-name">
+                        {penalty.name}
+                      </span>
+                      <span
+                        className="penalty-overflow-value"
+                        style={{ color: penalty.color }}
+                      >
+                        {penalty.penalty}
+                      </span>
                     </div>
                     {onRemove && (
                       <button
                         type="button"
                         className="penalty-overflow-remove"
                         onClick={() => onRemove(index)}
+                        title="Rimuovi penalità"
                       >
-                        <X size={16} />
+                        <X size={18} />
                       </button>
                     )}
                   </div>
@@ -180,38 +179,37 @@ export function PenaltyInfoModal({
               })
             : // Info or assign mode: show all available penalties
               penaltyTags.map((penalty) => (
-                <div key={penalty.id} className="penalty-item">
+                <div
+                  key={penalty.id}
+                  className={`penalty-card ${
+                    mode === "assign" ? "clickable" : ""
+                  }`}
+                  onClick={
+                    mode === "assign"
+                      ? () => handleToggleTag(penalty.id)
+                      : undefined
+                  }
+                >
                   <div className="penalty-header">
                     <div
-                      className="penalty-icon"
-                      style={{ color: penalty.color }}
+                      className="penalty-icon-wrapper"
+                      style={{ borderColor: penalty.color }}
                     >
-                      {getIconForPenalty(penalty.id)}
-                    </div>
-                    <div className="penalty-info">
-                      <div className="penalty-name-row">
-                        <span className="penalty-name">{penalty.name}</span>
-                        <span
-                          className="penalty-value"
-                          style={{ color: penalty.color }}
-                        >
-                          {penalty.penalty}
-                        </span>
+                      <div style={{ color: penalty.color }}>
+                        {getIconForPenalty(penalty.id)}
                       </div>
                     </div>
+                    <div className="penalty-title-section">
+                      <h3 className="penalty-name">{penalty.name}</h3>
+                      <span
+                        className="penalty-value"
+                        style={{ color: penalty.color }}
+                      >
+                        {penalty.penalty}
+                      </span>
+                    </div>
                   </div>
-                  <div className="penalty-description">
-                    <p>{penalty.description}</p>
-                  </div>
-                  {mode === "assign" && (
-                    <button
-                      type="button"
-                      className="penalty-add-btn"
-                      onClick={() => handleToggleTag(penalty.id)}
-                    >
-                      + Aggiungi
-                    </button>
-                  )}
+                  <p className="penalty-description">{penalty.description}</p>
                 </div>
               ))}
         </div>

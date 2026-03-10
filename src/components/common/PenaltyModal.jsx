@@ -125,7 +125,7 @@ export function PenaltyModal({ isOpen, onClose, match, onConfirm }) {
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title="Assegna Penalità"
+        title="Penalità"
         footer={{
           label: "Salva Penalità",
           icon: <AlertTriangle size={20} />,
