@@ -201,10 +201,15 @@ export function Home() {
 
   const handleToggleImportant = async (campaign, e) => {
     e.stopPropagation();
-    const newImportantStatus = !campaign.isImportant;
+
+    // Check if current user has this campaign marked as important
+    const importantFor = campaign.importantFor || [];
+    const isCurrentlyImportant = importantFor.includes(user.uid);
+    const newImportantStatus = !isCurrentlyImportant;
 
     const { success, error } = await toggleCampaignImportant(
       campaign.id,
+      user.uid,
       newImportantStatus,
     );
 
@@ -275,9 +280,12 @@ export function Home() {
             {/* Render existing campaigns */}
             {campaigns
               .sort((a, b) => {
-                // Sort by important status first (true before false)
-                if (a.isImportant && !b.isImportant) return -1;
-                if (!a.isImportant && b.isImportant) return 1;
+                // Sort by important status first (true before false) for current user
+                const aImportant = (a.importantFor || []).includes(user.uid);
+                const bImportant = (b.importantFor || []).includes(user.uid);
+
+                if (aImportant && !bImportant) return -1;
+                if (!aImportant && bImportant) return 1;
                 // Then by name alphabetically
                 return a.name.localeCompare(b.name);
               })
@@ -286,6 +294,11 @@ export function Home() {
                 const completedMatchCount = (campaign.matches || []).filter(
                   (m) => m.status === "completed",
                 ).length;
+
+                // Check if this campaign is marked as important by current user
+                const isImportantForMe = (campaign.importantFor || []).includes(
+                  user.uid,
+                );
 
                 // Check if draft is in progress
                 const matches = Array.isArray(campaign.matches)
@@ -321,7 +334,7 @@ export function Home() {
                       <div className="campaign-card-actions">
                         <button
                           className={`campaign-card-star-btn ${
-                            campaign.isImportant ? "active" : ""
+                            isImportantForMe ? "active" : ""
                           }`}
                           type="button"
                           onClick={(e) => handleToggleImportant(campaign, e)}

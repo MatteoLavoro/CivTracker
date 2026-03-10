@@ -708,7 +708,11 @@ export function Campaign() {
               hasUserCompletedDraft={hasUserCompletedDraft}
               readyPlayersCount={readyPlayersCount}
               totalPlayersCount={totalPlayersCount}
-              editLock={campaign.matchEditLock}
+              editLock={
+                campaign.matchEditLocks
+                  ? campaign.matchEditLocks[match.id]
+                  : null
+              }
               currentUserId={user?.uid}
             />
           ))}

@@ -499,9 +499,10 @@ export const acquireMatchEditLock = async (
     }
 
     const campaign = campaignDoc.data();
-    const currentLock = campaign.matchEditLock;
+    const matchEditLocks = campaign.matchEditLocks || {};
+    const currentLock = matchEditLocks[matchId];
 
-    // Check if already locked by another user
+    // Check if this specific match is already locked by another user
     if (currentLock && currentLock.userId !== userId) {
       // Check if lock is expired (older than 5 minutes)
       const lockTime = new Date(currentLock.lockedAt).getTime();
@@ -520,14 +521,18 @@ export const acquireMatchEditLock = async (
       // Lock expired, continue to acquire
     }
 
-    // Acquire lock
-    await updateDoc(campaignRef, {
-      matchEditLock: {
-        matchId,
+    // Acquire lock for this specific match
+    const updatedLocks = {
+      ...matchEditLocks,
+      [matchId]: {
         userId,
         username,
         lockedAt: new Date().toISOString(),
       },
+    };
+
+    await updateDoc(campaignRef, {
+      matchEditLocks: updatedLocks,
       updatedAt: new Date().toISOString(),
     });
 
@@ -564,15 +569,22 @@ export const releaseMatchEditLock = async (campaignId, userId) => {
     }
 
     const campaign = campaignDoc.data();
-    const currentLock = campaign.matchEditLock;
+    const matchEditLocks = campaign.matchEditLocks || {};
 
-    // Only release if this user owns the lock
-    if (currentLock && currentLock.userId === userId) {
-      await updateDoc(campaignRef, {
-        matchEditLock: null,
-        updatedAt: new Date().toISOString(),
-      });
-    }
+    // Find and release all locks owned by this user
+    const updatedLocks = {};
+    Object.entries(matchEditLocks).forEach(([matchId, lock]) => {
+      if (lock.userId !== userId) {
+        // Keep locks from other users
+        updatedLocks[matchId] = lock;
+      }
+      // Skip locks from this user (effectively releasing them)
+    });
+
+    await updateDoc(campaignRef, {
+      matchEditLocks: updatedLocks,
+      updatedAt: new Date().toISOString(),
+    });
 
     return { success: true, error: null };
   } catch (error) {

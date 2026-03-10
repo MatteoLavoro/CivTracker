@@ -260,16 +260,43 @@ export const updateCampaignName = async (campaignId, newName) => {
 };
 
 /**
- * Toggle campaign important/starred status
+ * Toggle campaign important/starred status for a specific user
  * @param {string} campaignId - Campaign ID
- * @param {boolean} isImportant - Whether campaign is marked as important
+ * @param {string} userId - User ID
+ * @param {boolean} isImportant - Whether to add or remove user from important list
  * @returns {Object} { success, error }
  */
-export const toggleCampaignImportant = async (campaignId, isImportant) => {
+export const toggleCampaignImportant = async (
+  campaignId,
+  userId,
+  isImportant,
+) => {
   try {
     const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const importantFor = campaign.importantFor || [];
+
+    let updatedImportantFor;
+    if (isImportant) {
+      // Add user to important list if not already there
+      if (!importantFor.includes(userId)) {
+        updatedImportantFor = [...importantFor, userId];
+      } else {
+        updatedImportantFor = importantFor;
+      }
+    } else {
+      // Remove user from important list
+      updatedImportantFor = importantFor.filter((id) => id !== userId);
+    }
+
     await updateDoc(campaignRef, {
-      isImportant: isImportant,
+      importantFor: updatedImportantFor,
       updatedAt: new Date().toISOString(),
     });
 

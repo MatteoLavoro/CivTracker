@@ -27,7 +27,7 @@ import "./MatchRow.css";
  * @param {boolean} hasUserCompletedDraft - Whether current user has completed draft
  * @param {number} readyPlayersCount - Number of ready players
  * @param {number} totalPlayersCount - Total number of players
- * @param {Object} editLock - Current edit lock from campaign { matchId, userId, username, lockedAt }
+ * @param {Object} editLock - Current edit lock for this specific match { userId, username, lockedAt }
  * @param {string} currentUserId - Current user's ID
  */
 export function MatchRow({
@@ -51,10 +51,7 @@ export function MatchRow({
   const [selectedPlayerName, setSelectedPlayerName] = useState("");
 
   // Check if this match is locked by another user (real-time)
-  const isLockedByOther =
-    editLock &&
-    editLock.matchId === match.id &&
-    editLock.userId !== currentUserId;
+  const isLockedByOther = editLock && editLock.userId !== currentUserId;
   const lockedByUsername = isLockedByOther ? editLock.username : null;
 
   const getLeaderById = (leaderId) => {
