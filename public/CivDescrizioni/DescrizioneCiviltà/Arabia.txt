@@ -1,9 +1,11 @@
 [L'ultimo Profeta] {Abilità esclusiva}
 
-Ricevi automaticamente l'ultimo [GreatPersonIcon] Grande Profeta quando il penultimo viene preso da qualcun altro (se non hai già ottenuto un [GreatPersonIcon] Grande Profeta). +1 [ScienceIcon] Scienza per ogni città straniera che segue la religione dell'Arabia.
+Ricevi automaticamente l'ultimo  Grande Profeta quando il penultimo viene preso da qualcun altro (se non hai già ottenuto un  Grande Profeta). +1  Scienza per ogni città straniera che segue la religione dell'Arabia.
+
 [Mamelucco] {Unità speciali}
 
 Unità esclusiva araba di epoca medievale che sostituisce il Cavaliere. Si cura alla fine di ogni turno, anche dopo aver mosso o attaccato.
+
 [Madrasa] {Infrastruttura speciale}
 
-Edificio esclusivo arabo. Bonus alla [FaithIcon] Fede pari al bonus da vicinanza del distretto Campus.
+Edificio esclusivo arabo. Bonus alla  Fede pari al bonus da vicinanza del distretto Campus.

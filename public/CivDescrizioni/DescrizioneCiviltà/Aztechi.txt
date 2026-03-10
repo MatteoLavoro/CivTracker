@@ -8,4 +8,4 @@ Unità esclusiva azteca di epoca antica che sostituisce il Guerriero. Ha la poss
 
 [Tlachtli] {Infrastruttura speciale}
 
-Edificio esclusivo degli aztechi. Fornisce 2 [AmenitiesIcon] Attrattiva, +2  [CultureIcon] Cultura, +2  [FaithIcon] Fede e un punto [GeneralIcon] Grande Generale. Fornisce +1  [CultureIcon] Turismo dopo l'acquisizione del Progresso civico Conservazione.
+Edificio esclusivo degli aztechi. Fornisce 2  Attrattiva, +2  Cultura, +2  Fede e un punto  Grande Generale. Fornisce +1  Turismo dopo l'acquisizione del Progresso civico Conservazione.

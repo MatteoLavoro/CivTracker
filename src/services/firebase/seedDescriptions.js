@@ -5,51 +5,240 @@ import { db } from "./config";
 
 /**
  * Apply icon replacements to description text
- * Converts double spaces + keywords into [IconName] tags
+ * - Converts double spaces + keywords into [IconName] tags
+ * - Fixes incorrect icons
+ * - Preserves newlines and does NOT touch ability names [Name] or types {Type}
  */
 function applyIconReplacements(text) {
   if (!text) return text;
 
-  // Icon replacements map
-  const replacements = {
-    "  Scienza": " [ScienceIcon] Scienza",
-    "  Cultura": " [CultureIcon] Cultura",
-    "  Fede": " [FaithIcon] Fede",
-    "  Cibo": " [FoodIcon] Cibo",
-    "  Produzione": " [ProductionIcon] Produzione",
-    "  Oro": " [GoldIcon] Oro",
-    "  Forza di combattimento": " [StrengthIcon] Forza di combattimento",
-    "  Forza religiosa": " [ReligiousStrengthIcon] Forza religiosa",
-    "  Turismo": " [TourismIcon] Turismo",
-    "  Abitazioni": " [CitizenIcon] Abitazioni",
-    "  Supporto diplomatico": " [DiplomaticFavorIcon] Supporto diplomatico",
-    "  Emissari": " [EnvoyIcon] Emissari",
-    "  Rotta commerciale": " [TradeRouteIcon] Rotta commerciale",
-    "  Rotte commerciali": " [TradeRouteIcon] Rotte commerciali",
-    "  capitale": " [CapitalIcon] capitale",
-    "  Capitale": " [CapitalIcon] Capitale",
-    "  Grande Profeta": " [GreatProphetIcon] Grande Profeta",
-    "  Grande Persona": " [GreatPersonIcon] Grande Persona",
-    "  Grande Scienziato": " [ScientistIcon] Grande Scienziato",
-    "  Grande Mercante": " [MerchantIcon] Grande Mercante",
-    "  Grande Generale": " [GeneralIcon] Grande Generale",
-    "  Movimento": " [MovementIcon] Movimento",
-    "  Energia": " [PowerIcon] Energia",
-    "  Cittadini": " [CitizenIcon] Cittadini",
-    "  Amenità": " [AmenitiesIcon] Amenità",
-    "  Attrattiva": " [AmenitiesIcon] Attrattiva",
-    "  Distretti": " [DistrictIcon] Distretti",
-    "  Distretto": " [DistrictIcon] Distretto",
-    "  Alleanza": " [AllianceIcon] Alleanza",
-    "  turno": " [TurnIcon] turno",
-    "  Lagnanze": " [GrievancesIcon] Lagnanze",
-  };
-
   let processed = text;
-  for (const [key, value] of Object.entries(replacements)) {
-    processed = processed.replaceAll(key, value);
+
+  // Step 1: Fix incorrect icons that might exist
+  const iconCorrections = [
+    // Corregge icone sbagliate comuni
+    { wrong: /\[StreghtIcon\]/g, correct: "[StrengthIcon]" },
+    {
+      wrong: /\[ProductionIcon\] Forza di combattimento/g,
+      correct: "[StrengthIcon] Forza di combattimento",
+    },
+    {
+      wrong: /\[ProductionIcon\] Forza religiosa/g,
+      correct: "[ReligiousStrengthIcon] Forza religiosa",
+    },
+    {
+      wrong: /\[GoldIcon\] Rotta commerciale/g,
+      correct: "[TradeRouteIcon] Rotta commerciale",
+    },
+    {
+      wrong: /\[GoldIcon\] Rotte commerciali/g,
+      correct: "[TradeRouteIcon] Rotte commerciali",
+    },
+    {
+      wrong: /\[DiplomaticFavorIcon\] Emissari/g,
+      correct: "[EnvoyIcon] Emissari",
+    },
+    {
+      wrong: /\[GreatPersonIcon\] Grande Profeta/g,
+      correct: "[GreatProphetIcon] Grande Profeta",
+    },
+    { wrong: /\[CultureIcon\] Turismo/g, correct: "[TourismIcon] Turismo" },
+  ];
+
+  for (const { wrong, correct } of iconCorrections) {
+    processed = processed.replace(wrong, correct);
   }
 
+  // Step 2: Remove duplicate icons (e.g., "[Icon] [Icon] Word" -> "[Icon] Word")
+  const iconPattern = /(\[[A-Z][a-zA-Z]+Icon\])\s*\1/g;
+  processed = processed.replace(iconPattern, "$1");
+
+  // Step 3: Add missing icons - replace only if icon not already present
+  // IMPORTANTE: Non tocca mai il contenuto tra [] e {} (titoli e tipi delle abilità)
+  const replacements = [
+    // Risorse base
+    { pattern: /\s{2,}Scienza(?!\])/g, replacement: " [ScienceIcon] Scienza" },
+    { pattern: /\s{2,}Cultura(?!\])/g, replacement: " [CultureIcon] Cultura" },
+    { pattern: /\s{2,}Fede(?!\])/g, replacement: " [FaithIcon] Fede" },
+    { pattern: /\s{2,}Cibo(?!\])/g, replacement: " [FoodIcon] Cibo" },
+    {
+      pattern: /\s{2,}Produzione(?!\])/g,
+      replacement: " [ProductionIcon] Produzione",
+    },
+    { pattern: /\s{2,}Oro(?!\])/g, replacement: " [GoldIcon] Oro" },
+    { pattern: /\s{2,}Turismo(?!\])/g, replacement: " [TourismIcon] Turismo" },
+
+    // Risorse strategiche
+    { pattern: /\s{2,}Ferro(?!\])/g, replacement: " [IronIcon] Ferro" },
+    { pattern: /\s{2,}Carbone(?!\])/g, replacement: " [CoalIcon] Carbone" },
+    { pattern: /\s{2,}Petrolio(?!\])/g, replacement: " [OilIcon] Petrolio" },
+    {
+      pattern: /\s{2,}Alluminio(?!\])/g,
+      replacement: " [AluminumIcon] Alluminio",
+    },
+    { pattern: /\s{2,}Uranio(?!\])/g, replacement: " [UraniumIcon] Uranio" },
+
+    // Combattimento
+    {
+      pattern: /\s{2,}Forza di combattimento(?!\])/g,
+      replacement: " [StrengthIcon] Forza di combattimento",
+    },
+    {
+      pattern: /\s{2,}Forza religiosa(?!\])/g,
+      replacement: " [ReligiousStrengthIcon] Forza religiosa",
+    },
+    {
+      pattern: /\s{2,}Movimento(?!\])/g,
+      replacement: " [MovementIcon] Movimento",
+    },
+    {
+      pattern: /\s{2,}Promozione(?!\])/g,
+      replacement: " [PromotionIcon] Promozione",
+    },
+    {
+      pattern: /\s{2,}Promozioni(?!\])/g,
+      replacement: " [PromotionIcon] Promozioni",
+    },
+
+    // Città e popolazione
+    {
+      pattern: /\s{2,}Abitazioni(?!\])/g,
+      replacement: " [CitizenIcon] Abitazioni",
+    },
+    {
+      pattern: /\s{2,}Cittadini(?!\])/g,
+      replacement: " [CitizenIcon] Cittadini",
+    },
+    {
+      pattern: /\s{2,}Amenità(?!\])/g,
+      replacement: " [AmenitiesIcon] Amenità",
+    },
+    {
+      pattern: /\s{2,}Attrattiva(?!\])/g,
+      replacement: " [AmenitiesIcon] Attrattiva",
+    },
+    {
+      pattern: /\s{2,}capitale(?!\])/g,
+      replacement: " [CapitalIcon] capitale",
+    },
+    {
+      pattern: /\s{2,}Capitale(?!\])/g,
+      replacement: " [CapitalIcon] Capitale",
+    },
+    {
+      pattern: /\s{2,}Distretti(?!\])/g,
+      replacement: " [DistrictIcon] Distretti",
+    },
+    {
+      pattern: /\s{2,}Distretto(?!\])/g,
+      replacement: " [DistrictIcon] Distretto",
+    },
+
+    // Diplomazia
+    {
+      pattern: /\s{2,}Supporto diplomatico(?!\])/g,
+      replacement: " [DiplomaticFavorIcon] Supporto diplomatico",
+    },
+    { pattern: /\s{2,}Emissari(?!\])/g, replacement: " [EnvoyIcon] Emissari" },
+    {
+      pattern: /\s{2,}Alleanza(?!\])/g,
+      replacement: " [AllianceIcon] Alleanza",
+    },
+    {
+      pattern: /\s{2,}Lagnanze(?!\])/g,
+      replacement: " [GrievancesIcon] Lagnanze",
+    },
+
+    // Commercio
+    {
+      pattern: /\s{2,}Rotte commerciali(?!\])/g,
+      replacement: " [TradeRouteIcon] Rotte commerciali",
+    },
+    {
+      pattern: /\s{2,}Rotta commerciale(?!\])/g,
+      replacement: " [TradeRouteIcon] Rotta commerciale",
+    },
+    {
+      pattern: /\s{2,}Emporio commerciale(?!\])/g,
+      replacement: " [TradingPostIcon] Emporio commerciale",
+    },
+    {
+      pattern: /\s{2,}Empori commerciali(?!\])/g,
+      replacement: " [TradingPostIcon] Empori commerciali",
+    },
+
+    // Grandi Persone
+    {
+      pattern: /\s{2,}Grande Profeta(?!\])/g,
+      replacement: " [GreatProphetIcon] Grande Profeta",
+    },
+    {
+      pattern: /\s{2,}Grande Persona(?!\])/g,
+      replacement: " [GreatPersonIcon] Grande Persona",
+    },
+    {
+      pattern: /\s{2,}Grande Scienziato(?!\])/g,
+      replacement: " [ScientistIcon] Grande Scienziato",
+    },
+    {
+      pattern: /\s{2,}Grande Mercante(?!\])/g,
+      replacement: " [MerchantIcon] Grande Mercante",
+    },
+    {
+      pattern: /\s{2,}Grande Generale(?!\])/g,
+      replacement: " [GeneralIcon] Grande Generale",
+    },
+
+    // Meccaniche speciali
+    { pattern: /\s{2,}Eureka(?!\])/g, replacement: " [EurekaIcon] Eureka" },
+    { pattern: /\s{2,}eureka(?!\])/g, replacement: " [EurekaIcon] eureka" },
+    {
+      pattern: /\s{2,}Ispirazione(?!\])/g,
+      replacement: " [InspirationIcon] Ispirazione",
+    },
+    {
+      pattern: /\s{2,}ispirazione(?!\])/g,
+      replacement: " [InspirationIcon] ispirazione",
+    },
+    {
+      pattern: /\s{2,}cariche(?!\])/g,
+      replacement: " [BuildChargesIcon] cariche",
+    },
+
+    // Cultura e opere
+    { pattern: /\s{2,}Reliquia(?!\])/g, replacement: " [RelicIcon] Reliquia" },
+    { pattern: /\s{2,}Reliquie(?!\])/g, replacement: " [RelicIcon] Reliquie" },
+    {
+      pattern: /\s{2,}Grande opera d'arte(?!\])/g,
+      replacement: " [GreatWorkArtIcon] Grande opera d'arte",
+    },
+    {
+      pattern: /\s{2,}Grande opera musicale(?!\])/g,
+      replacement: " [GreatWorkMusicIcon] Grande opera musicale",
+    },
+    {
+      pattern: /\s{2,}Grande opera letteraria(?!\])/g,
+      replacement: " [GreatWorkWritingIcon] Grande opera letteraria",
+    },
+
+    // Altro
+    { pattern: /\s{2,}Energia(?!\])/g, replacement: " [PowerIcon] Energia" },
+    { pattern: /\s{2,}turno(?!\])/g, replacement: " [TurnIcon] turno" },
+  ];
+
+  // Apply each replacement
+  for (const { pattern, replacement } of replacements) {
+    processed = processed.replace(pattern, replacement);
+  }
+
+  // Step 4: Clean up multiple spaces before icons (e.g., "alla  [Icon]" -> "alla [Icon]")
+  processed = processed.replace(/\s{2,}(\[[A-Z][a-zA-Z]+Icon\])/g, " $1");
+
+  // Step 5: Clean up any remaining triple+ spaces (but preserve newlines!)
+  // Solo gli spazi, non i \n
+  processed = processed.replace(/ {3,}/g, " ");
+
+  // NOTE: NON rimuoviamo i \n (a capo) perché preserviamo la formattazione
   return processed;
 }
 
