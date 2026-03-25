@@ -27,8 +27,8 @@ export function DraftModal({
 }) {
   const [myCountdown, setMyCountdown] = useState(5);
   const [hasStartedDraft, setHasStartedDraft] = useState(false);
-  const [currentBanTargetIndex, setCurrentBanTargetIndex] = useState(0);
-  const [selectedLeaderForBan, setSelectedLeaderForBan] = useState(null);
+  // Single-vote ban state: { targetPlayerId, leaderId } | null
+  const [selectedBanVote, setSelectedBanVote] = useState(null);
 
   const draftPhase = draft?.phase || null;
   const isReady = draft?.readyPlayers?.includes(user?.uid) || false;
@@ -42,7 +42,6 @@ export function DraftModal({
   // Get other players for banning
   const otherPlayers =
     campaign?.members?.filter((id) => id !== user?.uid) || [];
-  const currentBanTarget = otherPlayers[currentBanTargetIndex];
 
   // My personal countdown timer
   useEffect(() => {
@@ -80,26 +79,23 @@ export function DraftModal({
     onClose();
   };
 
-  // Handle select leader for ban
-  const handleSelectLeaderForBan = (leaderId) => {
-    setSelectedLeaderForBan(leaderId);
+  // Handle click on a leader card during ban phase
+  // If the same leader is clicked again, deselect it (toggle)
+  // Otherwise replace any prior selection (only one vote allowed)
+  const handleSelectLeaderForBan = (targetPlayerId, leaderId) => {
+    setSelectedBanVote((prev) => {
+      if (prev?.targetPlayerId === targetPlayerId && prev?.leaderId === leaderId) {
+        return null; // deselect
+      }
+      return { targetPlayerId, leaderId };
+    });
   };
 
-  // Handle confirm ban
+  // Handle confirm ban — submits the single vote
   const handleConfirmBan = async () => {
-    if (!selectedLeaderForBan || !currentBanTarget) return;
-
-    await onSubmitBan(currentBanTarget, selectedLeaderForBan);
-
-    // Move to next player or finish
-    if (currentBanTargetIndex < otherPlayers.length - 1) {
-      setCurrentBanTargetIndex(currentBanTargetIndex + 1);
-      setSelectedLeaderForBan(null);
-    } else {
-      // All votes submitted - reset to see results
-      setCurrentBanTargetIndex(0);
-      setSelectedLeaderForBan(null);
-    }
+    if (!selectedBanVote) return;
+    await onSubmitBan(selectedBanVote.targetPlayerId, selectedBanVote.leaderId);
+    setSelectedBanVote(null);
   };
 
   // Get leader object by ID
@@ -240,13 +236,13 @@ export function DraftModal({
       );
     }
 
-    // Player has completed bans - waiting for others
+    // Player has completed their single ban vote - waiting for others
     if (hasCompletedBans) {
       return (
         <div className="draft-modal-body">
           <div className="draft-modal-waiting">
             <p className="draft-modal-description">
-              Hai completato i tuoi ban. Attendere che tutti i giocatori
+              Hai completato il tuo ban. Attendere che tutti i giocatori
               finiscano.
             </p>
 
@@ -258,9 +254,8 @@ export function DraftModal({
       );
     }
 
-    // Player is banning - show other players' leaders
-    if (!currentBanTarget || otherPlayers.length === 0) {
-      // Solo player - skip banning
+    // Solo player - skip banning
+    if (otherPlayers.length === 0) {
       return (
         <div className="draft-modal-body">
           <p className="draft-modal-description">
@@ -270,86 +265,81 @@ export function DraftModal({
       );
     }
 
-    const targetMemberData = campaign?.memberDetails?.[currentBanTarget];
-    const targetLeaders = draft?.playerDrafts?.[currentBanTarget] || [];
-
-    // If no leaders were drafted, show error
-    if (!myDraftedLeaders || myDraftedLeaders.length === 0) {
-      return (
-        <div className="draft-modal-body">
-          <p className="draft-modal-description">
-            I leader non sono stati estratti correttamente. Riprova ad avviare
-            il draft.
-          </p>
-        </div>
-      );
-    }
-
-    if (!targetLeaders || targetLeaders.length === 0) {
-      return (
-        <div className="draft-modal-body">
-          <p className="draft-modal-description">
-            Attendere l'estrazione dei leader...
-          </p>
-          <div className="waiting-spinner">
-            <div className="spinner"></div>
-          </div>
-        </div>
-      );
-    }
-
+    // Show all opponents at once; player selects exactly ONE leader from ONE opponent
     return (
       <>
         <div className="draft-modal-body">
-          <div className="ban-target-player">
-            <Avatar
-              photoURL={targetMemberData?.photoURL}
-              displayName={targetMemberData?.username}
-              email={null}
-              size={40}
-            />
-            <div className="ban-target-name">
-              {targetMemberData?.username || "Sconosciuto"}
-            </div>
-          </div>
-
           <p className="draft-modal-description">
-            Seleziona un leader da bannare
+            Scegli UN personaggio da bannare tra tutti gli avversari. Vince
+            quello con più voti (pareggio → random).
           </p>
 
-          <div className="ban-leaders">
-            {targetLeaders.map((leaderId) => {
-              const leader = getLeaderById(leaderId);
-              if (!leader) return null;
+          <div className="ban-all-targets">
+            {otherPlayers.map((targetId) => {
+              const targetMemberData = campaign?.memberDetails?.[targetId];
+              const targetLeaders = draft?.playerDrafts?.[targetId] || [];
 
-              const isSelected = selectedLeaderForBan === leaderId;
+              if (!targetLeaders || targetLeaders.length === 0) return null;
 
               return (
-                <div
-                  key={leaderId}
-                  className={`ban-leader-card ${isSelected ? "selected" : ""}`}
-                  onClick={() => handleSelectLeaderForBan(leaderId)}
-                >
-                  <LeaderTooltip leader={leader} type="leader">
-                    <img
-                      src={leader.leaderIconPath}
-                      alt={leader.name}
-                      className="ban-leader-icon"
+                <div key={targetId} className="ban-target-section">
+                  <div className="ban-target-player">
+                    <Avatar
+                      photoURL={targetMemberData?.photoURL}
+                      displayName={targetMemberData?.username}
+                      email={null}
+                      size={36}
                     />
-                  </LeaderTooltip>
-                  <LeaderTooltip leader={leader} type="civilization">
-                    <img
-                      src={leader.civilizationIconPath}
-                      alt={leader.civilization}
-                      className="ban-civ-icon"
-                    />
-                  </LeaderTooltip>
-                  <div className="ban-leader-info">
-                    <div className="ban-leader-name">{leader.name}</div>
-                    {leader.variant && (
-                      <div className="ban-leader-variant">{leader.variant}</div>
-                    )}
-                    <div className="ban-leader-civ">{leader.civilization}</div>
+                    <div className="ban-target-name">
+                      {targetMemberData?.username || "Sconosciuto"}
+                    </div>
+                  </div>
+
+                  <div className="ban-leaders">
+                    {targetLeaders.map((leaderId) => {
+                      const leader = getLeaderById(leaderId);
+                      if (!leader) return null;
+
+                      const isSelected =
+                        selectedBanVote?.targetPlayerId === targetId &&
+                        selectedBanVote?.leaderId === leaderId;
+
+                      return (
+                        <div
+                          key={leaderId}
+                          className={`ban-leader-card ${isSelected ? "selected" : ""}`}
+                          onClick={() =>
+                            handleSelectLeaderForBan(targetId, leaderId)
+                          }
+                        >
+                          <LeaderTooltip leader={leader} type="leader">
+                            <img
+                              src={leader.leaderIconPath}
+                              alt={leader.name}
+                              className="ban-leader-icon"
+                            />
+                          </LeaderTooltip>
+                          <LeaderTooltip leader={leader} type="civilization">
+                            <img
+                              src={leader.civilizationIconPath}
+                              alt={leader.civilization}
+                              className="ban-civ-icon"
+                            />
+                          </LeaderTooltip>
+                          <div className="ban-leader-info">
+                            <div className="ban-leader-name">{leader.name}</div>
+                            {leader.variant && (
+                              <div className="ban-leader-variant">
+                                {leader.variant}
+                              </div>
+                            )}
+                            <div className="ban-leader-civ">
+                              {leader.civilization}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -363,7 +353,7 @@ export function DraftModal({
           <button
             className="draft-action-btn"
             onClick={handleConfirmBan}
-            disabled={!selectedLeaderForBan}
+            disabled={!selectedBanVote}
             type="button"
           >
             <Ban size={20} />

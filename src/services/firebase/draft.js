@@ -219,12 +219,14 @@ export const markPlayerSeenDraft = async (campaignId, playerId) => {
 };
 
 /**
- * Submit ban vote for a player
+ * Submit ban vote for a player.
+ * Each voter casts exactly ONE vote: they choose one leader from one opponent's pool.
+ * Calling this again overwrites the previous vote (player can change mind before all finish).
  * @param {string} campaignId - Campaign ID
  * @param {string} voterId - ID of player voting
  * @param {string} targetPlayerId - ID of player being voted against
  * @param {string} bannedLeaderId - ID of leader to ban
- * @param {Array} allPlayerIds - Array of all player IDs
+ * @param {Array} allPlayerIds - Array of all player IDs (unused, kept for API compat)
  * @returns {Object} { success, error }
  */
 export const submitBanVote = async (
@@ -244,30 +246,17 @@ export const submitBanVote = async (
 
     const campaign = campaignDoc.data();
     const draft = campaign.draft || {};
-    const banVotes = draft.banVotes || {};
+    const banVotes = { ...(draft.banVotes || {}) };
 
-    // Initialize voter's votes if not exists
-    if (!banVotes[voterId]) {
-      banVotes[voterId] = {};
-    }
+    // Each player casts exactly one vote: overwrite any previous vote from this voter
+    banVotes[voterId] = { [targetPlayerId]: bannedLeaderId };
 
-    // Record the vote
-    banVotes[voterId][targetPlayerId] = bannedLeaderId;
-
-    // Check if voter has completed all bans (voted for all other players)
-    const otherPlayers = allPlayerIds.filter((id) => id !== voterId);
-    const hasCompletedBans = otherPlayers.every(
-      (otherId) => banVotes[voterId][otherId] !== undefined,
-    );
-
+    // Submitting one vote means the player has completed their banning
     const updateData = {
       "draft.banVotes": banVotes,
+      [`draft.playerStates.${voterId}.hasCompletedBans`]: true,
       updatedAt: new Date().toISOString(),
     };
-
-    if (hasCompletedBans) {
-      updateData[`draft.playerStates.${voterId}.hasCompletedBans`] = true;
-    }
 
     await updateDoc(campaignRef, updateData);
 
@@ -403,11 +392,23 @@ export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
               if (updatedParticipants[userId]) {
                 updatedParticipants[userId].leaderId = selectedLeaders[userId];
 
-                // Save draft history: all 5 leaders, which was banned, which was selected
+                // Extract this player's ban vote: { targetPlayerId, leaderId } or null
+                const rawVote = draft.banVotes?.[userId];
+                const banVoteCast =
+                  rawVote && Object.keys(rawVote).length > 0
+                    ? {
+                        targetPlayerId: Object.keys(rawVote)[0],
+                        leaderId: Object.values(rawVote)[0],
+                      }
+                    : null;
+
+                // Save draft history: all 5 leaders, which was banned, which was selected,
+                // and what ban vote this player cast (for future analytics)
                 draftHistory[userId] = {
                   draftedLeaders: draft.playerDrafts?.[userId] || [],
                   bannedLeader: draft.bannedLeaders?.[userId] || null,
                   selectedLeader: selectedLeaders[userId],
+                  banVoteCast,
                 };
               }
             });
@@ -416,6 +417,8 @@ export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
               ...match,
               participants: updatedParticipants,
               draftHistory,
+              // Full snapshot of all ban votes keyed by voterId for analytics
+              banVotesSnapshot: draft.banVotes || {},
               draftCompleted: true,
               startDate: new Date().toISOString(),
             };

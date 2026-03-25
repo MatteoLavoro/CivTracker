@@ -174,21 +174,19 @@ export function areAllPlayersReady(readyPlayers, allPlayers) {
 }
 
 /**
- * Check if a player has submitted their ban vote
+ * Check if a player has submitted their single ban vote
+ * Each player votes exactly once (one leader from one opponent).
  * @param {Object} banVotes - Object { voterId: { targetPlayerId: leaderId } }
  * @param {string} playerId - Player ID to check
- * @param {Array} otherPlayerIds - Array of other player IDs
- * @returns {boolean} True if player has voted for all other players
+ * @returns {boolean} True if player has cast their ban vote
  */
-export function hasPlayerVoted(banVotes, playerId, otherPlayerIds) {
+export function hasPlayerVoted(banVotes, playerId) {
   if (!banVotes || !banVotes[playerId]) return false;
-
-  const playerVotes = banVotes[playerId];
-  return otherPlayerIds.every((otherId) => playerVotes[otherId] !== undefined);
+  return Object.keys(banVotes[playerId]).length > 0;
 }
 
 /**
- * Check if all players have submitted their ban votes
+ * Check if all players have submitted their single ban vote
  * @param {Object} banVotes - Object { voterId: { targetPlayerId: leaderId } }
  * @param {Array} playerIds - Array of all player IDs
  * @returns {boolean} True if all players have voted
@@ -196,8 +194,5 @@ export function hasPlayerVoted(banVotes, playerId, otherPlayerIds) {
 export function haveAllPlayersVoted(banVotes, playerIds) {
   if (!banVotes || playerIds.length < 2) return false;
 
-  return playerIds.every((playerId) => {
-    const otherPlayers = playerIds.filter((id) => id !== playerId);
-    return hasPlayerVoted(banVotes, playerId, otherPlayers);
-  });
+  return playerIds.every((playerId) => hasPlayerVoted(banVotes, playerId));
 }
