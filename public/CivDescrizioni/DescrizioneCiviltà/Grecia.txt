@@ -1,0 +1,13 @@
+[La Repubblica di Platone] {Abilità esclusiva}
+
+Uno slot politica jolly extra con qualsiasi governo.
+
+[Oplita] {Unità speciali}
+
+Unità anti-cavalleria esclusiva greca di epoca antica; sostituisce il Lanciere. +10 alla  Forza di combattimento se è adiacente ad almeno un altro Oplita.
+
+[Acropoli] {Infrastruttura speciale}
+
+Un distretto esclusivo della Grecia, dedicato ai siti culturali. Sostituisce il distretto Piazza del Teatro, ma è più economico da costruire. Il suo completamento fornisce 1  Emissario.
+
++1  Cultura per ogni distretto adiacente e +1  Cultura aggiuntiva se adiacente al Centro cittadino. +2  Cultura per ogni Meraviglia, Quartiere dei divertimenti e Parco acquatico adiacenti. Può essere costruito solo su una collina.

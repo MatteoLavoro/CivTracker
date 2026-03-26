@@ -1,5 +1,6 @@
 // Hook to handle file upload with progress tracking
 import { useState } from "react";
+import { uploadFileWithProgress } from "../services/firebase/storage";
 
 /**
  * Hook to handle file upload with progress tracking
@@ -18,9 +19,6 @@ export function useFileUpload() {
     setDownloadURL(null);
 
     try {
-      const { uploadFileWithProgress } =
-        await import("../services/firebase/storage");
-
       const result = await uploadFileWithProgress(
         file,
         path,

@@ -1,0 +1,13 @@
+[Città libere imperiali] {Abilità esclusiva}
+
+Ogni città può costruire un distretto in più del normale (superando il limite imposto dalla  popolazione).
+
+[U-Boot] {Unità speciali}
+
+Unità navale esclusiva tedesca di epoca moderna che sostituisce il Sottomarino. Più economico da produrre, +1 al raggio visivo, +10 alla  Forza di combattimento nelle caselle di oceano. È in grado di rivelare le altre unità invisibili.
+
+[Hansa] {Infrastruttura speciale}
+
+Un distretto esclusivo della Germania dedicato all'attività industriale. Sostituisce il distretto Zona Industriale, ma è più economico da costruire.
+
++2  Produzione se adiacente a un distretto Snodo commerciale, Acquedotto, Canale o Diga. +1  Produzione per ogni risorsa adiacente. +1  Produzione per ogni due distretti adiacenti.

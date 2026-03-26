@@ -1,0 +1,13 @@
+[Grand Tour] {Abilità esclusiva}
+
++20% alla  Produzione per la costruzione di Meraviglie di epoca medievale, rinascimentale e industriale. +100% al  Turismo dalle Meraviglie di qualsiasi epoca.
+
+[Garde Impériale] {Unità speciali}
+
+Unità da mischia esclusiva francese di epoca industriale che sostituisce la Fanteria di linea. +10 alla  Forza di combattimento sul continente che contiene la sua capitale. Ottiene punti  Grande Generale quando uccide unità nemiche.
+
+[Château] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare uno Château, esclusivo della Francia.
+
++2  Cultura e +1  Oro. +1 Appeal. +1  Cultura per ogni Meraviglia adiacente (diventa +2 dopo la scoperta del Volo). +2  Oro se la casella è adiacente a un fiume. Fornisce  Turismo dalla  Cultura dopo la scoperta del Volo. Dev'essere costruito in una casella adiacente a una risorsa bonus o di lusso. Non può essere adiacente a un altro Château.

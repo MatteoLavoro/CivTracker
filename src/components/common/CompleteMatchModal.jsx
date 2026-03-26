@@ -11,13 +11,11 @@ import {
   X,
   ChevronRight,
 } from "lucide-react";
-import {
-  Modal,
-  Avatar,
-  BonusInfoModal,
-  WinnerSelectModal,
-  VictoryTypeSelectModal,
-} from "./";
+import { Modal } from "./Modal";
+import { Avatar } from "./Avatar";
+import { BonusInfoModal } from "./BonusInfoModal";
+import { WinnerSelectModal } from "./WinnerSelectModal";
+import { VictoryTypeSelectModal } from "./VictoryTypeSelectModal";
 import {
   BONUS_TAGS,
   calculateProcessedScores,

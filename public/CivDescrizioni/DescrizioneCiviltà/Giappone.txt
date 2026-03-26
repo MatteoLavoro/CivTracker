@@ -1,0 +1,11 @@
+[Restaurazione Meiji] {Abilità esclusiva}
+
+Tutti i distretti ricevono un bonus standard addizionale da vicinanza con altri distretti.
+
+[Samurai] {Unità speciali}
+
+Unità esclusiva giapponese da mischia di epoca medievale che sostituisce l'Uomo d'arme. Non subisce alcuna penalità al combattimento quando è ferita.
+
+[Fabbrica di elettronica] {Infrastruttura speciale}
+
+Edificio esclusivo giapponese. Dopo la scoperta della tecnologia Elettricità fornisce +4  Cultura alla città. Il suo bonus alla  Produzione si estende a tutti i Centri cittadini entro 6 caselle che non ricevono già un bonus da edifici di questo tipo.

@@ -1,0 +1,13 @@
+[Dharma] {Abilità esclusiva}
+
+Ricevi i bonus della Credenza dei Seguaci in una città da ogni religione che ha almeno 1 seguace. Le città guadagnano 1  Attrattiva per ogni religione che ha almeno 1 seguace. I Missionari ricevono +2 cariche per la diffusione della religione. +100% alla pressione religiosa imposta dalle tue  Rotte commerciali.
+
+[Varu] {Unità speciali}
+
+Unità esclusiva indiana di cavalleria pesante. Tutte le unità nemiche adiacenti subiscono -5 alla  Forza di combattimento.
+
+[Pozzo a gradini] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Pozzo a gradini, esclusivo dell'India.
+
++1  Cibo e +1  Abitazioni. +1  Fede se adiacente a un distretto Luogo Santo. +1  Cibo se adiacente a una Fattoria. Bonus ulteriori ad  Abitazioni,  Fede e  Cibo con il progressivo avanzamento nell'Albero delle tecnologie e in quello dei Progressi civici. Previene la perdita di  Cibo durante le siccità. Non può essere costruito in collina o adiacente a un altro Pozzo a gradini.

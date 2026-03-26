@@ -1,0 +1,11 @@
+[Tre Regni] {Abilità esclusiva}
+
+Le Miniere ricevono +1  Scienza per ogni distretto Seowon adiacente. Le Fattorie ricevono +1  Cibo per ogni distretto Seowon adiacente.
+
+[Hwacha] {Unità speciali}
+
+Unità esclusiva coreana di epoca rinascimentale che sostituisce il Cannone da campo. Ha una notevole  Forza d'attacco a distanza. Non può muoversi e attaccare nello stesso turno.
+
+[Seowon] {Infrastruttura speciale}
+
+Un distretto esclusivo coreano dedicato alle imprese scientifiche. Sostituisce il Campus. +4  Scienza. -1  Scienza per ogni casella adiacente che contiene un distretto. Dev'essere costruito in collina.

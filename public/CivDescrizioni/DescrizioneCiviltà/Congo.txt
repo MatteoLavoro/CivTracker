@@ -1,0 +1,13 @@
+[Nkisi] {Abilità esclusiva}
+
++2  Cibo, +2  Produzione, +1  Fede e +4  Oro da ogni  Reliquia,  Reliquia Eroica,  Manufatto e  Capolavoro scultoreo, oltre alla normale  Cultura. Ricevi il 50% in più dei punti  Grande Artista,  Grande Musicista e  Grande Mercante. Il Palazzo ha slot per 5 Capolavori.
+
+[Ngao Mbeba] {Unità speciali}
+
+Unità esclusiva del Congo di epoca classica che sostituisce lo Spadaccino. +10 alla  Forza di combattimento quando si difende dagli attacchi a distanza. Le caselle di bosco e di foresta pluviale non limitano il suo movimento né la sua visione.
+
+[Mbanza] {Infrastruttura speciale}
+
+Un distretto esclusivo del Congo che si può costruire solo in caselle di bosco o di foresta pluviale. Sostituisce il distretto Quartiere residenziale, ma è disponibile prima ed è più economico da costruire.
+
+Fornisce +5  Abitazioni, +2  Cibo e +4  Oro, indipendentemente dall'Appeal.

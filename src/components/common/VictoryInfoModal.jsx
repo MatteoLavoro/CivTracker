@@ -1,5 +1,5 @@
 // Victory Info Modal - Victory scoring calculator
-import { Modal } from "./";
+import { Modal } from "./Modal";
 import {
   calculateVictoryPoints,
   getTotalPointsPool,

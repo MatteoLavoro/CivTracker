@@ -1,0 +1,13 @@
+[Nîhithaw] {Abilità esclusiva}
+
++1 capacità  Rotte commerciali e un Commerciante gratuito con la scoperta della tecnologia Ceramica. Le caselle neutrali entro 3 spazi da una città Cree entrano sotto il controllo Cree quando un Commerciante vi entra dentro per la prima volta.
+
+[Okihtcitaw] {Unità speciali}
+
+Unità esclusiva Cree di epoca antica che sostituisce lo Scout. Forte unità da ricognizione. Entra in gioco con 1 promozione gratuita.
+
+[Mekewap] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Mekewap, esclusivo dei Cree.
+
+Fornisce +1  Produzione e +1  Abitazioni. +1  Oro se adiacente a una risorsa di lusso. +1  Cibo per ogni due risorse bonus adiacenti. Bonus aggiuntivi a  Produzione,  Oro,  Cibo e  Abitazioni con il progressivo avanzamento nell'Albero delle tecnologie e in quello dei Progressi civici. Dev'essere costruito in una casella adiacente a una risorsa bonus o di lusso. Non può essere costruito adiacente a un altro Mekewap.

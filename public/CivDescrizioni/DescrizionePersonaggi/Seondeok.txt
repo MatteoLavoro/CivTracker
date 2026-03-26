@@ -1,0 +1,3 @@
+[Hwarang] {Abilità esclusiva}
+
+I  Governatori stabiliti in una città forniscono +3% a  Cultura e  Scienza per ogni promozione ottenuta, compresa la prima.

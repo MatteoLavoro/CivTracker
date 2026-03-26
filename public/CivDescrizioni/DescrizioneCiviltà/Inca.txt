@@ -1,0 +1,13 @@
+[Mit'a] {Abilità esclusiva}
+
+I cittadini possono sfruttare le caselle di montagna. Le caselle di montagna forniscono +2  Produzione e +1  Produzione aggiuntiva quando la partita entra nell'epoca industriale. +1  Cibo nelle caselle di montagna per ogni Fattoria a terrazze adiacente.
+
+[Warak'aq] {Unità speciali}
+
+Unità esclusiva inca di epoca medievale che sostituisce lo Schermagliatore. Più forte nel combattimento a distanza, ha +1 attacco aggiuntivo per turno.
+
+[Fattoria a terrazze] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare una Fattoria a terrazze, miglioramento esclusivo degli Inca.
+
++1  Cibo. Fornisce +1  Abitazioni. +1  Cibo per ogni casella di montagna adiacente. +2  Produzione per ogni distretto Acquedotto adiacente, altrimenti +1  Produzione se adiacente ad acqua dolce. Il progressivo avanzamento nell'Albero delle tecnologie e in quello dei Progressi civici sblocca bonus aggiuntivi di  Cibo per la vicinanza ad altre Fattorie a terrazze. Una Fattoria a terrazze può essere costruita in una casella di prateria con colline, pianura con colline, deserto con colline.

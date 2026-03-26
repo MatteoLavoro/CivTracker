@@ -1,0 +1,3 @@
+[Manuale delle trappole] {Abilità esclusiva}
+
+Tutte le spie offensive agiscono come se avessero un livello in più. Ogni volta che la missione offensiva di una tua spia ha successo, guadagni anche il 50% della  Cultura e della  Scienza accumulate nello stesso turno dalla città bersaglio. Ricevi una spia gratuita (e +1 al numero massimo di spie) con la scoperta del Progresso civico Tattiche Difensive.

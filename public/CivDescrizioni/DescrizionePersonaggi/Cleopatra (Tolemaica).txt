@@ -1,0 +1,3 @@
+[L'arrivo di Hapi] {Abilità esclusiva}
+
+Le risorse lungo i terreni allagati ricevono +1  Cibo e +1  Cultura. Le caselle di terreni allagati forniscono +1 Appeal alle caselle adiacenti anziché il consueto -1.

@@ -1,0 +1,3 @@
+[Scacciare gli aggressori] {Abilità esclusiva}
+
++5 alla  Forza di combattimento delle unità che combattono in un bosco, una foresta pluviale o una palude. +1 al  movimento se cominciano il turno in una casella che possiede una di tali caratteristiche. Entrambi questi bonus sono raddoppiati se la casella si trova nel tuo territorio.

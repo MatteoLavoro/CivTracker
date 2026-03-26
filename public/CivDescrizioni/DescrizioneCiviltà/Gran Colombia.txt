@@ -1,0 +1,17 @@
+[Ejército Patriota] {Abilità esclusiva}
+
++1 al  movimento di tutte le unità. Promuovere un'unità non fa terminare il suo turno.
+
+[Comandante General] {Unità speciali}
+
+Un tipo di Grande Personaggio speciale, esclusivo di Simón Bolívar, ciascuno con abilità distinte, tra cui un effetto passivo e uno che scatta al momento del ritiro dal gioco.
+
+[Llanero] {Unità speciali}
+
+Unità di epoca industriale esclusiva della Grande Colombia che sostituisce la Cavalleria. Costi di mantenimento bassi. +2 alla  Forza di combattimento per ogni Llanero adiacente. Si cura completamente quando è nel raggio d'azione di un Comandante General che attiva la sua abilità al momento del ritiro.
+
+[Hacienda] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un'Hacienda, miglioramento esclusivo della Grande Colombia.
+
++2  Oro, +1  Produzione e +0,5  Abitazioni. +1  Cibo per ogni 2 Piantagioni adiacenti (che passa a +1 per Piantagione dopo aver ottenuto la tecnologia Pezzi Indipendenti). Le Piantagioni e le Haciendas ricevono +1  Produzione per ogni 2 Haciendas adiacenti (che passa a +1 per Hacienda dopo aver ottenuto la tecnologia Dislocazione Rapida). Si può costruire solo in pianura, pianura con colline, prateria e prateria con colline.

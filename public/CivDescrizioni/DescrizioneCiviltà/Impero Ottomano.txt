@@ -1,0 +1,11 @@
+[Grande Bombarda Turca] {Abilità esclusiva}
+
++50% alla  Produzione per la costruzione di unità d'assedio. Tutte le unità d'assedio hanno +5 alla  Forza di combattimento contro le difese dei distretti. Le città conquistate non perdono  popolazione. Le città non fondate dagli ottomani ottengono +1  Attrattiva e +4 Lealtà per turno.
+
+[Corsaro barbaresco] {Unità speciali}
+
+Unità navale esclusiva ottomana di epoca medievale che sostituisce il Corsaro. Esegue incursioni costiere senza spendere alcun punto  movimento. Può essere vista solo da altre unità navali da incursioni o da unità adiacenti. Rivela gli incursori navali all'interno del suo raggio di visione.
+
+[Gran Bazaar] {Infrastruttura speciale}
+
+Edificio esclusivo ottomano. Accumuli 1 risorsa strategica extra per ogni tipo diverso di risorsa strategica migliorata in questa città. Ricevi 1  Attrattiva per ogni risorsa di lusso migliorata in questa città.

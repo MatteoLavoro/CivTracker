@@ -1,0 +1,14 @@
+[Officina del mondo] {Abilità esclusiva}
+
+Le miniere di ferro e di carbone accumulano 2 risorse in più per turno. +100% alla  Produzione per la costruzione di Ingegneri militari. Gli Ingegneri militari hanno 2 cariche in più. Gli edifici che danno una resa aggiuntiva quando ricevono  Energia forniscono +4 di quella resa. +20% alla  Produzione per la costruzione di edifici nella Zona industriale. Gli edifici del Porto aumentano le scorte delle risorse strategiche di +10 (a velocità standard).
+
+[Lupo di mare] {Unità speciali}
+
+Unità navale esclusiva dell'Inghilterra, di epoca rinascimentale; sostituisce il Corsaro. Può catturare le navi nemiche sconfitte. Può essere vista solo da altre unità navali da incursioni o da unità adiacenti. Rivela gli incursori navali all'interno del suo raggio di visione.
+
+[Cantiere della Marina Reale] {Infrastruttura speciale}
+
+Un distretto esclusivo dell'Inghilterra dedicato all'attività navale. Sostituisce il Porto. Elimina la penalità al  movimento per le unità che si imbarcano da questa casella o vi sbarcano. Dev'essere costruito in una casella di costa o di lago adiacente alla terraferma.
+
++1 al  movimento di tutte le unità navali costruite nel Cantiere
++2  Oro e +4 Lealtà per turno quando viene costruito in un continente straniero. Non può essere costruito su un Reef.

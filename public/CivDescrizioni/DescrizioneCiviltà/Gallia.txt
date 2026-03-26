@@ -1,0 +1,13 @@
+[Cultura di Hallstatt] {Abilità esclusiva}
+
+Le Miniere forniscono un bonus minore per la posizione a tutti i distretti, agiscono come Bombe culturali sulle caselle neutrali vicine e ricevono +1  Cultura. I distretti specializzati non ricevono un bonus minore per il fatto di essere adiacenti ad altri distretti; inoltre tali distretti non possono essere costruiti nelle caselle adiacenti al Centro cittadino.
+
+[Gesate] {Unità speciali}
+
+Unità esclusiva gallica di epoca antica che sostituisce il Guerriero. Costa di più della controparte, ma riceve +10 alla  Forza di combattimento quando affronta unità che hanno una Forza di combattimento base superiore alla sua. Inoltre ha +5 alla  Forza di combattimento contro le difese dei distretti.
+
+[Oppidum] {Infrastruttura speciale}
+
+Distretto esclusivo gallico che costa meno ed è disponibile prima rispetto alla Zona industriale, che sostituisce. L'Oppidum si può difendere con un attacco a distanza. La costruzione del primo Oppidum sblocca la tecnologia Apprendistato.
+
+Bonus +2 alla  Produzione se adiacente a un miglioramento Cava o a una risorsa strategica.

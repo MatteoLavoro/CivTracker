@@ -1,0 +1,13 @@
+[Iteru] {Abilità esclusiva}
+
++15% alla  Produzione per la costruzione di distretti e Meraviglie se vicino a un fiume. Non riceve danni dalle inondazioni.
+
+[Arciere Maryannu su carro] {Unità speciali}
+
+Unità esclusiva egizia di epoca antica che attacca a distanza. Ha 4 punti  movimento quando comincia la mossa in terreno aperto.
+
+[Sfinge] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare una Sfinge, esclusiva dell'Egitto.
+
++1  Fede e +1  Cultura. +2 Appeal. +2  Fede se adiacente a una Meraviglia. +1  Cultura se è costruita su Terreni allagati. Bonus aggiuntivo alla  Cultura dopo la scoperta della Storia Naturale. Fornisce  Turismo dopo la scoperta del Volo. Non può essere costruita accanto a un'altra Sfinge. Non può essere costruita su neve o neve con colline.

@@ -1,0 +1,15 @@
+[Fusione ellenistica] {Abilità esclusiva}
+
+Ricevi bonus dalla conquista delle città: un  momento Eureka per ogni Accampamento o Campus nella città catturata e una  Ispirazione per ogni Luogo Santo o Piazza del Teatro.
+
+[Ipaspista] {Unità speciali}
+
+Unità da mischia, esclusiva della Macedonia, che sostituisce lo Spadaccino. +5 alla  Forza di combattimento quando assedia un distretto. 50% aggiuntivo al bonus per il supporto.
+
+[Basilikoi Paides] {Infrastruttura speciale}
+
+Edificio esclusivo macedone. +25% all'esperienza ottenuta in combattimento da tutte le unità terrestri da mischia e a distanza e dagli Etèri addestrati in questa città. Quando un'unità (non civile) viene creata in questa città guadagni  Scienza pari al 25% del costo dell'unità.
+
++10 alle scorte delle risorse strategiche (a velocità standard).
+
+L'edificio non può essere costruito in un distretto Accampamento che comprende già una Scuderia.

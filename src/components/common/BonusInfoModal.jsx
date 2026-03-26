@@ -1,7 +1,7 @@
 // Bonus Info Modal - Display bonus tags and their effects
 import { useState } from "react";
 import { Award, Swords, Medal, X } from "lucide-react";
-import { Modal } from "./";
+import { Modal } from "./Modal";
 import "./BonusInfoModal.css";
 
 /**

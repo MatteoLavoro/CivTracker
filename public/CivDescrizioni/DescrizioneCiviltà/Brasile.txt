@@ -1,0 +1,16 @@
+[Amazzonia] {Abilità esclusiva}
+
+Le caselle di foresta pluviale forniscono un bonus da vicinanza di +1 ai distretti Campus, Snodo commerciale, Luogo Santo e Piazza del Teatro. Inoltre forniscono +1 Appeal alle caselle adiacenti invece del normale -1.
+
+
+[Carnevale] {Infrastruttura speciale}
+
+Un distretto esclusivo del Brasile. Sostituisce il Quartiere dei divertimenti, fornendo +2  Attrattiva. Inoltre sblocca il progetto Carnevale, che fornisce +1  Attrattiva aggiuntiva durante la sua costruzione e una quantità di punti  Grande Personaggio di vario tipo una volta completato. Non può essere costruito in una città con una Copacabana.
+
+[Copacabana] {Infrastruttura speciale}
+
+Un distretto esclusivo del Brasile. Sostituisce il Parco acquatico, fornendo +2  Attrattiva. Inoltre sblocca il progetto Carnevale, che fornisce +1  Attrattiva aggiuntiva durante la sua costruzione e una quantità di punti  Grande Personaggio di vario tipo una volta completato. Non può essere costruito in una città con un Carnevale. Non può essere costruito su un Reef.
+
+[Minas Gerais] {Unità speciali}
+
+Unità esclusiva brasiliana di epoca industriale che sostituisce la Corazzata, rispetto alla quale è più forte. Sbloccata dal progresso civico Nazionalismo.

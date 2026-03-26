@@ -1,0 +1,13 @@
+[Le quattro facce della pace] {abilità esclusiva}
+
+Non può dichiarare guerra alle città-stato o guerre a sorpresa. Non è possibile dichiarare una guerra a sorpresa contro il Canada. Per ogni 100  Turismo per turno guadagna 1  Supporto diplomatico per turno. Riceve +100%  Supporto diplomatico quando completa con successo un'Emergenza o una Competizione a punti.
+
+[Mountine] {unità speciali}
+
+Unità esclusiva canadese di epoca moderna. Può creare 2 Parchi nazionali. +5 alla  Forza di combattimento quando combatte entro 2 caselle da un Parco nazionale. Ulteriore +5 alla  Forza di combattimento quando combatte entro 2 caselle da un Parco nazionale che ti appartiene.
+
+[Campo da hokey] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Campo da hockey, esclusivo del Canada.
+
++1  Attrattiva. +1  Cultura per ogni casella adiacente di Tundra, Tundra con colline, Neve e neve con colline. Dopo la scoperta della tecnologia Volo fornisce  Turismo dalla Cultura. +2  Cibo e  Produzione dopo la scoperta del Progresso civico Sport professionistico. +4  Cultura se adiacente a un edificio Stadio. Si può costruire solo su Tundra, Tundra con colline, Neve e Neve con colline. Max uno per città. +2 Appeal.

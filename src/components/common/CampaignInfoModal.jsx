@@ -1,7 +1,8 @@
 // Campaign Info Modal - Campaign details and management
 import { useState } from "react";
 import { Hash, Key, Users, LogOut } from "lucide-react";
-import { Modal, TextInputModal } from "./";
+import { Modal } from "./Modal";
+import { TextInputModal } from "./TextInputModal";
 import { EditableField, CopyableField, ReadOnlyField } from "./ModalField";
 import "./CampaignInfoModal.css";
 

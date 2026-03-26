@@ -1,0 +1,13 @@
+[Colonie nel Mediterraneo] {Abilità esclusiva}
+
+Inizia la partita con il momento  Eureka per la tecnologia Scrittura. Le città costiere fondate dalla Fenicia nello stesso continente della  capitale sono leali al 100%. I Coloni hanno +2 al  movimento e +2 raggio visivo quando sono imbarcati. I Coloni ignorano i costi aggiuntivi al  movimento per imbarcarsi e sbarcare.
+
+[Bireme] {Unità speciali}
+
+Unità esclusiva fenicia di epoca antica che sostituisce la Galea. Ha  Forza di combattimento e  movimento superiori. Le unità Commerciante sono immuni al saccheggio quando si trovano in una casella acquatica entro 4 caselle da una Bireme.
+
+[Kothon] {Infrastruttura speciale}
+
+Un distretto esclusivo della Fenicia dedicato all'attività navale. Sostituisce il Porto, ma è più economico da costruire. Dev'essere costruito in una casella di costa o di lago adiacente alla terraferma.
+
++50% alla  Produzione in questa città per la costruzione di unità navali e di Coloni. Tutte le unità navali danneggiate all'interno dei confini di questa città curano +100 PF ogni turno.

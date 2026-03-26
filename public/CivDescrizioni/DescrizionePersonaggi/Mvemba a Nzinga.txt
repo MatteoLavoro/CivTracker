@@ -1,0 +1,3 @@
+[Convertito religioso] {Abilità esclusiva}
+
+Non può costruire distretti Luogo Santo, ottenere Grandi Profeti o istituire una religione. Acquisisce le Credenze del Fondatore di qualsiasi religione si sia stabilita nella maggioranza delle sua città. Riceve un Apostolo (della religione di maggioranza in quella città) ogni volta che termina la costruzione di una Mbanza o di un distretto Piazza del Teatro.

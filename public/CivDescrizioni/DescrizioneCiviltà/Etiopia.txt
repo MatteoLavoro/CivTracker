@@ -1,0 +1,13 @@
+[Eredità di Axum] {Abilità esclusiva}
+
+Le Rotte commerciali internazionali dell'Etiopia forniscono +0,5  Fede per ogni risorsa nella città di origine. Le risorse migliorate forniscono +1  Fede per ogni copia posseduta dalla città. Può acquistare Musei Archeologici e Archeologi in cambio di  Fede.
+
+[Cavalleria Oromo] {Unità speciali}
+
+Unità di cavalleria leggera di epoca medievale, esclusiva dell'Etiopia. È più forte e ha un raggio di visione più ampio del Corsiero che sostituisce. Non riceve alcuna penalità al  movimento quando si muove in collina.
+
+[Chiesa nella roccia] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare una Chiesa nella roccia, miglioramento esclusivo dell'Etiopia.
+
++1  Fede. +1  Fede per ogni casella adiacente di montagna e collina. Dopo la scoperta del Volo fornisce  Turismo dalla  Fede. +1 Appeal. I disastri naturali possono solo danneggiarla (mai distruggerla). Si può costruire solo su una collina o Suolo vulcanico non adiacente a un'altra Chiesa nella roccia.

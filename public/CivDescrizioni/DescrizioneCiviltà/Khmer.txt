@@ -1,0 +1,11 @@
+[Grandi baray] {Abilità esclusiva}
+
+Le città che hanno un Acquedotto ricevono +1  Attrattiva dai divertimenti e +1  Fede per ogni punto di  popolazione. Le Fattorie forniscono +2  Cibo se adiacenti a un Acquedotto e +1  Fede se adiacenti a un Luogo Santo.
+
+[Domrey] {Unità speciali}
+
+Unità d'assedio esclusiva khmer di epoca medievale che sostituisce il Trabocco. Quest'unità ha una  Forza di combattimento in mischia e a distanza superiore alla controparte. Può muoversi e attaccare nello stesso turno ed esercita una Zona di Controllo.
+
+[Prasat] {Infrastruttura speciale}
+
++6  Fede. Edificio esclusivo degli Khmer che sostituisce il Tempio. Permette di acquistare Apostoli e Inquisitori in cambio di  Fede. +0,5  Cultura per ogni punto di  popolazione nella città. Dopo la scoperta del Volo fornisce +10  Turismo se la città ha una  popolazione di 10 o più; +20  Turismo se la città ha una  popolazione di 20 o più. Richiamare gli Eroi in questa città costa il 15% di  Fede in meno.

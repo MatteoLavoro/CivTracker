@@ -1,0 +1,9 @@
+[Delta del Fiume dei Nove Draghi] {Abilità esclusiva}
+
+I distretti specializzati terrestri possono essere costruiti solo in caselle di bosco, foresta pluviale o palude. Ogni edificio in una casella che presenta tali caratteristiche riceve i seguenti bonus alle rese: +1  Cultura nei boschi, +1  Scienza nelle foreste pluviali e +1  Produzione nelle paludi. L'acquisizione del Progresso civico Fiere Medievali rende possibile piantare nuovi boschi.
+[Voi Chiến] {Unità speciali}
+
+Unità di epoca medievale che attacca a distanza, esclusiva del Vietnam. Sostituisce il Balestriere. Dispone di movimento aggiuntivo e può muoversi dopo aver attaccato. Queste unità costano di più della controparte ma sono più forti in difesa e hanno un raggio visivo più ampio.
+[Thành] {Infrastruttura speciale}
+
+Un distretto esclusivo vietnamita che sostituisce l'Accampamento. +2  Cultura per ogni distretto adiacente. Dopo la scoperta del Volo ricevi una quantità di  Turismo pari alla  Cultura guadagnata. Questo distretto non richiede popolazione, è meno costoso da costruire, non può essere costruito in una casella adiacente al Centro cittadino, non fornisce punti  Grande Personaggio e non è considerato un distretto specializzato.

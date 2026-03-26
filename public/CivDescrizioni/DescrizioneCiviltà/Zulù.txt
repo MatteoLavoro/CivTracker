@@ -1,0 +1,11 @@
+[Isibongo] {Abilità esclusiva}
+
+Le città che hanno un'unità di guarnigione guadagnano +3 Lealtà per turno, o +5 se è un Corpo o un Esercito. Se il giusto Progresso civico è stato sbloccato, conquistare una città con un'unità la trasformerà in un Corpo o in un Esercito.
+
+[Impi] {Unità speciali}
+
+Unità esclusiva zulu di epoca medievale che sostituisce il Picchiere. Costa poco, il mantenimento è economico e gode di un bonus per l'accerchiamento potenziato. Inoltre guadagna XP più velocemente.
+
+[Ikanda] {Infrastruttura speciale}
+
+Un distretto esclusivo degli Zulu che sostituisce l'Accampamento. Fornisce +1  Abitazioni. Una volta che i requisiti civici o tecnologici sono soddisfatti, Corpi ed Eserciti possono essere costruiti direttamente. Gli edifici in un Ikanda ricevono +2  Oro e +1  Scienza. La creazione di Corpi ed Eserciti è più rapida.

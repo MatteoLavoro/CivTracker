@@ -1,7 +1,9 @@
 // Penalty Modal - Assign penalties to match participants
 import { useState, useMemo } from "react";
 import { AlertTriangle, Plus, X, Info } from "lucide-react";
-import { Modal, Avatar, PenaltyInfoModal } from "./";
+import { Modal } from "./Modal";
+import { Avatar } from "./Avatar";
+import { PenaltyInfoModal } from "./PenaltyInfoModal";
 import { PENALTY_TAGS } from "../../utils/scoreUtils";
 import "./PenaltyModal.css";
 

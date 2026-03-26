@@ -1,0 +1,3 @@
+[Hangul] {Abilità esclusiva}
+
+Quando ottieni la prima tecnologia di una nuova epoca ricevi una quantità di  Cultura pari al doppio della tua  Scienza per turno.

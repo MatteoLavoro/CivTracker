@@ -1,0 +1,13 @@
+[Canzoni del griot] {Abilità esclusiva}
+
+I Centri cittadini ottengono +1  Fede e +1  Cibo per ogni casella adiacente di deserto e deserto con colline. Le miniere rendono -1  Produzione e +4  Oro. Può acquistare edifici nei distretti Snodo commerciale in cambio di  Fede. -30% alla  Produzione per la costruzione di edifici o l'addestramento di unità.
+
+[Ipaspista] {Unità speciali}
+
+Unità esclusiva maliana di epoca medievale che sostituisce il Cavaliere. Le unità Commerciante sono immuni al saccheggio quando si trovano in una casella terrestre entro 4 caselle da un Cavaliere Mandekalu. Le vittorie in combattimento forniscono  Oro pari al 100% della  Forza di combattimento base dell'unità (a velocità standard).
+
+[Suguba] {Infrastruttura speciale}
+
+Un distretto esclusivo del Mali specializzato nel commercio e nella finanza. Sostituisce lo Snodo commerciale. In questa città acquistare unità, edifici e distretti in cambio di  Oro o  Fede costa il 20% in meno.
+
+Bonus +2  Oro per ogni Luogo Santo adiacente. Bonus +2  Oro da ogni casella adiacente che confina con un fiume. Bonus +1  Oro per ogni due distretti adiacenti.

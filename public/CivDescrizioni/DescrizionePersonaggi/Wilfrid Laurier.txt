@@ -1,0 +1,4 @@
+[L'ultimo West] {Abilità esclusiva}
+
+Permette di costruire Fattorie nelle caselle di tundra. Dopo la scoperta dell'Ingegneria Civile diventa possibile costruire fattorie nelle caselle di tundra con colline. Nelle caselle di neve, neve con colline, tundra e tundra con colline tutte le miniere forniscono +2  Produzione, le Segherie forniscono +2  Produzione, i Campi forniscono +2  Cibo, le Fattorie forniscono +2  Cibo e la velocità di accumulazione delle risorse strategiche è raddoppiata. Il costo per l'acquisto delle caselle che contengono quei tipi di terreno è ridotto del 50%.
+

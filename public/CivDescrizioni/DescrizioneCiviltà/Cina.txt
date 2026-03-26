@@ -1,0 +1,12 @@
+[Ciclo dinastico] {Abilità esclusiva}
+Momenti  Eureka e  Ispirazioni forniscono il 50% di Progressi civici e tecnologie anziché il 40%. Quando completi una Meraviglia ottieni un momento  Eureka e un' Ispirazione della stessa epoca della Meraviglia, se disponibili.
+
+[Tigre accucciata] {Unità speciali}
+
+Unità esclusiva cinese di epoca medievale. Attacca a distanza, con un  raggio di tiro di 1 e una notevole Forza di combattimento.
+
+[Grande Muraglia] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare la Grande Muraglia, esclusiva della Cina.
+
++2  Oro. Aumenta la  Difesa. Bonus all' Oro se adiacente ad altri segmenti. Bonus aggiuntivi a  Cultura e  Turismo per i segmenti adiacenti con il progressivo avanzamento nell'Albero Tecnologie. Dev'essere costruita lungo una linea che corre ai confini dell'impero. I disastri naturali possono solo danneggiarla (mai distruggerla).

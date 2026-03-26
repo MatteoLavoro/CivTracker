@@ -1,0 +1,5 @@
+[Condizioni favorevoli] {Abilità esclusiva}
+
+Tutti i tipi di alleanza forniscono Visibilità condivisa.
+Le tue  Rotte commerciali in uscita forniscono a Poundmaker +1  Cibo per ogni Campo o Pascolo nella città di destinazione.
+Le  Rotte commerciali inviate nelle tue città forniscono a Poundmaker +1  Oro per ogni Campo o Pascolo nella città di destinazione.

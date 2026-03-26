@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Mail, User, LogOut, Upload, Camera, Trash2 } from "lucide-react";
-import { Modal, TextInputModal, Avatar } from "./";
+import { Modal } from "./Modal";
+import { TextInputModal } from "./TextInputModal";
+import { Avatar } from "./Avatar";
 import { ReadOnlyField, EditableField } from "./ModalField";
 import { useFileUpload } from "../../hooks";
 import {

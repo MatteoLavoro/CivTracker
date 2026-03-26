@@ -1,0 +1,19 @@
+[Mana] {Abilità esclusiva}
+
+Inizia la partita con le tecnologie Vela e Costruzione Navale sbloccate e con la capacità di entrare nelle caselle di oceano. Le unità imbarcate hanno +2 al  movimento. +1 alla  Produzione da foreste pluviali e boschi non migliorati. +1  Produzione aggiuntiva dal Mercantilismo e +2  Produzione dal progresso civico Conservazione. I Pescherecci forniscono +1  Cibo e una Bomba culturale nelle caselle adiacenti. Non è possibile raccogliere le risorse rimuovendole dalla mappa. Non è possibile ottenere  Grandi Scrittori.
+
+[Toa] {Unità speciali}
+
+Unità da mischia esclusiva Maori di epoca classica. Le unità nemiche adiacenti hanno -5 alla  Forza di combattimento. Può costruire il miglioramento esclusivo Pa.
+
+[Marae] {Infrastruttura speciale}
+
+Edificio esclusivo Maori. +1  Cultura e  Fede a tutte le caselle di questa città che contengono una caratteristica non invalicabile o una Meraviglia naturale. Dopo la scoperta della tecnologia Volo ricevi +1  Turismo da tutte le caselle di questa città che contengono una caratteristica o una Meraviglia naturale. Non ha alcun costo di manutenzione. Non contiene slot Capolavoro.
+
+[Pa] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Toa di realizzare un Pa, esclusivo dei Maori.
+
+Le unità che lo occupano ricevono +4 alla  Forza difensiva e due turni di fortificazione automatici. Un'unità Maori che occupa un Pa si cura anche se si è appena mossa o ha attaccato. Un Pa dev'essere costruito in collina.
+
+Infligge una piccola quantità di danni ed esaurisce il movimento delle unità ostili che l'attraversano direttamente.
