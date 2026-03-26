@@ -36,13 +36,18 @@ export function MatchRow({
   leaders,
   draft,
   onStartDraft,
+  onStartDirectChoice,
   onCompleteMatch,
   onPenalty,
   isCurrentMatch,
   isDraftInProgress,
   hasUserCompletedDraft,
+  hasUserCompletedDirectChoice,
   readyPlayersCount,
+  directReadyPlayersCount,
   totalPlayersCount,
+  draftMode,
+  draftPhase,
   editLock,
   currentUserId,
 }) {
@@ -67,18 +72,12 @@ export function MatchRow({
       return;
     }
 
-    // If current match and draft is in progress, check if player has selected
-    if (
-      isCurrentMatch &&
-      draft &&
-      draft.selectedLeaders &&
-      draft.selectedLeaders[userId]
-    ) {
-      // Build draft history from current draft data
+    // If current match and draft is in progress, use whatever data is available
+    if (isCurrentMatch && draft?.playerDrafts?.[userId]) {
       const liveDraftHistory = {
-        draftedLeaders: draft.playerDrafts?.[userId] || [],
+        draftedLeaders: draft.playerDrafts[userId],
         bannedLeader: draft.bannedLeaders?.[userId] || null,
-        selectedLeader: draft.selectedLeaders[userId],
+        selectedLeader: draft.selectedLeaders?.[userId] || null,
       };
       setSelectedPlayerDraft(liveDraftHistory);
       setSelectedPlayerName(username);
@@ -239,11 +238,12 @@ export function MatchRow({
                 type="button"
                 title="Vedi draft"
                 disabled={
+                  match.selectionMode === "direct" ||
                   !(
                     (match.draftHistory && match.draftHistory[userId]) ||
                     (isCurrentMatch &&
-                      draft?.selectedLeaders &&
-                      draft.selectedLeaders[userId])
+                      (draft?.selectedLeaders?.[userId] ||
+                        draft?.playerDrafts?.[userId]))
                   )
                 }
               >
@@ -324,7 +324,8 @@ export function MatchRow({
       <div className="match-col match-col-actions">
         {!match.draftCompleted && isCurrentMatch && (
           <>
-            {hasUserCompletedDraft ? (
+            {(hasUserCompletedDraft || hasUserCompletedDirectChoice) ? (
+              /* Player already chose (draft or direct) — wait for others */
               <button
                 className="match-action-btn waiting-btn"
                 disabled
@@ -337,30 +338,69 @@ export function MatchRow({
                   </span>
                 </div>
               </button>
-            ) : (
+            ) : draftMode === "direct" &&
+              (draftPhase === "active" || draftPhase === "countdown") ? (
+              /* Direct choice mode — countdown or active */
               <button
-                className={`match-action-btn draft-btn ${isDraftInProgress || readyPlayersCount > 0 ? "blinking" : ""}`}
-                onClick={() => onStartDraft(match.id)}
-                disabled={isCompleted}
+                className="match-action-btn direct-btn blinking"
+                onClick={() => onStartDirectChoice && onStartDirectChoice(match.id)}
                 type="button"
               >
                 <Users size={20} />
                 <div className="draft-text-container">
-                  {isDraftInProgress ? (
-                    <>
-                      <span className="draft-text">Continua</span>
-                      <span className="draft-text">Draft</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="draft-text">Draft</span>
-                      <span className="draft-counter">
-                        [{readyPlayersCount}/{totalPlayersCount}]
-                      </span>
-                    </>
-                  )}
+                  <span className="draft-text">Scegli</span>
+                  <span className="draft-text">Personaggio</span>
                 </div>
               </button>
+            ) : draftPhase === "countdown" ? (
+              /* Classic draft countdown — show only draft button */
+              <button
+                className="match-action-btn draft-btn blinking"
+                onClick={() => onStartDraft(match.id)}
+                type="button"
+              >
+                <Users size={20} />
+                <div className="draft-text-container">
+                  <span className="draft-text">Continua</span>
+                  <span className="draft-text">Draft</span>
+                </div>
+              </button>
+            ) : (
+              /* No mode chosen yet — show both buttons */
+              <>
+                <button
+                  className={`match-action-btn draft-btn ${
+                    readyPlayersCount > 0 ? "blinking" : ""
+                  }`}
+                  onClick={() => onStartDraft(match.id)}
+                  type="button"
+                >
+                  <Users size={20} />
+                  <div className="draft-text-container">
+                    <span className="draft-text">Draft</span>
+                    <span className="draft-counter">
+                      [{readyPlayersCount}/{totalPlayersCount}]
+                    </span>
+                  </div>
+                </button>
+                <button
+                  className={`match-action-btn direct-btn ${
+                    directReadyPlayersCount > 0 ? "blinking" : ""
+                  }`}
+                  onClick={() =>
+                    onStartDirectChoice && onStartDirectChoice(match.id)
+                  }
+                  type="button"
+                >
+                  <Users size={20} />
+                  <div className="draft-text-container">
+                    <span className="draft-text">Scegli</span>
+                    <span className="draft-counter">
+                      [{directReadyPlayersCount}/{totalPlayersCount}]
+                    </span>
+                  </div>
+                </button>
+              </>
             )}
           </>
         )}

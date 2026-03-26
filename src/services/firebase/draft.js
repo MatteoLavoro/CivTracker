@@ -1,5 +1,5 @@
 // Firebase Draft Service
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc, runTransaction } from "firebase/firestore";
 import { db } from "./config";
 import {
   draftLeadersForPlayers,
@@ -20,13 +20,16 @@ export const initializeDraft = async (campaignId) => {
     await updateDoc(campaignRef, {
       draft: {
         phase: "waiting",
+        mode: null,
         readyPlayers: [],
+        directReadyPlayers: [],
         countdownStartAt: null,
         playerDrafts: {},
         playerStates: {},
         banVotes: {},
         bannedLeaders: {},
         selectedLeaders: {},
+        directChoices: {},
       },
       updatedAt: new Date().toISOString(),
     });
@@ -67,6 +70,10 @@ export const togglePlayerReady = async (
     };
 
     let readyPlayers = draft.readyPlayers || [];
+    // If switching to draft, remove from direct ready list
+    let directReadyPlayers = (draft.directReadyPlayers || []).filter(
+      (id) => id !== playerId,
+    );
 
     if (isReady) {
       // Add player to ready list if not already there
@@ -85,6 +92,7 @@ export const togglePlayerReady = async (
 
     await updateDoc(campaignRef, {
       "draft.readyPlayers": readyPlayers,
+      "draft.directReadyPlayers": directReadyPlayers,
       "draft.phase": newPhase,
       "draft.countdownStartAt": countdownStartAt,
       updatedAt: new Date().toISOString(),
@@ -93,6 +101,181 @@ export const togglePlayerReady = async (
     return { success: true, error: null };
   } catch (error) {
     console.error("Error toggling ready status:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Toggle direct choice ready status for a player.
+ * When all players are ready for direct choice, immediately activates direct selection phase.
+ * @param {string} campaignId - Campaign ID
+ * @param {string} playerId - Player ID
+ * @param {boolean} isReady - Ready status
+ * @param {Array} allMembers - All campaign members
+ * @returns {Object} { success, error }
+ */
+export const toggleDirectReady = async (
+  campaignId,
+  playerId,
+  isReady,
+  allMembers,
+) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const draft = campaign.draft || { phase: "waiting" };
+
+    let directReadyPlayers = draft.directReadyPlayers || [];
+    // If switching to direct, remove from draft ready list
+    let readyPlayers = (draft.readyPlayers || []).filter(
+      (id) => id !== playerId,
+    );
+
+    if (isReady) {
+      if (!directReadyPlayers.includes(playerId)) {
+        directReadyPlayers.push(playerId);
+      }
+    } else {
+      directReadyPlayers = directReadyPlayers.filter((id) => id !== playerId);
+    }
+
+    // If all members are ready for direct choice, activate direct selection immediately
+    const allDirectReady =
+      allMembers.length > 0 &&
+      allMembers.every((id) => directReadyPlayers.includes(id));
+
+    if (allDirectReady) {
+      await updateDoc(campaignRef, {
+        "draft.directReadyPlayers": directReadyPlayers,
+        "draft.readyPlayers": readyPlayers,
+        "draft.phase": "countdown",
+        "draft.mode": "direct",
+        "draft.countdownStartAt": new Date().toISOString(),
+        "draft.directChoices": {},
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      // If cancelling during direct countdown, reset back to waiting
+      const resetFromCountdown =
+        draft.phase === "countdown" && draft.mode === "direct";
+      await updateDoc(campaignRef, {
+        "draft.directReadyPlayers": directReadyPlayers,
+        "draft.readyPlayers": readyPlayers,
+        ...(resetFromCountdown
+          ? {
+              "draft.phase": "waiting",
+              "draft.mode": null,
+              "draft.countdownStartAt": null,
+            }
+          : {}),
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error toggling direct ready:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Choose a leader via direct selection (first-come-first-served).
+ * Uses a Firestore transaction to prevent two players from picking the same leader.
+ * @param {string} campaignId - Campaign ID
+ * @param {string} playerId - Player ID choosing
+ * @param {string} leaderId - Leader ID chosen
+ * @returns {Object} { success, error }
+ */
+export const chooseDirectLeader = async (campaignId, playerId, leaderId) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+
+    await runTransaction(db, async (transaction) => {
+      const campaignDoc = await transaction.get(campaignRef);
+      if (!campaignDoc.exists()) throw new Error("Campaign not found");
+
+      const campaign = campaignDoc.data();
+      const draft = campaign.draft || {};
+      const directChoices = { ...(draft.directChoices || {}) };
+
+      // Check if leader already taken by someone else
+      const takenBy = Object.entries(directChoices).find(
+        ([uid, lId]) => lId === leaderId && uid !== playerId,
+      );
+      if (takenBy) {
+        throw new Error(
+          "Questo personaggio è già stato scelto da un altro giocatore",
+        );
+      }
+
+      directChoices[playerId] = leaderId;
+
+      // Check if all members have chosen
+      const members = campaign.members || [];
+      const allChosen = members.every((id) => !!directChoices[id]);
+
+      if (allChosen) {
+        const matches = campaign.matches || [];
+        const currentMatch = matches[matches.length - 1];
+
+        if (
+          currentMatch &&
+          currentMatch.status === "in-progress" &&
+          !currentMatch.draftCompleted
+        ) {
+          const updatedParticipants = { ...currentMatch.participants };
+          Object.entries(directChoices).forEach(([uid, lId]) => {
+            if (updatedParticipants[uid]) {
+              updatedParticipants[uid].leaderId = lId;
+            }
+          });
+
+          const updatedMatches = matches.map((match) => {
+            if (match.id === currentMatch.id) {
+              return {
+                ...match,
+                participants: updatedParticipants,
+                draftCompleted: true,
+                selectionMode: "direct",
+                startDate: new Date().toISOString(),
+              };
+            }
+            return match;
+          });
+
+          transaction.update(campaignRef, {
+            "draft.directChoices": directChoices,
+            "draft.selectedLeaders": directChoices,
+            "draft.phase": "completed",
+            matches: updatedMatches,
+            updatedAt: new Date().toISOString(),
+          });
+        } else {
+          transaction.update(campaignRef, {
+            "draft.directChoices": directChoices,
+            "draft.selectedLeaders": directChoices,
+            "draft.phase": "completed",
+            updatedAt: new Date().toISOString(),
+          });
+        }
+      } else {
+        transaction.update(campaignRef, {
+          "draft.directChoices": directChoices,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    });
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error choosing direct leader:", error);
     return { success: false, error: error.message };
   }
 };
@@ -114,6 +297,12 @@ export const executeDraft = async (campaignId, playerIds) => {
     }
 
     const campaign = campaignDoc.data();
+
+    // Bail early if another client already executed the draft
+    if (campaign.draft?.phase !== "countdown") {
+      return { success: true, error: null };
+    }
+
     const matches = campaign.matches || [];
 
     // Get all leaders
@@ -178,20 +367,56 @@ export const executeDraft = async (campaignId, playerIds) => {
       };
     });
 
-    // Update campaign and automatically change status to in-progress
-    await updateDoc(campaignRef, {
-      "draft.phase": "active",
-      "draft.playerDrafts": playerDrafts,
-      "draft.playerStates": playerStates,
-      "draft.banVotes": {},
-      "draft.bannedLeaders": {},
-      status: "in-progress",
-      updatedAt: new Date().toISOString(),
+    // Use a transaction so only the first client to arrive actually writes.
+    // If another client already set phase to "active", this is a no-op.
+    await runTransaction(db, async (transaction) => {
+      const latestDoc = await transaction.get(campaignRef);
+      if (!latestDoc.exists()) throw new Error("Campaign not found");
+      const latestPhase = latestDoc.data().draft?.phase;
+      if (latestPhase !== "countdown") return; // already executed by another client
+
+      transaction.update(campaignRef, {
+        "draft.phase": "active",
+        "draft.playerDrafts": playerDrafts,
+        "draft.playerStates": playerStates,
+        "draft.banVotes": {},
+        "draft.bannedLeaders": {},
+        status: "in-progress",
+        updatedAt: new Date().toISOString(),
+      });
     });
 
     return { success: true, error: null };
   } catch (error) {
     console.error("Error executing draft:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Activate direct choice phase after countdown.
+ * Uses a transaction so only the first client to arrive actually writes.
+ * @param {string} campaignId - Campaign ID
+ * @returns {Object} { success, error }
+ */
+export const activateDirectChoice = async (campaignId) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    await runTransaction(db, async (transaction) => {
+      const campaignDoc = await transaction.get(campaignRef);
+      if (!campaignDoc.exists()) throw new Error("Campaign not found");
+      const data = campaignDoc.data();
+      if (data.draft?.phase !== "countdown" || data.draft?.mode !== "direct")
+        return; // Already activated by another client
+      transaction.update(campaignRef, {
+        "draft.phase": "active",
+        status: "in-progress",
+        updatedAt: new Date().toISOString(),
+      });
+    });
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error activating direct choice:", error);
     return { success: false, error: error.message };
   }
 };

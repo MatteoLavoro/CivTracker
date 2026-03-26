@@ -1,0 +1,399 @@
+/* Direct Choice Modal Styles
+   Segue lo stesso sistema di DraftModal: container → body (scrollabile) → divider → footer
+*/
+
+/* ─── Search header (sticky sopra la lista, fuori dal body scrollabile) ─── */
+.dc-search-header {
+  padding: 1rem 1.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(18, 28, 40, 0.95);
+}
+
+.dc-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  background: rgba(15, 50, 82, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.dc-search-bar:focus-within {
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.dc-search-icon {
+  color: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+}
+
+.dc-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: white;
+  min-width: 0;
+}
+
+.dc-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.dc-search-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.dc-search-clear:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ─── Lista leader scrollabile: il body ha altezza fissa così il modale non si restringe ─── */
+.dc-leaders-body {
+  flex: 1;
+  height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.5rem;
+}
+
+.dc-leaders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Card di un singolo leader nella lista di selezione — clone di .ban-leader-card */
+.dc-leader-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 82px;
+}
+
+.dc-leader-card.available {
+  cursor: pointer;
+}
+
+.dc-leader-card.available:hover {
+  background: rgba(15, 50, 82, 0.3);
+  border-color: rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dc-leader-card.taken {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.dc-leader-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+
+.dc-civ-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+
+.dc-leader-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.dc-leader-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.dc-leader-variant {
+  font-size: 0.875rem;
+  color: rgba(212, 175, 55, 0.9);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.dc-leader-civ {
+  font-size: 0.875rem;
+  color: rgba(150, 150, 150, 1);
+}
+
+.dc-taken-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(212, 175, 55, 0.12);
+  color: rgba(212, 175, 55, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.dc-no-results {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 2.5rem 0;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ─── Waiting: pronto con badge scelto ─── */
+.dc-chosen-badge {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(212, 175, 55, 0.9);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* ─── Leader già scelto (fase attesa) ─── */
+.dc-chosen-leader-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  width: 100%;
+}
+
+.dc-chosen-leader-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.5);
+  flex-shrink: 0;
+}
+
+.dc-chosen-civ-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+
+.dc-chosen-leader-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dc-chosen-leader-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.dc-chosen-leader-variant {
+  font-size: 0.875rem;
+  color: rgba(212, 175, 55, 0.9);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.dc-chosen-leader-civ {
+  font-size: 0.875rem;
+  color: rgba(150, 150, 150, 1);
+}
+
+/* Progress bar ─── */
+.dc-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.dc-progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dc-progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0.8),
+    rgba(212, 175, 55, 1)
+  );
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Conferma scelta ─── */
+.dc-confirm-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.dc-confirm-leader-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: rgba(15, 50, 82, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  width: 100%;
+}
+
+.dc-confirm-leader-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.5);
+  flex-shrink: 0;
+}
+
+.dc-confirm-civ-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+
+.dc-confirm-leader-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+}
+
+.dc-confirm-leader-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.dc-confirm-leader-variant {
+  font-size: 0.875rem;
+  color: rgba(212, 175, 55, 0.9);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.dc-confirm-leader-civ {
+  font-size: 0.875rem;
+  color: rgba(150, 150, 150, 1);
+}
+
+.dc-confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.dc-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.dc-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dc-btn-primary {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.9),
+    rgba(184, 134, 11, 0.9)
+  );
+  color: white;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+.dc-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 1),
+    rgba(184, 134, 11, 1)
+  );
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
+  transform: translateY(-1px);
+  border-color: rgba(212, 175, 55, 0.7);
+}
+
+.dc-btn-secondary {
+  background: rgba(15, 50, 82, 1);
+  color: white;
+  box-shadow:
+    0 2px 8px rgba(15, 50, 82, 0.3),
+    0 0 0 1px rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.dc-btn-secondary:hover:not(:disabled) {
+  background: rgba(20, 65, 105, 1);
+  box-shadow:
+    0 4px 12px rgba(15, 50, 82, 0.4),
+    0 0 16px rgba(212, 175, 55, 0.2);
+  transform: translateY(-1px);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+/* (end) */

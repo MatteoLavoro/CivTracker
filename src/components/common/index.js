@@ -19,6 +19,7 @@ export { CompleteMatchModal } from "./CompleteMatchModal";
 export { WinnerSelectModal } from "./WinnerSelectModal";
 export { VictoryTypeSelectModal } from "./VictoryTypeSelectModal";
 export { DraftModal } from "./DraftModal";
+export { DirectChoiceModal } from "./DirectChoiceModal";
 export { PlayerDraftInfoModal } from "./PlayerDraftInfoModal";
 export { LeaderPoolModal } from "./LeaderPoolModal";
 export { PlayerLeaderPoolModal } from "./PlayerLeaderPoolModal";

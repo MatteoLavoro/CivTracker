@@ -18,10 +18,13 @@ import {
   updateCampaignName,
   initializeDraft,
   togglePlayerReady,
+  toggleDirectReady,
   executeDraft,
+  activateDirectChoice,
   submitBanVote,
   finalizeBans,
   selectFinalLeader,
+  chooseDirectLeader,
   createMatch,
   updateMatchTurns,
   completeMatch,
@@ -42,6 +45,7 @@ import {
   LeaderConfirmModal,
   TextInputModal,
   DraftModal,
+  DirectChoiceModal,
   MatchRow,
   AddMatchButton,
   ResultsModal,
@@ -67,6 +71,7 @@ export function Campaign() {
   const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
+  const [directChoiceModalOpen, setDirectChoiceModalOpen] = useState(false);
   const [confirmSelectOpen, setConfirmSelectOpen] = useState(false);
   const [leaderToSelect, setLeaderToSelect] = useState(null);
 
@@ -173,10 +178,11 @@ export function Campaign() {
     }
   }, [campaign, draft, isMember, campaignId]);
 
-  // Execute draft server-side when countdown phase starts (only once)
+  // Execute draft server-side when countdown phase starts (only once, classic draft)
   useEffect(() => {
     if (
       draftPhase === "countdown" &&
+      draft?.mode !== "direct" &&
       campaign?.members &&
       draft?.countdownStartAt
     ) {
@@ -199,11 +205,41 @@ export function Campaign() {
         return () => clearTimeout(timeout);
       }
     }
-  }, [draftPhase, draft?.countdownStartAt, campaignId, campaign?.members]);
+  }, [draftPhase, draft?.mode, draft?.countdownStartAt, campaignId, campaign?.members]);
 
-  // Auto-finalize bans when all players completed
+  // Activate direct choice after countdown (5 s)
   useEffect(() => {
-    if (draftPhase === "active" && campaign?.members && draft?.playerStates) {
+    if (
+      draftPhase === "countdown" &&
+      draft?.mode === "direct" &&
+      draft?.countdownStartAt
+    ) {
+      const startTime = new Date(draft.countdownStartAt).getTime();
+      const now = Date.now();
+      const elapsed = Math.floor((now - startTime) / 1000);
+
+      if (elapsed >= 5) {
+        activateDirectChoice(campaignId);
+      } else {
+        const timeout = setTimeout(
+          () => {
+            activateDirectChoice(campaignId);
+          },
+          (5 - elapsed) * 1000,
+        );
+        return () => clearTimeout(timeout);
+      }
+    }
+  }, [draftPhase, draft?.mode, draft?.countdownStartAt, campaignId]);
+
+  // Auto-finalize bans when all players completed (only for regular draft, not direct choice)
+  useEffect(() => {
+    if (
+      draftPhase === "active" &&
+      draft?.mode !== "direct" &&
+      campaign?.members &&
+      draft?.playerStates
+    ) {
       const allCompleted = campaign.members.every(
         (id) => draft.playerStates[id]?.hasCompletedBans === true,
       );
@@ -211,11 +247,15 @@ export function Campaign() {
         finalizeBans(campaignId, campaign.members);
       }
     }
-  }, [draftPhase, draft?.playerStates, campaignId, campaign?.members]);
+  }, [draftPhase, draft?.mode, draft?.playerStates, campaignId, campaign?.members]);
 
-  // Auto-skip banning phase if solo player
+  // Auto-skip banning phase if solo player (only for regular draft)
   useEffect(() => {
-    if (draftPhase === "active" && campaign?.members) {
+    if (
+      draftPhase === "active" &&
+      draft?.mode !== "direct" &&
+      campaign?.members
+    ) {
       const otherPlayers = campaign.members.filter((id) => id !== user?.uid);
       if (otherPlayers.length === 0) {
         // Solo player - no banning needed, go straight to completed
@@ -447,11 +487,30 @@ export function Campaign() {
     }
   };
 
-  // Draft handlers
   const handleToggleReady = async () => {
     if (!campaign || !user) return;
     const isReady = draft?.readyPlayers?.includes(user.uid) || false;
     await togglePlayerReady(campaignId, user.uid, !isReady, campaign.members);
+  };
+
+  const handleToggleDirectReady = async () => {
+    if (!campaign || !user) return;
+    const isReady = draft?.directReadyPlayers?.includes(user.uid) || false;
+    await toggleDirectReady(campaignId, user.uid, !isReady, campaign.members);
+  };
+
+  const handleChooseDirectLeader = async (leaderId) => {
+    if (!campaign || !user) return { error: null };
+    const { success, error } = await chooseDirectLeader(
+      campaignId,
+      user.uid,
+      leaderId,
+    );
+    if (!success) {
+      return { error: error || "Errore nella scelta del personaggio" };
+    }
+    setDirectChoiceModalOpen(false);
+    return { error: null };
   };
 
   const handleSubmitBan = async (targetPlayerId, bannedLeaderId) => {
@@ -495,6 +554,10 @@ export function Campaign() {
     setDraftModalOpen(true);
   };
 
+  const handleOpenDirectChoiceModal = () => {
+    setDirectChoiceModalOpen(true);
+  };
+
   // Match system logic
   const matches = Array.isArray(campaign?.matches) ? campaign.matches : [];
   const hasMatches = matches.length > 0;
@@ -527,11 +590,19 @@ export function Campaign() {
     }, {});
 
   // Draft button logic
+  const draftMode = draft?.mode || null;
   const isDraftInProgress =
-    draftPhase && draftPhase !== "waiting" && !mySelectedLeader;
+    draftPhase &&
+    draftPhase !== "waiting" &&
+    draftMode !== "direct" &&
+    !mySelectedLeader;
+  const myDirectChoice = draft?.directChoices?.[user?.uid] || null;
   const hasUserCompletedDraft =
     !!mySelectedLeader && !currentMatch?.draftCompleted;
+  const hasUserCompletedDirectChoice =
+    !!myDirectChoice && !currentMatch?.draftCompleted;
   const readyPlayersCount = draft?.readyPlayers?.length || 0;
+  const directReadyPlayersCount = draft?.directReadyPlayers?.length || 0;
   const totalPlayersCount = campaign?.members?.length || 0;
 
   if (loading || leadersLoading) {
@@ -701,13 +772,18 @@ export function Campaign() {
               leaders={leaders}
               draft={draft}
               onStartDraft={handleOpenDraftModal}
+              onStartDirectChoice={handleOpenDirectChoiceModal}
               onCompleteMatch={handleCompleteMatch}
               onPenalty={handlePenalty}
               isCurrentMatch={match.id === currentMatch?.id}
               isDraftInProgress={isDraftInProgress}
               hasUserCompletedDraft={hasUserCompletedDraft}
+              hasUserCompletedDirectChoice={hasUserCompletedDirectChoice}
               readyPlayersCount={readyPlayersCount}
+              directReadyPlayersCount={directReadyPlayersCount}
               totalPlayersCount={totalPlayersCount}
+              draftMode={draftMode}
+              draftPhase={draftPhase}
               editLock={
                 campaign.matchEditLocks
                   ? campaign.matchEditLocks[match.id]
@@ -786,6 +862,18 @@ export function Campaign() {
         onToggleReady={handleToggleReady}
         onSubmitBan={handleSubmitBan}
         onSelectLeader={handleSelectLeader}
+      />
+
+      {/* Direct Choice Modal */}
+      <DirectChoiceModal
+        isOpen={directChoiceModalOpen}
+        onClose={() => setDirectChoiceModalOpen(false)}
+        campaign={campaign}
+        draft={draft}
+        leaders={leaders}
+        user={user}
+        onToggleDirectReady={handleToggleDirectReady}
+        onChooseLeader={handleChooseDirectLeader}
       />
 
       {/* Confirm Select Leader Modal */}

@@ -75,13 +75,16 @@ export {
 export {
   initializeDraft,
   togglePlayerReady,
+  toggleDirectReady,
   executeDraft,
+  activateDirectChoice,
   markPlayerSeenDraft,
   submitBanVote,
   finalizeBans,
   voteResetDraft,
   resetDraft,
   selectFinalLeader,
+  chooseDirectLeader,
 } from "./draft";
 
 // Matches
