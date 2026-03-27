@@ -135,7 +135,8 @@
   grid-template-rows: auto 1fr auto;
   column-gap: 1rem;
   row-gap: 0;
-  padding: 1rem 0 0;
+  /* Use modal-body standard padding to keep top/bottom spacing symmetrical */
+  padding: 0;
   flex: 1;
   min-height: 0;
 }
@@ -301,11 +302,13 @@
 
 /* Invisible spacer in future column footer — matches pill height exactly */
 .cmcol-pill-placeholder {
-  padding: 0.24rem 0.7rem;
-  font-size: 0.78rem;
-  line-height: inherit;
-  border: 1px solid transparent; /* mirrors pill border so height is identical */
+  /* Exact pill height to keep future CTA vertically aligned with ready buttons */
+  height: 1.54rem;
+  border: 1px solid transparent;
   border-radius: 999px;
+  box-sizing: border-box;
+  align-self: center;
+  width: 5.5rem;
   flex-shrink: 0;
   visibility: hidden;
   pointer-events: none;
@@ -482,7 +485,7 @@
     grid-template-rows: none;
     overflow-y: auto;
     gap: 0.875rem;
-    padding: 0.875rem 0 1rem;
+    padding: 0;
   }
 
   .choice-method-column {
