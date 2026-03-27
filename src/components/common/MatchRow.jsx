@@ -19,11 +19,12 @@ import "./MatchRow.css";
  * @param {number} matchNumber - Match number (1-indexed)
  * @param {Object} leaders - All leaders data
  * @param {Object} draft - Draft data for real-time leader selection
- * @param {Function} onStartDraft - Handler for starting draft
+ * @param {Function} onOpenChoiceMethod - Handler for opening method selection modal
+ * @param {Function} onContinueChoice - Handler for continuing current selection flow
  * @param {Function} onCompleteMatch - Handler for completing match
  * @param {Function} onPenalty - Handler for opening penalty modal
  * @param {boolean} isCurrentMatch - Whether this is the current active match
- * @param {boolean} isDraftInProgress - Whether draft is in progress
+ * @param {boolean} isChoiceStarted - Whether the draft/direct flow has started
  * @param {boolean} hasUserCompletedDraft - Whether current user has completed draft
  * @param {number} readyPlayersCount - Number of ready players
  * @param {number} totalPlayersCount - Total number of players
@@ -35,19 +36,17 @@ export function MatchRow({
   matchNumber,
   leaders,
   draft,
-  onStartDraft,
-  onStartDirectChoice,
+  onOpenChoiceMethod,
+  onContinueChoice,
   onCompleteMatch,
   onPenalty,
   isCurrentMatch,
-  isDraftInProgress,
+  isChoiceStarted,
   hasUserCompletedDraft,
   hasUserCompletedDirectChoice,
   readyPlayersCount,
   directReadyPlayersCount,
   totalPlayersCount,
-  draftMode,
-  draftPhase,
   editLock,
   currentUserId,
 }) {
@@ -149,6 +148,9 @@ export function MatchRow({
     match.victoryType && victoryTypes[match.victoryType]
       ? victoryTypes[match.victoryType]
       : null;
+
+  const anyMethodReadyCount =
+    (readyPlayersCount || 0) + (directReadyPlayersCount || 0);
 
   return (
     <div className={`match-row ${isCompleted ? "completed" : ""}`}>
@@ -324,7 +326,7 @@ export function MatchRow({
       <div className="match-col match-col-actions">
         {!match.draftCompleted && isCurrentMatch && (
           <>
-            {(hasUserCompletedDraft || hasUserCompletedDirectChoice) ? (
+            {hasUserCompletedDraft || hasUserCompletedDirectChoice ? (
               /* Player already chose (draft or direct) — wait for others */
               <button
                 className="match-action-btn waiting-btn"
@@ -338,69 +340,38 @@ export function MatchRow({
                   </span>
                 </div>
               </button>
-            ) : draftMode === "direct" &&
-              (draftPhase === "active" || draftPhase === "countdown") ? (
-              /* Direct choice mode — countdown or active */
+            ) : isChoiceStarted ? (
+              /* Draft/direct flow already active: continue current selection */
               <button
-                className="match-action-btn direct-btn blinking"
-                onClick={() => onStartDirectChoice && onStartDirectChoice(match.id)}
-                type="button"
-              >
-                <Users size={20} />
-                <div className="draft-text-container">
-                  <span className="draft-text">Scegli</span>
-                  <span className="draft-text">Personaggio</span>
-                </div>
-              </button>
-            ) : draftPhase === "countdown" ? (
-              /* Classic draft countdown — show only draft button */
-              <button
-                className="match-action-btn draft-btn blinking"
-                onClick={() => onStartDraft(match.id)}
+                className="match-action-btn choose-btn blinking"
+                onClick={() => onContinueChoice && onContinueChoice(match.id)}
                 type="button"
               >
                 <Users size={20} />
                 <div className="draft-text-container">
                   <span className="draft-text">Continua</span>
-                  <span className="draft-text">Draft</span>
+                  <span className="draft-text">Scelta</span>
                 </div>
               </button>
             ) : (
-              /* No mode chosen yet — show both buttons */
-              <>
-                <button
-                  className={`match-action-btn draft-btn ${
-                    readyPlayersCount > 0 ? "blinking" : ""
-                  }`}
-                  onClick={() => onStartDraft(match.id)}
-                  type="button"
-                >
-                  <Users size={20} />
-                  <div className="draft-text-container">
-                    <span className="draft-text">Draft</span>
-                    <span className="draft-counter">
-                      [{readyPlayersCount}/{totalPlayersCount}]
-                    </span>
-                  </div>
-                </button>
-                <button
-                  className={`match-action-btn direct-btn ${
-                    directReadyPlayersCount > 0 ? "blinking" : ""
-                  }`}
-                  onClick={() =>
-                    onStartDirectChoice && onStartDirectChoice(match.id)
-                  }
-                  type="button"
-                >
-                  <Users size={20} />
-                  <div className="draft-text-container">
-                    <span className="draft-text">Scegli</span>
-                    <span className="draft-counter">
-                      [{directReadyPlayersCount}/{totalPlayersCount}]
-                    </span>
-                  </div>
-                </button>
-              </>
+              /* Waiting/countdown: open intermediate method modal */
+              <button
+                className={`match-action-btn choose-btn ${
+                  anyMethodReadyCount > 0 ? "blinking" : ""
+                }`}
+                onClick={() =>
+                  onOpenChoiceMethod && onOpenChoiceMethod(match.id)
+                }
+                type="button"
+              >
+                <Users size={20} />
+                <div className="draft-text-container">
+                  <span className="draft-text">Scegli</span>
+                  <span className="draft-counter">
+                    [{anyMethodReadyCount}/{totalPlayersCount}]
+                  </span>
+                </div>
+              </button>
             )}
           </>
         )}

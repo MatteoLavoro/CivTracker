@@ -46,6 +46,7 @@ import {
   TextInputModal,
   DraftModal,
   DirectChoiceModal,
+  ChoiceMethodModal,
   MatchRow,
   AddMatchButton,
   ResultsModal,
@@ -72,6 +73,7 @@ export function Campaign() {
   const kebabMenuRef = useRef(null);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [directChoiceModalOpen, setDirectChoiceModalOpen] = useState(false);
+  const [choiceMethodModalOpen, setChoiceMethodModalOpen] = useState(false);
   const [confirmSelectOpen, setConfirmSelectOpen] = useState(false);
   const [leaderToSelect, setLeaderToSelect] = useState(null);
 
@@ -205,7 +207,13 @@ export function Campaign() {
         return () => clearTimeout(timeout);
       }
     }
-  }, [draftPhase, draft?.mode, draft?.countdownStartAt, campaignId, campaign?.members]);
+  }, [
+    draftPhase,
+    draft?.mode,
+    draft?.countdownStartAt,
+    campaignId,
+    campaign?.members,
+  ]);
 
   // Activate direct choice after countdown (5 s)
   useEffect(() => {
@@ -247,7 +255,13 @@ export function Campaign() {
         finalizeBans(campaignId, campaign.members);
       }
     }
-  }, [draftPhase, draft?.mode, draft?.playerStates, campaignId, campaign?.members]);
+  }, [
+    draftPhase,
+    draft?.mode,
+    draft?.playerStates,
+    campaignId,
+    campaign?.members,
+  ]);
 
   // Auto-skip banning phase if solo player (only for regular draft)
   useEffect(() => {
@@ -550,12 +564,25 @@ export function Campaign() {
     setLeaderToSelect(null);
   };
 
-  const handleOpenDraftModal = () => {
-    setDraftModalOpen(true);
+  const handleOpenChoiceMethodModal = () => {
+    setChoiceMethodModalOpen(true);
   };
 
-  const handleOpenDirectChoiceModal = () => {
-    setDirectChoiceModalOpen(true);
+  const handleCountdownComplete = (mode) => {
+    setChoiceMethodModalOpen(false);
+    if (mode === "direct") {
+      setDirectChoiceModalOpen(true);
+    } else {
+      setDraftModalOpen(true);
+    }
+  };
+
+  const handleContinueChoice = () => {
+    if (draft?.mode === "direct") {
+      setDirectChoiceModalOpen(true);
+      return;
+    }
+    setDraftModalOpen(true);
   };
 
   // Match system logic
@@ -591,11 +618,9 @@ export function Campaign() {
 
   // Draft button logic
   const draftMode = draft?.mode || null;
-  const isDraftInProgress =
-    draftPhase &&
-    draftPhase !== "waiting" &&
-    draftMode !== "direct" &&
-    !mySelectedLeader;
+  const choiceStarted =
+    draftPhase === "active" ||
+    (draftPhase === "completed" && !currentMatch?.draftCompleted);
   const myDirectChoice = draft?.directChoices?.[user?.uid] || null;
   const hasUserCompletedDraft =
     !!mySelectedLeader && !currentMatch?.draftCompleted;
@@ -771,12 +796,12 @@ export function Campaign() {
               matchNumber={index + 1}
               leaders={leaders}
               draft={draft}
-              onStartDraft={handleOpenDraftModal}
-              onStartDirectChoice={handleOpenDirectChoiceModal}
+              onOpenChoiceMethod={handleOpenChoiceMethodModal}
+              onContinueChoice={handleContinueChoice}
               onCompleteMatch={handleCompleteMatch}
               onPenalty={handlePenalty}
               isCurrentMatch={match.id === currentMatch?.id}
-              isDraftInProgress={isDraftInProgress}
+              isChoiceStarted={choiceStarted}
               hasUserCompletedDraft={hasUserCompletedDraft}
               hasUserCompletedDirectChoice={hasUserCompletedDirectChoice}
               readyPlayersCount={readyPlayersCount}
@@ -874,6 +899,18 @@ export function Campaign() {
         user={user}
         onToggleDirectReady={handleToggleDirectReady}
         onChooseLeader={handleChooseDirectLeader}
+      />
+
+      {/* Choice Method Modal */}
+      <ChoiceMethodModal
+        isOpen={choiceMethodModalOpen}
+        onClose={() => setChoiceMethodModalOpen(false)}
+        campaign={campaign}
+        draft={draft}
+        user={user}
+        onToggleDraftReady={handleToggleReady}
+        onToggleDirectReady={handleToggleDirectReady}
+        onCountdownComplete={handleCountdownComplete}
       />
 
       {/* Confirm Select Leader Modal */}

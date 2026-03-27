@@ -20,6 +20,7 @@ export { WinnerSelectModal } from "./WinnerSelectModal";
 export { VictoryTypeSelectModal } from "./VictoryTypeSelectModal";
 export { DraftModal } from "./DraftModal";
 export { DirectChoiceModal } from "./DirectChoiceModal";
+export { ChoiceMethodModal } from "./ChoiceMethodModal";
 export { PlayerDraftInfoModal } from "./PlayerDraftInfoModal";
 export { LeaderPoolModal } from "./LeaderPoolModal";
 export { PlayerLeaderPoolModal } from "./PlayerLeaderPoolModal";

@@ -414,6 +414,34 @@
   border: none;
 }
 
+.choose-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.92),
+    rgba(184, 134, 11, 0.86)
+  );
+  color: white;
+  border: 1px solid rgba(212, 175, 55, 1);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+.choose-btn:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 1),
+    rgba(184, 134, 11, 1)
+  );
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.5);
+  transform: translateY(-1px);
+}
+
+.choose-btn.blinking {
+  animation: pulse-draft 1s ease-in-out infinite;
+}
+
 .draft-btn {
   background: linear-gradient(
     135deg,
