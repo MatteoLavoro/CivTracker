@@ -21,7 +21,7 @@ import {
   toggleDirectReady,
   executeDraft,
   activateDirectChoice,
-  submitBanVote,
+  submitAllBanVotes,
   finalizeBans,
   selectFinalLeader,
   chooseDirectLeader,
@@ -95,17 +95,6 @@ export function Campaign() {
     error: _error,
   } = useDocument("campaigns", campaignId);
 
-  // Debug: Log when campaign data changes
-  useEffect(() => {
-    if (campaign) {
-      console.log("[Campaign] Data updated:", {
-        membersCount: campaign.members?.length,
-        matchesCount: campaign.matches?.length,
-        lastMatch: campaign.matches?.[campaign.matches.length - 1],
-      });
-    }
-  }, [campaign]);
-
   // Preload all member profile images when campaign loads
   useEffect(() => {
     if (campaign?.memberDetails) {
@@ -115,11 +104,7 @@ export function Campaign() {
         .filter(Boolean);
 
       if (photoURLs.length > 0) {
-        preloadImages(photoURLs).then(() => {
-          console.log(
-            `[Campaign] Preloaded ${photoURLs.length} profile images`,
-          );
-        });
+        preloadImages(photoURLs);
       }
     }
   }, [campaign?.memberDetails]);
@@ -127,13 +112,7 @@ export function Campaign() {
   // Migrate match participants to include photoURL (one-time fix for old matches)
   useEffect(() => {
     if (campaign && campaignId) {
-      migrateMatchParticipantsPhotoURL(campaignId).then((result) => {
-        if (result.success && result.updatedCount > 0) {
-          console.log(
-            `[Campaign] Migrated ${result.updatedCount} matches with photoURL`,
-          );
-        }
-      });
+      migrateMatchParticipantsPhotoURL(campaignId);
     }
   }, [campaign?.id, campaignId]);
 
@@ -329,7 +308,6 @@ export function Campaign() {
       alert(error);
     } else if (statusChanged) {
       // Status changed successfully
-      console.log("Stato campagna cambiato:", desiredStatus);
     }
   };
 
@@ -392,11 +370,6 @@ export function Campaign() {
     if (!currentMatchId || !currentParticipantId) return;
 
     // TODO: Implement score update functionality
-    console.log("Update score:", {
-      matchId: currentMatchId,
-      participantId: currentParticipantId,
-      score: scoreValue,
-    });
 
     setScoreModalOpen(false);
     setCurrentMatchId(null);
@@ -527,15 +500,9 @@ export function Campaign() {
     return { error: null };
   };
 
-  const handleSubmitBan = async (targetPlayerId, bannedLeaderId) => {
-    if (!campaign) return;
-    await submitBanVote(
-      campaignId,
-      user.uid,
-      targetPlayerId,
-      bannedLeaderId,
-      campaign.members,
-    );
+  const handleSubmitBan = async (banMap) => {
+    if (!campaign || !user) return;
+    await submitAllBanVotes(campaignId, user.uid, banMap);
   };
 
   const handleSelectLeader = async (leaderId) => {
@@ -578,6 +545,12 @@ export function Campaign() {
   };
 
   const handleContinueChoice = () => {
+    // Waiting or countdown: go to method selection (shows countdown if active)
+    if (draftPhase === "waiting" || draftPhase === "countdown") {
+      setChoiceMethodModalOpen(true);
+      return;
+    }
+    // Active or completed: open the specific modal for the chosen method
     if (draft?.mode === "direct") {
       setDirectChoiceModalOpen(true);
       return;
@@ -589,24 +562,10 @@ export function Campaign() {
   const matches = Array.isArray(campaign?.matches) ? campaign.matches : [];
   const hasMatches = matches.length > 0;
   const currentMatch = hasMatches ? matches[matches.length - 1] : null;
-  const isCurrentMatchActive =
-    currentMatch && currentMatch.status === "in-progress";
-  // Can create new match only if no current match or current match has completed draft
   const canCreateNewMatch =
     !currentMatch ||
     currentMatch.status === "completed" ||
     currentMatch.draftCompleted === true;
-
-  // Debug: Log match participants
-  useEffect(() => {
-    if (currentMatch) {
-      console.log(
-        "[Campaign] Current match participants:",
-        Object.keys(currentMatch.participants || {}).length,
-        currentMatch.participants,
-      );
-    }
-  }, [currentMatch]);
 
   // Calculate victory counts from completed matches
   const victoryCounts = matches
@@ -619,6 +578,7 @@ export function Campaign() {
   // Draft button logic
   const draftMode = draft?.mode || null;
   const choiceStarted =
+    draftPhase === "countdown" ||
     draftPhase === "active" ||
     (draftPhase === "completed" && !currentMatch?.draftCompleted);
   const myDirectChoice = draft?.directChoices?.[user?.uid] || null;
@@ -884,6 +844,7 @@ export function Campaign() {
         draft={draft}
         leaders={leaders}
         user={user}
+        countdownStartAt={draft?.countdownStartAt}
         onToggleReady={handleToggleReady}
         onSubmitBan={handleSubmitBan}
         onSelectLeader={handleSelectLeader}

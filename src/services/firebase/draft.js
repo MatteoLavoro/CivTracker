@@ -493,6 +493,44 @@ export const submitBanVote = async (
 };
 
 /**
+ * Submit all ban votes for a player at once (one ban per opponent).
+ * banMap = { [targetPlayerId]: bannedLeaderId, ... }
+ * Sets hasCompletedBans: true on submission.
+ * @param {string} campaignId - Campaign ID
+ * @param {string} voterId - ID of player voting
+ * @param {Object} banMap - Map of targetPlayerId → bannedLeaderId
+ * @returns {Object} { success, error }
+ */
+export const submitAllBanVotes = async (campaignId, voterId, banMap) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const draft = campaign.draft || {};
+    const banVotes = { ...(draft.banVotes || {}) };
+
+    // Store the full ban map for this voter (one entry per opponent)
+    banVotes[voterId] = banMap;
+
+    await updateDoc(campaignRef, {
+      "draft.banVotes": banVotes,
+      [`draft.playerStates.${voterId}.hasCompletedBans`]: true,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error submitting all ban votes:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
  * Calculate and finalize bans when all players have voted
  * @param {string} campaignId - Campaign ID
  * @param {Array} playerIds - Array of all player IDs
@@ -575,87 +613,91 @@ export const resetDraft = async (campaignId) => {
 export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
   try {
     const campaignRef = doc(db, "campaigns", campaignId);
-    const campaignDoc = await getDoc(campaignRef);
 
-    if (!campaignDoc.exists()) {
-      return { success: false, error: "Campaign not found" };
-    }
+    await runTransaction(db, async (transaction) => {
+      const campaignDoc = await transaction.get(campaignRef);
 
-    const campaign = campaignDoc.data();
-    const draft = campaign.draft || {};
-    const selectedLeaders = draft.selectedLeaders || {};
-    const matches = campaign.matches || [];
-
-    // Add player's selection
-    selectedLeaders[playerId] = leaderId;
-
-    const updateData = {
-      "draft.selectedLeaders": selectedLeaders,
-      updatedAt: new Date().toISOString(),
-    };
-
-    // Check if all players have selected
-    const allPlayersSelected =
-      campaign.members &&
-      campaign.members.every((memberId) => !!selectedLeaders[memberId]);
-
-    // If all players selected and there's an active match, link draft to match
-    if (allPlayersSelected && matches.length > 0) {
-      const currentMatch = matches[matches.length - 1];
-      if (
-        currentMatch &&
-        currentMatch.status === "in-progress" &&
-        !currentMatch.draftCompleted
-      ) {
-        const updatedMatches = matches.map((match) => {
-          if (match.id === currentMatch.id) {
-            const updatedParticipants = { ...match.participants };
-            const draftHistory = {};
-
-            // Save complete draft history for each player
-            Object.keys(selectedLeaders).forEach((userId) => {
-              if (updatedParticipants[userId]) {
-                updatedParticipants[userId].leaderId = selectedLeaders[userId];
-
-                // Extract this player's ban vote: { targetPlayerId, leaderId } or null
-                const rawVote = draft.banVotes?.[userId];
-                const banVoteCast =
-                  rawVote && Object.keys(rawVote).length > 0
-                    ? {
-                        targetPlayerId: Object.keys(rawVote)[0],
-                        leaderId: Object.values(rawVote)[0],
-                      }
-                    : null;
-
-                // Save draft history: all 5 leaders, which was banned, which was selected,
-                // and what ban vote this player cast (for future analytics)
-                draftHistory[userId] = {
-                  draftedLeaders: draft.playerDrafts?.[userId] || [],
-                  bannedLeader: draft.bannedLeaders?.[userId] || null,
-                  selectedLeader: selectedLeaders[userId],
-                  banVoteCast,
-                };
-              }
-            });
-
-            return {
-              ...match,
-              participants: updatedParticipants,
-              draftHistory,
-              // Full snapshot of all ban votes keyed by voterId for analytics
-              banVotesSnapshot: draft.banVotes || {},
-              draftCompleted: true,
-              startDate: new Date().toISOString(),
-            };
-          }
-          return match;
-        });
-
-        updateData.matches = updatedMatches;
+      if (!campaignDoc.exists()) {
+        throw new Error("Campaign not found");
       }
-    }
 
-    await updateDoc(campaignRef, updateData);
+      const campaign = campaignDoc.data();
+      const draft = campaign.draft || {};
+      const selectedLeaders = { ...(draft.selectedLeaders || {}) };
+      const matches = [...(campaign.matches || [])];
+
+      // Add player's selection
+      selectedLeaders[playerId] = leaderId;
+
+      const updateData = {
+        "draft.selectedLeaders": selectedLeaders,
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Check if all players have selected
+      const allPlayersSelected =
+        campaign.members &&
+        campaign.members.every((memberId) => !!selectedLeaders[memberId]);
+
+      // If all players selected and there's an active match, link draft to match
+      if (allPlayersSelected && matches.length > 0) {
+        const currentMatch = matches[matches.length - 1];
+        if (
+          currentMatch &&
+          currentMatch.status === "in-progress" &&
+          !currentMatch.draftCompleted
+        ) {
+          const updatedMatches = matches.map((match) => {
+            if (match.id === currentMatch.id) {
+              const updatedParticipants = { ...match.participants };
+              const draftHistory = {};
+
+              // Save complete draft history for each player
+              Object.keys(selectedLeaders).forEach((userId) => {
+                if (updatedParticipants[userId]) {
+                  updatedParticipants[userId].leaderId =
+                    selectedLeaders[userId];
+
+                  // Extract this player's ban vote: { targetPlayerId, leaderId } or null
+                  const rawVote = draft.banVotes?.[userId];
+                  const banVoteCast =
+                    rawVote && Object.keys(rawVote).length > 0
+                      ? {
+                          targetPlayerId: Object.keys(rawVote)[0],
+                          leaderId: Object.values(rawVote)[0],
+                        }
+                      : null;
+
+                  // Save draft history: all 5 leaders, which was banned, which was selected,
+                  // and what ban vote this player cast (for future analytics)
+                  draftHistory[userId] = {
+                    draftedLeaders: draft.playerDrafts?.[userId] || [],
+                    bannedLeader: draft.bannedLeaders?.[userId] || null,
+                    selectedLeader: selectedLeaders[userId],
+                    banVoteCast,
+                  };
+                }
+              });
+
+              return {
+                ...match,
+                participants: updatedParticipants,
+                draftHistory,
+                // Full snapshot of all ban votes keyed by voterId for analytics
+                banVotesSnapshot: draft.banVotes || {},
+                draftCompleted: true,
+                startDate: new Date().toISOString(),
+              };
+            }
+            return match;
+          });
+
+          updateData.matches = updatedMatches;
+        }
+      }
+
+      transaction.update(campaignRef, updateData);
+    });
 
     return { success: true, error: null };
   } catch (error) {

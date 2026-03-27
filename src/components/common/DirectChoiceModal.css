@@ -4,13 +4,21 @@
 
 /* ─── Search header (sticky sopra la lista, fuori dal body scrollabile) ─── */
 .dc-search-header {
-  padding: 1rem 1.5rem 0.75rem;
+  margin: 0 -1.5rem;
+  padding: 0.875rem 1.5rem 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   flex-shrink: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(18, 28, 40, 0.95);
+}
+
+@media (max-width: 767px) {
+  .dc-search-header {
+    margin: 0 -1rem;
+    padding: 0.875rem 1rem 0.75rem;
+  }
 }
 
 .dc-search-bar {
@@ -63,13 +71,13 @@
   color: rgba(255, 255, 255, 0.75);
 }
 
-/* ─── Lista leader scrollabile: il body ha altezza fissa così il modale non si restringe ─── */
+/* ─── Lista leader scrollabile ─── */
 .dc-leaders-body {
   flex: 1;
   height: 70vh;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 1.5rem;
+  padding: 0.875rem 0;
 }
 
 .dc-leaders-list {
@@ -130,26 +138,37 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.125rem;
   min-width: 0;
+  min-height: 52px;
 }
 
 .dc-leader-name {
   font-size: 1rem;
   font-weight: 600;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dc-leader-variant {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: rgba(212, 175, 55, 0.9);
   font-style: italic;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dc-leader-civ {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: rgba(150, 150, 150, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dc-taken-badge {

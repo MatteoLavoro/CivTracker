@@ -47,18 +47,15 @@ export function ChoiceMethodModal({
       setCountdown(5);
       return;
     }
-
-    const updateCountdown = () => {
-      const elapsed = Math.floor(
-        (Date.now() - new Date(countdownStartAt).getTime()) / 1000,
-      );
-      const remaining = Math.max(0, 5 - elapsed);
+    let rafId;
+    const startMs = new Date(countdownStartAt).getTime();
+    const tick = () => {
+      const remaining = Math.max(0, 5 - (Date.now() - startMs) / 1000);
       setCountdown(remaining);
+      if (remaining > 0) rafId = requestAnimationFrame(tick);
     };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 250);
-    return () => clearInterval(interval);
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, [isOpen, draftPhase, countdownStartAt]);
 
   // Auto-open the correct modal when countdown finishes (phase → active)
@@ -168,7 +165,7 @@ export function ChoiceMethodModal({
             }}
           >
             <div className="cmm-countdown-card">
-              <div className="cmm-countdown-number">{countdown}</div>
+              <div className="cmm-countdown-number">{Math.ceil(countdown)}</div>
               <span
                 className={`cmm-countdown-badge${countdownMethod === "direct" ? " direct" : ""}`}
               >

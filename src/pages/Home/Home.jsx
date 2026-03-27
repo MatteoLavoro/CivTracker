@@ -114,9 +114,7 @@ export function Home() {
       });
 
       if (photoURLs.length > 0) {
-        preloadImages(photoURLs).then(() => {
-          console.log(`Preloaded ${photoURLs.length} profile images`);
-        });
+        preloadImages(photoURLs);
       }
     }
   }, [campaigns]);
@@ -232,8 +230,6 @@ export function Home() {
     if (error) {
       console.error("Errore aggiornamento username:", error);
     } else {
-      console.log("Username aggiornato con successo:", newUsername);
-
       // Update member details in all campaigns
       await updateMemberDetailsInCampaigns(user.uid, {
         username: newUsername,

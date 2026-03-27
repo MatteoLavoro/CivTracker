@@ -38,7 +38,8 @@
 .leader-confirm-info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  align-items: center;
 }
 
 .leader-confirm-name {
@@ -49,10 +50,11 @@
 }
 
 .leader-confirm-variant {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: rgba(212, 175, 55, 0.9);
   font-style: italic;
+  margin: 0;
 }
 
 .leader-confirm-civ {

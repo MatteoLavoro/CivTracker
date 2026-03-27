@@ -80,6 +80,7 @@ export {
   activateDirectChoice,
   markPlayerSeenDraft,
   submitBanVote,
+  submitAllBanVotes,
   finalizeBans,
   voteResetDraft,
   resetDraft,

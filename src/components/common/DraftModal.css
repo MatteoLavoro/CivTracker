@@ -3,13 +3,12 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 50vh;
   max-height: 75vh;
 }
 
 /* Draft Modal Body */
 .draft-modal-body {
-  padding: 1.5rem;
+  padding: 1rem 0;
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
@@ -32,9 +31,10 @@
   line-height: 1.5;
 }
 
-/* Draft Modal Divider */
+/* Draft Modal Divider — extends to modal edges by cancelling modal-body padding */
 .draft-modal-divider {
   height: 1px;
+  margin: 0 -1.5rem;
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -44,9 +44,15 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 767px) {
+  .draft-modal-divider {
+    margin: 0 -1rem;
+  }
+}
+
 /* Draft Modal Footer */
 .draft-modal-footer {
-  padding: 1.5rem;
+  padding: 0.875rem 0;
   flex-shrink: 0;
 }
 
@@ -154,40 +160,58 @@
 /* Countdown Phase */
 .countdown-display {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   margin: 1.5rem 0;
-  padding: 2rem;
-  background: rgba(15, 50, 82, 0.15);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 12px;
 }
 
-.countdown-display svg {
-  color: rgba(212, 175, 55, 1);
-  animation: pulse 1.5s ease-in-out infinite;
+.countdown-ring-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.05);
-  }
+.countdown-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.countdown-ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 4;
+}
+
+.countdown-ring-fill {
+  fill: none;
+  stroke: rgba(212, 175, 55, 1);
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4));
+  transition: stroke-dashoffset 0.05s linear;
 }
 
 .countdown-number {
-  font-size: 3.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
   font-weight: 800;
   color: rgba(212, 175, 55, 1);
   text-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
   line-height: 1;
+}
+
+@media (max-width: 639px) {
+  .countdown-ring-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+  .countdown-number {
+    font-size: 2.5rem;
+  }
 }
 
 .countdown-ready-status {
@@ -233,6 +257,172 @@
 }
 
 /* Banning Phase */
+
+/* ── Step-by-step banning ─────────────────────────── */
+
+/* Progress header: step counter + dots */
+.ban-step-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ban-step-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.9);
+}
+
+.ban-step-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ban-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.ban-step-dot.completed {
+  background: rgba(212, 175, 55, 0.55);
+}
+
+.ban-step-dot.active {
+  width: 26px;
+  border-radius: 4px;
+  background: rgba(212, 175, 55, 1);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+}
+
+.ban-step-dot.completed.has-selection {
+  background: rgba(212, 175, 55, 0.8);
+}
+
+/* Target player header */
+.ban-target-player {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(212, 175, 55, 0.07);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 12px;
+}
+
+.ban-target-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ban-target-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(212, 175, 55, 1);
+}
+
+.ban-target-hint {
+  font-size: 0.8125rem;
+  color: rgba(180, 180, 180, 0.8);
+}
+
+/* Step footer — navigation buttons */
+.ban-step-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.875rem 0 0;
+  flex-shrink: 0;
+}
+
+.ban-prev-btn {
+  flex: 0 0 auto;
+  padding: 0.875rem 1.125rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.65);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.ban-prev-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ban-prev-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.ban-next-btn {
+  flex: 1;
+}
+
+/* Waiting: ban progress bar */
+.ban-wait-progress {
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ban-wait-count {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 0.9);
+}
+
+.ban-wait-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ban-wait-bar-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0.7),
+    rgba(212, 175, 55, 1)
+  );
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* Spinner inside button */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
 
 /* Container for all opponents shown simultaneously */
 .ban-all-targets {
@@ -345,29 +535,37 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.125rem;
+  min-width: 0;
+  min-height: 52px;
 }
 
 .ban-leader-name {
   font-size: 1rem;
   font-weight: 600;
   color: white;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ban-leader-variant {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: rgba(212, 175, 55, 0.9);
   font-style: italic;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ban-leader-civ {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: rgba(150, 150, 150, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ban-selected-indicator {
@@ -424,78 +622,242 @@
   border-color: rgba(212, 175, 55, 0.2);
 }
 
-/* Final Leader Selection */
-.final-leaders {
+/* ── Roulette Reveal ── */
+
+.reveal-progress {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin: 1rem 0 0 0;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-.final-leader-card {
+.reveal-progress-text {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.9);
+}
+
+.reveal-progress-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.reveal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.reveal-dot.done {
+  background: rgba(212, 175, 55, 0.8);
+}
+
+.reveal-dot.active {
+  width: 24px;
+  border-radius: 4px;
+  background: rgba(212, 175, 55, 1);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+}
+
+/* Leader card list */
+.reveal-leaders {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* Base card */
+.reveal-card {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: rgba(15, 50, 82, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
   border-radius: 12px;
-  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 50, 82, 0.15);
+  min-height: 76px;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    opacity 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.final-leader-card:hover {
+/* Mystery / unrevealed card */
+.reveal-card.mystery {
+  border: 1px dashed rgba(212, 175, 55, 0.15);
+  background: rgba(15, 50, 82, 0.06);
+  justify-content: center;
+  animation: mysteryPulse 2.5s ease-in-out infinite;
+}
+
+.mystery-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mystery-mark {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: rgba(212, 175, 55, 0.2);
+  user-select: none;
+}
+
+@keyframes mysteryPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Shuffling card (slot-machine effect) */
+.reveal-card.shuffling {
+  border-color: rgba(212, 175, 55, 0.4);
+  background: rgba(15, 50, 82, 0.25);
+  animation: slotGlow 0.12s ease-in-out infinite alternate;
+}
+
+.reveal-card.shuffling .reveal-leader-info {
+  opacity: 0.7;
+}
+
+@keyframes slotGlow {
+  from {
+    box-shadow:
+      inset 0 0 15px rgba(212, 175, 55, 0.06),
+      0 0 12px rgba(212, 175, 55, 0.12);
+  }
+  to {
+    box-shadow:
+      inset 0 0 15px rgba(212, 175, 55, 0.12),
+      0 0 24px rgba(212, 175, 55, 0.25);
+  }
+}
+
+/* Just-revealed card (golden flash) */
+.reveal-card.just-revealed {
+  animation: revealFlash 0.55s ease-out forwards;
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+@keyframes revealFlash {
+  0% {
+    transform: scale(1.025);
+    box-shadow: 0 0 28px rgba(212, 175, 55, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Ban-revealed card (dim + red flash) */
+.reveal-card.banned {
+  animation: banDim 0.4s ease-out forwards;
+}
+
+@keyframes banDim {
+  0% {
+    opacity: 1;
+    border-color: rgba(180, 60, 60, 0.6);
+    box-shadow: 0 0 20px rgba(180, 60, 60, 0.25);
+  }
+  100% {
+    opacity: 0.55;
+    border-color: rgba(120, 120, 120, 0.3);
+    box-shadow: none;
+  }
+}
+
+/* Choosable (final interactive state) */
+.reveal-card.choosable {
+  cursor: default;
+}
+
+.reveal-card.choosable:not(.banned):hover {
   background: rgba(15, 50, 82, 0.25);
   border-color: rgba(212, 175, 55, 0.3);
 }
 
-.final-leader-card.banned {
-  opacity: 0.6;
-  cursor: default;
+.reveal-card.choosable .leader-tag {
+  animation: tagFadeIn 0.3s ease-out;
 }
 
-.final-leader-icon {
-  width: 60px;
-  height: 60px;
+@keyframes tagFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Card contents */
+.reveal-leader-icon {
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
 }
 
-.final-civ-icon {
-  width: 35px;
-  height: 35px;
+.reveal-civ-icon {
+  width: 34px;
+  height: 34px;
   border-radius: 6px;
   object-fit: cover;
   border: 2px solid rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
 }
 
-.final-leader-info {
+.reveal-leader-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.125rem;
+  min-width: 0;
+  min-height: 52px;
 }
 
-.final-leader-name {
+.reveal-leader-name {
   font-size: 1rem;
   font-weight: 600;
   color: white;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.final-leader-variant {
-  font-size: 0.875rem;
+.reveal-leader-variant {
+  font-size: 0.8125rem;
   color: rgba(212, 175, 55, 0.9);
   font-style: italic;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.final-leader-civ {
-  font-size: 0.875rem;
+.reveal-leader-civ {
+  font-size: 0.8125rem;
   color: rgba(150, 150, 150, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Leader Tags */
@@ -761,14 +1123,14 @@
   }
 
   .ban-leader-icon,
-  .final-leader-icon,
+  .reveal-leader-icon,
   .result-leader-icon {
     width: 50px;
     height: 50px;
   }
 
   .ban-civ-icon,
-  .final-civ-icon,
+  .reveal-civ-icon,
   .result-civ-icon {
     width: 30px;
     height: 30px;

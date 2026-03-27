@@ -49,15 +49,10 @@ export function LeaderConfirmModal({ isOpen, onClose, onConfirm, leader }) {
         </div>
 
         <div className="leader-confirm-info">
-          <h3 className="leader-confirm-name">
-            {leader.name}
-            {leader.variant && (
-              <span className="leader-confirm-variant">
-                {" "}
-                - {leader.variant}
-              </span>
-            )}
-          </h3>
+          <h3 className="leader-confirm-name">{leader.name}</h3>
+          {leader.variant && (
+            <p className="leader-confirm-variant">{leader.variant}</p>
+          )}
           <p className="leader-confirm-civ">{leader.civilization}</p>
         </div>
 
