@@ -37,6 +37,7 @@ const SORT_OPTIONS = [
   { value: "alpha", label: "Alfabetico" },
   { value: "members", label: "Numero membri" },
   { value: "lastAccess", label: "Ultimo accesso" },
+  { value: "created", label: "Data creazione" },
 ];
 
 /**
@@ -375,6 +376,12 @@ export function Home() {
             const bTime = lastAccessMap[b.id] || 0;
             return bTime - aTime;
           });
+        case "created":
+          return sorted.sort((a, b) => {
+            const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return bTime - aTime;
+          });
         default: // "alpha"
           return sorted.sort((a, b) => a.name.localeCompare(b.name));
       }
@@ -451,7 +458,6 @@ export function Home() {
 
         {/* Ranking Section */}
         <div className="campaign-members">
-          <div className="campaign-members-label">Classifica</div>
           <div className="campaign-members-list">
             {rankedPlayers.map((player, index) => (
               <div key={player.memberId} className="campaign-member">
@@ -511,172 +517,174 @@ export function Home() {
 
   return (
     <div className="home-page">
-      <div className="home-container">
-        <header className="home-header">
+      {/* Sticky full-width header */}
+      <header className="home-header">
+        <div className="home-header-inner">
           <div className="home-logo">
             <h1>CivTracker</h1>
           </div>
-          <button
-            className="profile-avatar-btn"
-            onClick={() => setProfileModalOpen(true)}
-            aria-label="Apri profilo"
-            type="button"
-          >
-            <Avatar
-              photoURL={user?.photoURL}
-              displayName={user?.displayName}
-              email={user?.email}
-              size={48}
-            />
-          </button>
-        </header>
+          <div className="home-header-actions">
+            <button
+              className="header-action-btn header-action-btn--join"
+              type="button"
+              onClick={() => setJoinCampaignModalOpen(true)}
+              aria-label="Unisciti ad una campagna"
+            >
+              <UserPlus size={20} />
+              <span>Unisciti</span>
+            </button>
+            <button
+              className="header-action-btn header-action-btn--create"
+              type="button"
+              onClick={() => setCreateCampaignModalOpen(true)}
+              aria-label="Nuova campagna"
+            >
+              <Plus size={20} />
+              <span>Crea</span>
+            </button>
+            <button
+              className="profile-avatar-btn"
+              onClick={() => setProfileModalOpen(true)}
+              aria-label="Apri profilo"
+              type="button"
+            >
+              <Avatar
+                photoURL={user?.photoURL}
+                displayName={user?.displayName}
+                email={user?.email}
+                size={48}
+              />
+            </button>
+          </div>
+        </div>
+      </header>
 
-        <main className="home-content">
-          <div className="home-sections">
-            {/* ── Preferiti ── */}
-            {favoriteCampaigns.length > 0 && (
-              <div className="section-block">
-                <div className="section-divider">
-                  <div className="section-divider-line" />
-                  <button
-                    className="section-label-pill"
-                    type="button"
-                    onClick={toggleFavorites}
-                    aria-expanded={favoritesExpanded}
-                    aria-label={`${favoritesExpanded ? "Comprimi" : "Espandi"} Preferiti`}
-                  >
-                    <Star size={13} />
-                    <span>Preferiti</span>
-                    <ChevronDown
-                      size={12}
-                      className={`section-chevron ${favoritesExpanded ? "expanded" : ""}`}
-                    />
-                  </button>
-                  <div className="section-divider-line" />
-                </div>
-                <div
-                  className={`section-content ${favoritesExpanded ? "" : "collapsed"}`}
-                >
-                  <div className="campaigns-grid">
-                    {favoriteCampaigns.map(renderCampaignCard)}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ── Recenti ── */}
-            {recentCampaignsFiltered.length > 0 && (
-              <div className="section-block">
-                <div className="section-divider">
-                  <div className="section-divider-line" />
-                  <button
-                    className="section-label-pill"
-                    type="button"
-                    onClick={toggleRecents}
-                    aria-expanded={recentsExpanded}
-                    aria-label={`${recentsExpanded ? "Comprimi" : "Espandi"} Recenti`}
-                  >
-                    <Clock size={13} />
-                    <span>Recenti</span>
-                    <ChevronDown
-                      size={12}
-                      className={`section-chevron ${recentsExpanded ? "expanded" : ""}`}
-                    />
-                  </button>
-                  <div className="section-divider-line" />
-                </div>
-                <div
-                  className={`section-content ${recentsExpanded ? "" : "collapsed"}`}
-                >
-                  <div className="campaigns-grid">
-                    {recentCampaignsFiltered.map(renderCampaignCard)}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ── Tutte ── */}
-            <div className="section-block">
-              <div className="section-divider">
-                <div className="section-divider-line" />
-                <div className="section-label-area">
-                  <LayoutGrid size={13} />
-                  <span>Tutte</span>
-                  <div className="section-sort-sep" />
-                  <div className="section-sort-wrapper" ref={sortMenuRef}>
+      {/* Scrollable area */}
+      <div className="home-scroll">
+        <div className="home-container">
+          <main className="home-content">
+            <div className="home-sections">
+              {/* ── Preferiti ── */}
+              {favoriteCampaigns.length > 0 && (
+                <div className="section-block">
+                  <div className="section-divider">
+                    <div className="section-divider-line" />
                     <button
-                      className="section-sort-inline-btn"
+                      className="section-label-pill"
                       type="button"
-                      onClick={() => setSortMenuOpen((v) => !v)}
-                      aria-label="Ordina campagne"
+                      onClick={toggleFavorites}
+                      aria-expanded={favoritesExpanded}
+                      aria-label={`${favoritesExpanded ? "Comprimi" : "Espandi"} Preferiti`}
                     >
-                      <ArrowUpDown size={11} />
-                      <span>
-                        {SORT_OPTIONS.find((o) => o.value === sortType)?.label}
-                      </span>
+                      <Star size={13} />
+                      <span>Preferiti</span>
                       <ChevronDown
-                        size={11}
-                        className={`sort-chevron ${sortMenuOpen ? "open" : ""}`}
+                        size={12}
+                        className={`section-chevron ${favoritesExpanded ? "expanded" : ""}`}
                       />
                     </button>
-                    {sortMenuOpen && (
-                      <div className="section-sort-dropdown">
-                        {SORT_OPTIONS.map((opt) => (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            className={`sort-option ${sortType === opt.value ? "active" : ""}`}
-                            onClick={() => {
-                              setSortType(opt.value);
-                              setSortMenuOpen(false);
-                            }}
-                          >
-                            {opt.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                    <div className="section-divider-line" />
+                  </div>
+                  <div
+                    className={`section-content ${favoritesExpanded ? "" : "collapsed"}`}
+                  >
+                    <div className="campaigns-grid">
+                      {favoriteCampaigns.map(renderCampaignCard)}
+                    </div>
                   </div>
                 </div>
-                <div className="section-divider-line" />
-              </div>
-              <div className="campaigns-grid">
-                {allCampaignsSorted.map(renderCampaignCard)}
+              )}
 
-                {/* Add Campaign Card – Combined Join and Create */}
-                <div className="campaign-add-container">
-                  {/* Join Campaign Section (2/3) */}
-                  <button
-                    className="campaign-join-btn"
-                    type="button"
-                    onClick={() => setJoinCampaignModalOpen(true)}
-                    aria-label="Unisciti ad una campagna"
+              {/* ── Recenti ── */}
+              {recentCampaignsFiltered.length > 0 && (
+                <div className="section-block">
+                  <div className="section-divider">
+                    <div className="section-divider-line" />
+                    <button
+                      className="section-label-pill"
+                      type="button"
+                      onClick={toggleRecents}
+                      aria-expanded={recentsExpanded}
+                      aria-label={`${recentsExpanded ? "Comprimi" : "Espandi"} Recenti`}
+                    >
+                      <Clock size={13} />
+                      <span>Recenti</span>
+                      <ChevronDown
+                        size={12}
+                        className={`section-chevron ${recentsExpanded ? "expanded" : ""}`}
+                      />
+                    </button>
+                    <div className="section-divider-line" />
+                  </div>
+                  <div
+                    className={`section-content ${recentsExpanded ? "" : "collapsed"}`}
                   >
-                    <UserPlus size={38} className="campaign-join-icon" />
-                    <span className="campaign-join-text">
-                      Unisciti ad una Campagna
-                    </span>
-                  </button>
+                    <div className="campaigns-grid">
+                      {recentCampaignsFiltered.map(renderCampaignCard)}
+                    </div>
+                  </div>
+                </div>
+              )}
 
-                  {/* Create Campaign Section (1/3) */}
-                  <button
-                    className="campaign-create-btn"
-                    type="button"
-                    onClick={() => setCreateCampaignModalOpen(true)}
-                    aria-label="Nuova campagna"
-                  >
-                    <Plus size={28} className="campaign-create-icon" />
-                    <span className="campaign-create-text">Nuova Campagna</span>
-                  </button>
+              {/* ── Tutte ── */}
+              <div className="section-block">
+                <div className="section-divider">
+                  <div className="section-divider-line" />
+                  <div className="section-label-area">
+                    <LayoutGrid size={13} />
+                    <span>Tutte</span>
+                    <div className="section-sort-sep" />
+                    <div className="section-sort-wrapper" ref={sortMenuRef}>
+                      <button
+                        className="section-sort-inline-btn"
+                        type="button"
+                        onClick={() => setSortMenuOpen((v) => !v)}
+                        aria-label="Ordina campagne"
+                      >
+                        <ArrowUpDown size={11} />
+                        <span>
+                          {
+                            SORT_OPTIONS.find((o) => o.value === sortType)
+                              ?.label
+                          }
+                        </span>
+                        <ChevronDown
+                          size={11}
+                          className={`sort-chevron ${sortMenuOpen ? "open" : ""}`}
+                        />
+                      </button>
+                      {sortMenuOpen && (
+                        <div className="section-sort-dropdown">
+                          {SORT_OPTIONS.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              className={`sort-option ${sortType === opt.value ? "active" : ""}`}
+                              onClick={() => {
+                                setSortType(opt.value);
+                                setSortMenuOpen(false);
+                              }}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="section-divider-line" />
+                </div>
+                <div className="campaigns-grid">
+                  {allCampaignsSorted.map(renderCampaignCard)}
                 </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
 
-        <footer className="home-footer">
-          <p>© 2026 CivTracker. Tutti i diritti riservati.</p>
-        </footer>
+          <footer className="home-footer">
+            <p>© 2026 CivTracker. Tutti i diritti riservati.</p>
+          </footer>
+        </div>
       </div>
 
       {/* Create Campaign Modal */}
