@@ -1,7 +1,17 @@
 // Home Page - Campaign Management
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Info, UserPlus, Trophy, Star } from "lucide-react";
+import {
+  Plus,
+  Info,
+  UserPlus,
+  Trophy,
+  Star,
+  Clock,
+  LayoutGrid,
+  ChevronDown,
+  ArrowUpDown,
+} from "lucide-react";
 import { useAuthContext } from "../../contexts";
 import { useCollection } from "../../hooks";
 import {
@@ -23,6 +33,12 @@ import {
 import { preloadImages } from "../../utils/imagePreloader";
 import "./Home.css";
 
+const SORT_OPTIONS = [
+  { value: "alpha", label: "Alfabetico" },
+  { value: "members", label: "Numero membri" },
+  { value: "lastAccess", label: "Ultimo accesso" },
+];
+
 /**
  * Home Page
  * Main dashboard for managing campaigns
@@ -37,6 +53,19 @@ export function Home() {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
+
+  // Recent campaign IDs, localStorage-backed (most recent first)
+  const [recentCampaignIds, setRecentCampaignIds] = useState([]);
+  // Last access timestamps { campaignId: timestamp }
+  const [lastAccessMap, setLastAccessMap] = useState({});
+  // Sort type for "Tutte" section
+  const [sortType, setSortType] = useState("alpha");
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  const sortMenuRef = useRef(null);
+
+  // Collapse state for collapsible sections (default expanded)
+  const [favoritesExpanded, setFavoritesExpanded] = useState(true);
+  const [recentsExpanded, setRecentsExpanded] = useState(true);
 
   // Calculate player rankings for a campaign
   const calculatePlayerRankings = (campaign) => {
@@ -119,6 +148,74 @@ export function Home() {
     }
   }, [campaigns]);
 
+  // Load recents and last access from localStorage on mount
+  useEffect(() => {
+    if (!user?.uid) return;
+    try {
+      const storedRecents = localStorage.getItem(
+        `civtracker_recent_${user.uid}`,
+      );
+      if (storedRecents) setRecentCampaignIds(JSON.parse(storedRecents));
+      const storedAccess = localStorage.getItem(
+        `civtracker_last_access_${user.uid}`,
+      );
+      if (storedAccess) setLastAccessMap(JSON.parse(storedAccess));
+      const storedFavExp = localStorage.getItem(
+        `civtracker_sect_fav_${user.uid}`,
+      );
+      if (storedFavExp !== null) setFavoritesExpanded(JSON.parse(storedFavExp));
+      const storedRecExp = localStorage.getItem(
+        `civtracker_sect_rec_${user.uid}`,
+      );
+      if (storedRecExp !== null) setRecentsExpanded(JSON.parse(storedRecExp));
+    } catch {
+      // ignore parse errors
+    }
+  }, [user?.uid]);
+
+  // Close sort dropdown on outside click
+  useEffect(() => {
+    if (!sortMenuOpen) return;
+    const handleOutsideClick = (e) => {
+      if (sortMenuRef.current && !sortMenuRef.current.contains(e.target)) {
+        setSortMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [sortMenuOpen]);
+
+  const handleNavigateToCampaign = useCallback(
+    (campaignId) => {
+      if (!user?.uid) return;
+      const now = Date.now();
+
+      setLastAccessMap((prev) => {
+        const next = { ...prev, [campaignId]: now };
+        localStorage.setItem(
+          `civtracker_last_access_${user.uid}`,
+          JSON.stringify(next),
+        );
+        return next;
+      });
+
+      setRecentCampaignIds((prev) => {
+        const next = [
+          campaignId,
+          ...prev.filter((id) => id !== campaignId),
+        ].slice(0, 5);
+        localStorage.setItem(
+          `civtracker_recent_${user.uid}`,
+          JSON.stringify(next),
+        );
+        return next;
+      });
+
+      navigate(`/campaign/${campaignId}`);
+    },
+    [user, navigate],
+  );
+
   const handleLogout = async () => {
     await logOut();
     navigate("/");
@@ -142,6 +239,8 @@ export function Home() {
     if (error) {
       console.error("Errore creazione campagna:", error);
       alert("Errore nella creazione della campagna. Riprova.");
+    } else {
+      handleNavigateToCampaign(campaign.id);
     }
   };
 
@@ -163,6 +262,8 @@ export function Home() {
     if (error) {
       console.error("Errore unione campagna:", error);
       alert(error);
+    } else {
+      handleNavigateToCampaign(campaign.id);
     }
   };
 
@@ -238,7 +339,166 @@ export function Home() {
     }
   };
 
+  const toggleFavorites = () => {
+    setFavoritesExpanded((v) => {
+      const next = !v;
+      localStorage.setItem(
+        `civtracker_sect_fav_${user?.uid}`,
+        JSON.stringify(next),
+      );
+      return next;
+    });
+  };
+
+  const toggleRecents = () => {
+    setRecentsExpanded((v) => {
+      const next = !v;
+      localStorage.setItem(
+        `civtracker_sect_rec_${user?.uid}`,
+        JSON.stringify(next),
+      );
+      return next;
+    });
+  };
+
+  const sortCampaigns = useCallback(
+    (camps) => {
+      const sorted = [...camps];
+      switch (sortType) {
+        case "members":
+          return sorted.sort(
+            (a, b) => (b.members?.length || 0) - (a.members?.length || 0),
+          );
+        case "lastAccess":
+          return sorted.sort((a, b) => {
+            const aTime = lastAccessMap[a.id] || 0;
+            const bTime = lastAccessMap[b.id] || 0;
+            return bTime - aTime;
+          });
+        default: // "alpha"
+          return sorted.sort((a, b) => a.name.localeCompare(b.name));
+      }
+    },
+    [sortType, lastAccessMap],
+  );
+
+  // Campaign sections
+  const favoriteCampaigns = campaigns.filter((c) =>
+    (c.importantFor || []).includes(user?.uid),
+  );
+  const recentCampaignsFiltered = recentCampaignIds
+    .map((id) => campaigns.find((c) => c.id === id))
+    .filter(Boolean)
+    .slice(0, 5);
+  const allCampaignsSorted = sortCampaigns(campaigns);
+
   const loading = authLoading || campaignsLoading;
+
+  // Renders a single campaign card (reused across all sections)
+  const renderCampaignCard = (campaign) => {
+    const rankedPlayers = calculatePlayerRankings(campaign);
+    const completedMatchCount = (campaign.matches || []).filter(
+      (m) => m.status === "completed",
+    ).length;
+    const isImportantForMe = (campaign.importantFor || []).includes(user?.uid);
+    const matches = Array.isArray(campaign.matches) ? campaign.matches : [];
+    const currentMatch =
+      matches.length > 0 ? matches[matches.length - 1] : null;
+    const draft = campaign.draft || {};
+    const isDraftInProgress =
+      currentMatch &&
+      currentMatch.status === "in-progress" &&
+      !currentMatch.draftCompleted &&
+      (draft.phase !== "waiting" ||
+        (draft.readyPlayers && draft.readyPlayers.length > 0));
+
+    return (
+      <div
+        key={campaign.id}
+        className={`campaign-card ${isDraftInProgress ? "blinking" : ""}`}
+        role="button"
+        tabIndex={0}
+        onClick={() => handleNavigateToCampaign(campaign.id)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleNavigateToCampaign(campaign.id);
+          }
+        }}
+      >
+        {/* Header Section */}
+        <div className="campaign-card-header">
+          <h3 className="campaign-card-title">{campaign.name}</h3>
+          <div className="campaign-card-actions">
+            <button
+              className={`campaign-card-star-btn ${isImportantForMe ? "active" : ""}`}
+              type="button"
+              onClick={(e) => handleToggleImportant(campaign, e)}
+              aria-label="Segna come importante"
+            >
+              <Star size={16} />
+            </button>
+            <button
+              className="campaign-card-info-btn"
+              type="button"
+              onClick={(e) => handleCampaignInfo(campaign, e)}
+              aria-label="Informazioni campagna"
+            >
+              <Info size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Ranking Section */}
+        <div className="campaign-members">
+          <div className="campaign-members-label">Classifica</div>
+          <div className="campaign-members-list">
+            {rankedPlayers.map((player, index) => (
+              <div key={player.memberId} className="campaign-member">
+                <div
+                  className={`campaign-member-rank ${
+                    player.hasMatches && index === 0 ? "trophy" : ""
+                  }`}
+                >
+                  {player.hasMatches ? (
+                    index === 0 ? (
+                      <Trophy size={16} />
+                    ) : (
+                      `${index + 1}`
+                    )
+                  ) : (
+                    "-"
+                  )}
+                </div>
+                <span className="campaign-member-divider">|</span>
+                <Avatar
+                  photoURL={campaign.memberDetails[player.memberId]?.photoURL}
+                  displayName={player.username}
+                  email={null}
+                  size={32}
+                  className="campaign-member-avatar"
+                />
+                <span className="campaign-member-name">{player.username}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stats Section */}
+        <div className="campaign-stats">
+          <div className="campaign-stats-placeholder">
+            {completedMatchCount === 0
+              ? "Nessuna partita completata"
+              : `${completedMatchCount} ${
+                  completedMatchCount === 1
+                    ? "partita completata"
+                    : "partite completate"
+                }`}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   if (loading) {
     return (
@@ -272,163 +532,144 @@ export function Home() {
         </header>
 
         <main className="home-content">
-          <div className="campaigns-grid">
-            {/* Render existing campaigns */}
-            {campaigns
-              .sort((a, b) => {
-                // Sort by important status first (true before false) for current user
-                const aImportant = (a.importantFor || []).includes(user.uid);
-                const bImportant = (b.importantFor || []).includes(user.uid);
-
-                if (aImportant && !bImportant) return -1;
-                if (!aImportant && bImportant) return 1;
-                // Then by name alphabetically
-                return a.name.localeCompare(b.name);
-              })
-              .map((campaign) => {
-                const rankedPlayers = calculatePlayerRankings(campaign);
-                const completedMatchCount = (campaign.matches || []).filter(
-                  (m) => m.status === "completed",
-                ).length;
-
-                // Check if this campaign is marked as important by current user
-                const isImportantForMe = (campaign.importantFor || []).includes(
-                  user.uid,
-                );
-
-                // Check if draft is in progress
-                const matches = Array.isArray(campaign.matches)
-                  ? campaign.matches
-                  : [];
-                const currentMatch =
-                  matches.length > 0 ? matches[matches.length - 1] : null;
-                const draft = campaign.draft || {};
-                const isDraftInProgress =
-                  currentMatch &&
-                  currentMatch.status === "in-progress" &&
-                  !currentMatch.draftCompleted &&
-                  (draft.phase !== "waiting" ||
-                    (draft.readyPlayers && draft.readyPlayers.length > 0));
-
-                return (
-                  <div
-                    key={campaign.id}
-                    className={`campaign-card ${isDraftInProgress ? "blinking" : ""}`}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigate(`/campaign/${campaign.id}`)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        navigate(`/campaign/${campaign.id}`);
-                      }
-                    }}
+          <div className="home-sections">
+            {/* ── Preferiti ── */}
+            {favoriteCampaigns.length > 0 && (
+              <div className="section-block">
+                <div className="section-divider">
+                  <div className="section-divider-line" />
+                  <button
+                    className="section-label-pill"
+                    type="button"
+                    onClick={toggleFavorites}
+                    aria-expanded={favoritesExpanded}
+                    aria-label={`${favoritesExpanded ? "Comprimi" : "Espandi"} Preferiti`}
                   >
-                    {/* Header Section */}
-                    <div className="campaign-card-header">
-                      <h3 className="campaign-card-title">{campaign.name}</h3>
-                      <div className="campaign-card-actions">
-                        <button
-                          className={`campaign-card-star-btn ${
-                            isImportantForMe ? "active" : ""
-                          }`}
-                          type="button"
-                          onClick={(e) => handleToggleImportant(campaign, e)}
-                          aria-label="Segna come importante"
-                        >
-                          <Star size={16} />
-                        </button>
-                        <button
-                          className="campaign-card-info-btn"
-                          type="button"
-                          onClick={(e) => handleCampaignInfo(campaign, e)}
-                          aria-label="Informazioni campagna"
-                        >
-                          <Info size={16} />
-                        </button>
-                      </div>
-                    </div>
+                    <Star size={13} />
+                    <span>Preferiti</span>
+                    <ChevronDown
+                      size={12}
+                      className={`section-chevron ${favoritesExpanded ? "expanded" : ""}`}
+                    />
+                  </button>
+                  <div className="section-divider-line" />
+                </div>
+                <div
+                  className={`section-content ${favoritesExpanded ? "" : "collapsed"}`}
+                >
+                  <div className="campaigns-grid">
+                    {favoriteCampaigns.map(renderCampaignCard)}
+                  </div>
+                </div>
+              </div>
+            )}
 
-                    {/* Ranking Section */}
-                    <div className="campaign-members">
-                      <div className="campaign-members-label">Classifica</div>
-                      <div className="campaign-members-list">
-                        {rankedPlayers.map((player, index) => (
-                          <div
-                            key={player.memberId}
-                            className="campaign-member"
+            {/* ── Recenti ── */}
+            {recentCampaignsFiltered.length > 0 && (
+              <div className="section-block">
+                <div className="section-divider">
+                  <div className="section-divider-line" />
+                  <button
+                    className="section-label-pill"
+                    type="button"
+                    onClick={toggleRecents}
+                    aria-expanded={recentsExpanded}
+                    aria-label={`${recentsExpanded ? "Comprimi" : "Espandi"} Recenti`}
+                  >
+                    <Clock size={13} />
+                    <span>Recenti</span>
+                    <ChevronDown
+                      size={12}
+                      className={`section-chevron ${recentsExpanded ? "expanded" : ""}`}
+                    />
+                  </button>
+                  <div className="section-divider-line" />
+                </div>
+                <div
+                  className={`section-content ${recentsExpanded ? "" : "collapsed"}`}
+                >
+                  <div className="campaigns-grid">
+                    {recentCampaignsFiltered.map(renderCampaignCard)}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── Tutte ── */}
+            <div className="section-block">
+              <div className="section-divider">
+                <div className="section-divider-line" />
+                <div className="section-label-area">
+                  <LayoutGrid size={13} />
+                  <span>Tutte</span>
+                  <div className="section-sort-sep" />
+                  <div className="section-sort-wrapper" ref={sortMenuRef}>
+                    <button
+                      className="section-sort-inline-btn"
+                      type="button"
+                      onClick={() => setSortMenuOpen((v) => !v)}
+                      aria-label="Ordina campagne"
+                    >
+                      <ArrowUpDown size={11} />
+                      <span>
+                        {SORT_OPTIONS.find((o) => o.value === sortType)?.label}
+                      </span>
+                      <ChevronDown
+                        size={11}
+                        className={`sort-chevron ${sortMenuOpen ? "open" : ""}`}
+                      />
+                    </button>
+                    {sortMenuOpen && (
+                      <div className="section-sort-dropdown">
+                        {SORT_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            className={`sort-option ${sortType === opt.value ? "active" : ""}`}
+                            onClick={() => {
+                              setSortType(opt.value);
+                              setSortMenuOpen(false);
+                            }}
                           >
-                            <div
-                              className={`campaign-member-rank ${
-                                player.hasMatches && index === 0 ? "trophy" : ""
-                              }`}
-                            >
-                              {player.hasMatches ? (
-                                index === 0 ? (
-                                  <Trophy size={16} />
-                                ) : (
-                                  `${index + 1}`
-                                )
-                              ) : (
-                                "-"
-                              )}
-                            </div>
-                            <span className="campaign-member-divider">|</span>
-                            <Avatar
-                              photoURL={
-                                campaign.memberDetails[player.memberId]
-                                  ?.photoURL
-                              }
-                              displayName={player.username}
-                              email={null}
-                              size={32}
-                              className="campaign-member-avatar"
-                            />
-                            <span className="campaign-member-name">
-                              {player.username}
-                            </span>
-                          </div>
+                            {opt.label}
+                          </button>
                         ))}
                       </div>
-                    </div>
-
-                    {/* Stats Section */}
-                    <div className="campaign-stats">
-                      <div className="campaign-stats-placeholder">
-                        {completedMatchCount === 0
-                          ? "Nessuna partita completata"
-                          : `${completedMatchCount} ${completedMatchCount === 1 ? "partita completata" : "partite completate"}`}
-                      </div>
-                    </div>
+                    )}
                   </div>
-                );
-              })}
+                </div>
+                <div className="section-divider-line" />
+              </div>
+              <div className="campaigns-grid">
+                {allCampaignsSorted.map(renderCampaignCard)}
 
-            {/* Add Campaign Card - Combined Join and Create */}
-            <div className="campaign-add-container">
-              {/* Join Campaign Section (2/3) */}
-              <button
-                className="campaign-join-btn"
-                type="button"
-                onClick={() => setJoinCampaignModalOpen(true)}
-                aria-label="Unisciti ad una campagna"
-              >
-                <UserPlus size={38} className="campaign-join-icon" />
-                <span className="campaign-join-text">
-                  Unisciti ad una Campagna
-                </span>
-              </button>
+                {/* Add Campaign Card – Combined Join and Create */}
+                <div className="campaign-add-container">
+                  {/* Join Campaign Section (2/3) */}
+                  <button
+                    className="campaign-join-btn"
+                    type="button"
+                    onClick={() => setJoinCampaignModalOpen(true)}
+                    aria-label="Unisciti ad una campagna"
+                  >
+                    <UserPlus size={38} className="campaign-join-icon" />
+                    <span className="campaign-join-text">
+                      Unisciti ad una Campagna
+                    </span>
+                  </button>
 
-              {/* Create Campaign Section (1/3) */}
-              <button
-                className="campaign-create-btn"
-                type="button"
-                onClick={() => setCreateCampaignModalOpen(true)}
-                aria-label="Nuova campagna"
-              >
-                <Plus size={28} className="campaign-create-icon" />
-                <span className="campaign-create-text">Nuova Campagna</span>
-              </button>
+                  {/* Create Campaign Section (1/3) */}
+                  <button
+                    className="campaign-create-btn"
+                    type="button"
+                    onClick={() => setCreateCampaignModalOpen(true)}
+                    aria-label="Nuova campagna"
+                  >
+                    <Plus size={28} className="campaign-create-icon" />
+                    <span className="campaign-create-text">Nuova Campagna</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </main>
