@@ -308,6 +308,30 @@
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.95));
 }
 
+/* Vertical position indicator shown between cards during drag */
+.tier-drop-indicator {
+  width: 3px;
+  min-height: 54px;
+  align-self: stretch;
+  background: rgba(212, 175, 55, 0.9);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+  flex-shrink: 0;
+  pointer-events: none;
+  animation: indicator-appear 0.12s ease-out;
+}
+
+@keyframes indicator-appear {
+  from {
+    opacity: 0;
+    transform: scaleY(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
 /* Drop zone within each tier row */
 .tier-drop-zone {
   flex: 1;
@@ -346,6 +370,39 @@
     transform 0.15s ease,
     opacity 0.15s ease;
   user-select: none;
+  position: relative; /* required for drop-indicator pseudo-elements */
+}
+
+/* Drop position indicators — use pseudo-elements so no layout shift occurs */
+.tierlist-card.drop-before::before,
+.tierlist-card.drop-after::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  background: rgba(212, 175, 55, 0.9);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+  z-index: 5;
+  pointer-events: none;
+  animation: tl-indicator 0.08s ease-out;
+}
+
+.tierlist-card.drop-before::before {
+  left: -4px;
+}
+.tierlist-card.drop-after::after {
+  right: -4px;
+}
+
+@keyframes tl-indicator {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .tierlist-card:hover {

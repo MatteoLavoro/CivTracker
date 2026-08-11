@@ -115,7 +115,15 @@ function AbilityList({ abilities }) {
   ));
 }
 
-function LeaderCard({ leader, tierId, isDragging, onDragStart }) {
+function LeaderCard({
+  leader,
+  tierId,
+  index,
+  isDragging,
+  onDragStart,
+  onDragOverCard,
+  dropIndicator,
+}) {
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const tooltipRef = useRef(null);
@@ -151,9 +159,18 @@ function LeaderCard({ leader, tierId, isDragging, onDragStart }) {
   return (
     <>
       <div
-        className={`tierlist-card${isDragging ? " dragging" : ""}`}
+        className={`tierlist-card${isDragging ? " dragging" : ""}${dropIndicator === "before" ? " drop-before" : ""}${dropIndicator === "after" ? " drop-after" : ""}`}
         draggable
         onDragStart={(e) => onDragStart(e, leader.id, tierId)}
+        onDragOver={(e) => {
+          if (!onDragOverCard) return;
+          e.preventDefault();
+          // No stopPropagation: tier-drop-zone checks e.target===e.currentTarget to avoid override
+          const rect = e.currentTarget.getBoundingClientRect();
+          const insertIndex =
+            e.clientX < rect.left + rect.width / 2 ? index : index + 1;
+          onDragOverCard(tierId, insertIndex);
+        }}
         onMouseEnter={(e) => {
           if (isDragging) return;
           cursorRef.current = { x: e.clientX, y: e.clientY };
@@ -247,8 +264,10 @@ export function TierList() {
   const [localTiers, setLocalTiers] = useState(null);
   const [tierMeta, setTierMeta] = useState(null);
   const [dragState, setDragState] = useState(null); // { leaderId, fromTier }
-  const [dragOverTier, setDragOverTier] = useState(null);
+  const [dragInsertInfo, setDragInsertInfo] = useState(null); // { tierId, insertIndex }
   const draggingRef = useRef(null);
+  const rafRef = useRef(null); // requestAnimationFrame handle for throttling
+  const pendingInsertRef = useRef(null); // latest dragover position between RAF frames
   // Initialize tier list when leaders are loaded
   useEffect(() => {
     if (leaders && leaders.length > 0) {
@@ -297,43 +316,84 @@ export function TierList() {
   };
 
   const handleDragEnd = () => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
     draggingRef.current = null;
     setDragState(null);
-    setDragOverTier(null);
+    setDragInsertInfo(null);
   };
 
+  // Throttle dragInsertInfo updates to one React render per animation frame
+  const scheduleDragInsertInfo = (info) => {
+    pendingInsertRef.current = info;
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(() => {
+        setDragInsertInfo(pendingInsertRef.current);
+        rafRef.current = null;
+      });
+    }
+  };
+
+  // Called by LeaderCard: card-level dragover (highest precision)
+  const handleDragOverCard = (tierId, insertIndex) => {
+    scheduleDragInsertInfo({ tierId, insertIndex });
+  };
+
+  // Fallback: only fires when cursor is directly over empty tier space (not over a card)
   const handleDragOver = (e, tierId) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
-    if (dragOverTier !== tierId) setDragOverTier(tierId);
+    if (e.target === e.currentTarget) {
+      scheduleDragInsertInfo({
+        tierId,
+        insertIndex: (localTiers[tierId] || []).length,
+      });
+    }
   };
 
   const handleDragLeave = (e) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-      setDragOverTier(null);
+      setDragInsertInfo(null);
     }
   };
 
   const handleDrop = async (e, toTier) => {
     e.preventDefault();
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
     const current = draggingRef.current;
     if (!current) return;
 
     const { leaderId, fromTier } = current;
+
+    // For unranked, always append (display is alphabetical anyway)
+    const rawInsertIndex =
+      toTier === "unranked"
+        ? (localTiers.unranked || []).length
+        : dragInsertInfo?.tierId === toTier
+          ? dragInsertInfo.insertIndex
+          : (localTiers[toTier] || []).length;
+
     draggingRef.current = null;
     setDragState(null);
-    setDragOverTier(null);
+    setDragInsertInfo(null);
 
-    if (fromTier === toTier) return;
-
-    // Optimistic update for immediate feedback
+    // Optimistic update
     setLocalTiers((prev) => {
       const next = {};
       ALL_TIER_IDS.forEach((t) => {
         next[t] = [...(prev[t] || [])];
       });
+      const fromIndex = next[fromTier].indexOf(leaderId);
       next[fromTier] = next[fromTier].filter((id) => id !== leaderId);
-      next[toTier] = [...next[toTier], leaderId];
+      let adjusted = rawInsertIndex;
+      if (fromTier === toTier && fromIndex < rawInsertIndex) adjusted -= 1;
+      adjusted = Math.max(0, Math.min(adjusted, next[toTier].length));
+      next[toTier].splice(adjusted, 0, leaderId);
       return next;
     });
 
@@ -341,6 +401,7 @@ export function TierList() {
       leaderId,
       fromTier,
       toTier,
+      rawInsertIndex,
       user.uid,
       user.displayName || "Utente",
     );
@@ -383,21 +444,32 @@ export function TierList() {
                   <span className="tier-letter">{tier.id}</span>
                 </div>
                 <div
-                  className={`tier-drop-zone${dragOverTier === tier.id ? " drag-over" : ""}`}
+                  className={`tier-drop-zone${dragInsertInfo?.tierId === tier.id ? " drag-over" : ""}`}
                   onDragOver={(e) => handleDragOver(e, tier.id)}
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, tier.id)}
                 >
-                  {(localTiers[tier.id] || []).map((leaderId) => {
+                  {(localTiers[tier.id] || []).map((leaderId, index) => {
                     const leader = leaderMap[leaderId];
                     if (!leader) return null;
+                    const tierLen = (localTiers[tier.id] || []).length;
+                    let dropIndicator = null;
+                    if (dragInsertInfo?.tierId === tier.id) {
+                      const ii = dragInsertInfo.insertIndex;
+                      if (ii === index) dropIndicator = "before";
+                      else if (ii >= tierLen && index === tierLen - 1)
+                        dropIndicator = "after";
+                    }
                     return (
                       <LeaderCard
                         key={leaderId}
                         leader={leader}
                         tierId={tier.id}
+                        index={index}
                         isDragging={dragState?.leaderId === leaderId}
                         onDragStart={handleDragStart}
+                        onDragOverCard={handleDragOverCard}
+                        dropIndicator={dropIndicator}
                       />
                     );
                   })}
@@ -408,7 +480,7 @@ export function TierList() {
 
           {/* Unranked pool */}
           <div
-            className={`tierlist-unranked${dragOverTier === "unranked" ? " drag-over" : ""}`}
+            className={`tierlist-unranked${dragInsertInfo?.tierId === "unranked" ? " drag-over" : ""}`}
             onDragOver={(e) => handleDragOver(e, "unranked")}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, "unranked")}

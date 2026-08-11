@@ -60,11 +60,12 @@ export const initTierList = async (leaderIds) => {
   }
 };
 
-// Move a leader from one tier to another
+// Move a leader from one tier to another, optionally at a specific position
 export const moveTierListLeader = async (
   leaderId,
   fromTier,
   toTier,
+  insertIndex, // raw UI index before source removal
   userId,
   userName,
 ) => {
@@ -78,10 +79,17 @@ export const moveTierListLeader = async (
       tiers[t] = [...(data.tiers?.[t] || [])];
     });
 
+    const fromIndex = tiers[fromTier].indexOf(leaderId);
     tiers[fromTier] = tiers[fromTier].filter((id) => id !== leaderId);
-    if (!tiers[toTier].includes(leaderId)) {
-      tiers[toTier] = [...tiers[toTier], leaderId];
-    }
+
+    // Adjust index when reordering within the same tier
+    let adjusted =
+      insertIndex !== undefined && insertIndex !== null
+        ? insertIndex
+        : tiers[toTier].length;
+    if (fromTier === toTier && fromIndex < adjusted) adjusted -= 1;
+    adjusted = Math.max(0, Math.min(adjusted, tiers[toTier].length));
+    tiers[toTier].splice(adjusted, 0, leaderId);
 
     await setDoc(getTierlistRef(), {
       tiers,
