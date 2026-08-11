@@ -1,5 +1,5 @@
 // Campaign Page - Individual Campaign View with Draft System and Matches
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -95,6 +95,9 @@ export function Campaign() {
     error: _error,
   } = useDocument("campaigns", campaignId);
 
+  // Load tier list for draft badges
+  const { document: tierlistDoc } = useDocument("tierlist", "global");
+
   // Preload all member profile images when campaign loads
   useEffect(() => {
     if (campaign?.memberDetails) {
@@ -125,6 +128,18 @@ export function Campaign() {
 
   // Check if user is a member
   const isMember = campaign && user && campaign.members?.includes(user.uid);
+
+  // Map leaderId → tier letter for draft badge display
+  const leaderTierMap = useMemo(() => {
+    if (!tierlistDoc?.tiers) return {};
+    const map = {};
+    ["S", "A", "B", "C", "D", "E", "F"].forEach((tier) => {
+      (tierlistDoc.tiers[tier] || []).forEach((id) => {
+        map[id] = tier;
+      });
+    });
+    return map;
+  }, [tierlistDoc?.tiers]);
 
   // Get draft state
   const draft = campaign?.draft || null;
@@ -848,6 +863,7 @@ export function Campaign() {
         onToggleReady={handleToggleReady}
         onSubmitBan={handleSubmitBan}
         onSelectLeader={handleSelectLeader}
+        tierMap={leaderTierMap}
       />
 
       {/* Direct Choice Modal */}
@@ -860,6 +876,7 @@ export function Campaign() {
         user={user}
         onToggleDirectReady={handleToggleDirectReady}
         onChooseLeader={handleChooseDirectLeader}
+        tierMap={leaderTierMap}
       />
 
       {/* Choice Method Modal */}

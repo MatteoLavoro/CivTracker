@@ -25,6 +25,7 @@ export function DraftModal({
   onToggleReady,
   onSubmitBan,
   onSelectLeader,
+  tierMap,
 }) {
   const [myCountdown, setMyCountdown] = useState(5);
   // Step-by-step ban state
@@ -506,6 +507,14 @@ export function DraftModal({
                     )}
                     <div className="ban-leader-civ">{leader.civilization}</div>
                   </div>
+                  {tierMap?.[leaderId] && (
+                    <span
+                      className="draft-tier-badge"
+                      data-tier={tierMap[leaderId]}
+                    >
+                      {tierMap[leaderId]}
+                    </span>
+                  )}
                   {isSelected && (
                     <div className="ban-selected-indicator">
                       <Check size={20} />
@@ -687,18 +696,28 @@ export function DraftModal({
                   <div className="leader-tag banned-tag">BANNATO</div>
                 )}
                 {choosingMode && !isBanned && (
-                  <button
-                    className="leader-tag choose-tag"
-                    onClick={() => {
-                      if (isSelecting) return;
-                      setIsSelecting(true);
-                      onSelectLeader(leaderId);
-                    }}
-                    disabled={isSelecting}
-                    type="button"
-                  >
-                    SCEGLI
-                  </button>
+                  <div className="draft-pick-actions">
+                    {tierMap?.[leaderId] && (
+                      <span
+                        className="draft-tier-badge"
+                        data-tier={tierMap[leaderId]}
+                      >
+                        {tierMap[leaderId]}
+                      </span>
+                    )}
+                    <button
+                      className="leader-tag choose-tag"
+                      onClick={() => {
+                        if (isSelecting) return;
+                        setIsSelecting(true);
+                        onSelectLeader(leaderId);
+                      }}
+                      disabled={isSelecting}
+                      type="button"
+                    >
+                      SCEGLI
+                    </button>
+                  </div>
                 )}
               </div>
             );

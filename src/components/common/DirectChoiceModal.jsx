@@ -14,6 +14,7 @@ export function DirectChoiceModal({
   user,
   onToggleDirectReady,
   onChooseLeader,
+  tierMap,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingLeader, setPendingLeader] = useState(null);
@@ -55,7 +56,11 @@ export function DirectChoiceModal({
 
   // Countdown timer for direct choice phase
   useEffect(() => {
-    if (draftPhase === "countdown" && draftMode === "direct" && !hasStartedDirect) {
+    if (
+      draftPhase === "countdown" &&
+      draftMode === "direct" &&
+      !hasStartedDirect
+    ) {
       setMyCountdown(5);
       const interval = setInterval(() => {
         setMyCountdown((prev) => {
@@ -118,7 +123,9 @@ export function DirectChoiceModal({
                 className="dc-confirm-civ-icon"
               />
               <div className="dc-confirm-leader-info">
-                <div className="dc-confirm-leader-name">{pendingLeader.name}</div>
+                <div className="dc-confirm-leader-name">
+                  {pendingLeader.name}
+                </div>
                 {pendingLeader.variant && (
                   <div className="dc-confirm-leader-variant">
                     {pendingLeader.variant}
@@ -185,8 +192,8 @@ export function DirectChoiceModal({
             </p>
             <div className="countdown-ready-status">
               <div className="ready-count">
-                {directReadyPlayers.length} /{" "}
-                {campaign?.members?.length || 0} giocatori pronti
+                {directReadyPlayers.length} / {campaign?.members?.length || 0}{" "}
+                giocatori pronti
               </div>
             </div>
           </div>
@@ -213,7 +220,12 @@ export function DirectChoiceModal({
     const totalCount = campaign?.members?.length || 0;
 
     return (
-      <Modal isOpen={isOpen} onClose={onClose} title="In Attesa..." size="medium">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="In Attesa..."
+        size="medium"
+      >
         <div className="draft-modal-container">
           <div className="draft-modal-body">
             <div className="draft-modal-waiting">
@@ -323,8 +335,8 @@ export function DirectChoiceModal({
           <div className="dc-search-header">
             {takenCount > 0 && (
               <p className="draft-modal-subtitle" style={{ margin: 0 }}>
-                {takenCount}/{totalCount} già selezionati — chi sceglie prima
-                ha la priorità!
+                {takenCount}/{totalCount} già selezionati — chi sceglie prima ha
+                la priorità!
               </p>
             )}
             <div className="dc-search-bar">
@@ -387,13 +399,21 @@ export function DirectChoiceModal({
                     <div className="dc-leader-info">
                       <div className="dc-leader-name">{leader.name}</div>
                       {leader.variant && (
-                        <div className="dc-leader-variant">{leader.variant}</div>
+                        <div className="dc-leader-variant">
+                          {leader.variant}
+                        </div>
                       )}
                       <div className="dc-leader-civ">{leader.civilization}</div>
                     </div>
-                    {isTaken && (
-                      <div className="dc-taken-badge">Scelto</div>
+                    {tierMap?.[leader.id] && (
+                      <span
+                        className="draft-tier-badge"
+                        data-tier={tierMap[leader.id]}
+                      >
+                        {tierMap[leader.id]}
+                      </span>
                     )}
+                    {isTaken && <div className="dc-taken-badge">Scelto</div>}
                   </div>
                 );
               })}
