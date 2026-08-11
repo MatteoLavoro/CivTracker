@@ -49,6 +49,11 @@ service cloud.firestore {
                        request.auth.uid in resource.data.members;
     }
     
+    // Tier List - global shared document, any authenticated user can read/write
+    match /tierlist/{document} {
+      allow read, write: if isSignedIn();
+    }
+
     // Default deny all other access
     match /{document=**} {
       allow read, write: if false;

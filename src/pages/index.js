@@ -2,4 +2,5 @@
 export { Auth } from "./Auth/Auth";
 export { Home } from "./Home/Home";
 export { Campaign } from "./Campaign/Campaign";
+export { TierList } from "./TierList/TierList";
 export { Dev } from "./Dev/Dev";

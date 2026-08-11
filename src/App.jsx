@@ -16,6 +16,11 @@ const CampaignPage = lazy(() =>
     default: module.Campaign,
   })),
 );
+const TierListPage = lazy(() =>
+  import("./pages/TierList/TierList").then((module) => ({
+    default: module.TierList,
+  })),
+);
 const DevPage = lazy(() =>
   import("./pages/Dev/Dev").then((module) => ({ default: module.Dev })),
 );
@@ -67,6 +72,16 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CampaignPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Tier List Route */}
+            <Route
+              path="/tierlist"
+              element={
+                <ProtectedRoute>
+                  <TierListPage />
                 </ProtectedRoute>
               }
             />

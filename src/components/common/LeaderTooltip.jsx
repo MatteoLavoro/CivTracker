@@ -93,6 +93,13 @@ function parseDescriptionWithIcons(description) {
   return processed;
 }
 
+function getTitleFontSize(text) {
+  const len = (text || "").length;
+  if (len <= 20) return undefined;
+  if (len <= 30) return "0.875rem";
+  return "0.72rem";
+}
+
 /**
  * LeaderTooltip Component
  * Shows abilities when hovering over leader or civilization icons
@@ -191,9 +198,20 @@ export function LeaderTooltip({ children, leader, type = "leader" }) {
           >
             <div className="leader-tooltip-header">
               <div className="leader-tooltip-title">
-                {type === "civilization"
-                  ? leader.civilization
-                  : `${leader.name}${leader.variant ? ` (${leader.variant})` : ""}`}
+                <span
+                  className="leader-tooltip-title-text"
+                  style={{
+                    fontSize: getTitleFontSize(
+                      type === "civilization"
+                        ? leader.civilization
+                        : `${leader.name}${leader.variant ? ` (${leader.variant})` : ""}`,
+                    ),
+                  }}
+                >
+                  {type === "civilization"
+                    ? leader.civilization
+                    : `${leader.name}${leader.variant ? ` (${leader.variant})` : ""}`}
+                </span>
               </div>
             </div>
 

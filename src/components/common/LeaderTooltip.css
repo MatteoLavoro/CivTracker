@@ -37,8 +37,7 @@
 
 /* Header */
 .leader-tooltip-header {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 0.875rem 1rem 0.625rem;
   background: linear-gradient(
     180deg,
     rgba(212, 175, 55, 0.05) 0%,
@@ -47,11 +46,31 @@
 }
 
 .leader-tooltip-title {
-  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.leader-tooltip-title::before,
+.leader-tooltip-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  min-width: 8px;
+  background: rgba(212, 175, 55, 0.4);
+}
+
+.leader-tooltip-title-text {
+  font-size: 1.0625rem;
   font-weight: 700;
   color: rgba(212, 175, 55, 1);
   text-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
   letter-spacing: 0.3px;
+  padding: 2px 8px;
+  border-left: 1.5px solid rgba(212, 175, 55, 0.45);
+  border-right: 1.5px solid rgba(212, 175, 55, 0.45);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Content */

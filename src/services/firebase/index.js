@@ -57,6 +57,14 @@ export {
 // Member Details
 export { updateMemberDetailsInCampaigns } from "./updateMemberDetails";
 
+// Tier List
+export {
+  subscribeTierList,
+  initTierList,
+  moveTierListLeader,
+  resetTierList,
+} from "./tierlist";
+
 // Migrations
 export { migrateMatchParticipantsPhotoURL } from "./migrateMatchParticipants";
 

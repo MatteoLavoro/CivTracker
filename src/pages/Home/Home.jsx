@@ -11,6 +11,7 @@ import {
   LayoutGrid,
   ChevronDown,
   ArrowUpDown,
+  LayoutList,
 } from "lucide-react";
 import { useAuthContext } from "../../contexts";
 import { useCollection } from "../../hooks";
@@ -524,6 +525,15 @@ export function Home() {
             <h1>CivTracker</h1>
           </div>
           <div className="home-header-actions">
+            <button
+              className="header-action-btn header-action-btn--tierlist"
+              type="button"
+              onClick={() => navigate("/tierlist")}
+              aria-label="Tier List personaggi"
+            >
+              <LayoutList size={20} />
+              <span>Tier List</span>
+            </button>
             <button
               className="header-action-btn header-action-btn--join"
               type="button"
