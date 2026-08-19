@@ -405,9 +405,6 @@ export function Home() {
   // Renders a single campaign card (reused across all sections)
   const renderCampaignCard = (campaign) => {
     const rankedPlayers = calculatePlayerRankings(campaign);
-    const completedMatchCount = (campaign.matches || []).filter(
-      (m) => m.status === "completed",
-    ).length;
     const isImportantForMe = (campaign.importantFor || []).includes(user?.uid);
     const matches = Array.isArray(campaign.matches) ? campaign.matches : [];
     const currentMatch =
@@ -457,7 +454,7 @@ export function Home() {
           </div>
         </div>
 
-        {/* Ranking Section */}
+        {/* Ranking Section - Extended */}
         <div className="campaign-members">
           <div className="campaign-members-list">
             {rankedPlayers.map((player, index) => (
@@ -488,19 +485,6 @@ export function Home() {
                 <span className="campaign-member-name">{player.username}</span>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Stats Section */}
-        <div className="campaign-stats">
-          <div className="campaign-stats-placeholder">
-            {completedMatchCount === 0
-              ? "Nessuna partita completata"
-              : `${completedMatchCount} ${
-                  completedMatchCount === 1
-                    ? "partita completata"
-                    : "partite completate"
-                }`}
           </div>
         </div>
       </div>
@@ -684,8 +668,10 @@ export function Home() {
                   </div>
                   <div className="section-divider-line" />
                 </div>
-                <div className="campaigns-grid">
-                  {allCampaignsSorted.map(renderCampaignCard)}
+                <div className="section-content">
+                  <div className="campaigns-grid">
+                    {allCampaignsSorted.map(renderCampaignCard)}
+                  </div>
                 </div>
               </div>
             </div>
