@@ -175,6 +175,7 @@ function LeaderCard({
         onDragOver={(e) => {
           if (!onDragOverCard) return;
           e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
           // No stopPropagation: tier-drop-zone checks e.target===e.currentTarget to avoid override
           const rect = e.currentTarget.getBoundingClientRect();
           const insertIndex =
@@ -343,14 +344,23 @@ export function TierList() {
     document.body.classList.add("tierlist-dragging");
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", leaderId); // required for Firefox
+    // Keep the native card preview following the cursor: no custom/blank
+    // drag image, so the browser shows the card itself and no placeholder dot.
+  };
 
-    // No ghost image following the cursor while dragging.
-    const ghost = document.createElement("div");
-    ghost.style.cssText =
-      "position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;pointer-events:none;";
-    document.body.appendChild(ghost);
-    e.dataTransfer.setDragImage(ghost, 0, 0);
-    setTimeout(() => ghost.remove(), 300);
+  // The whole page accepts the drag cursor. Without this, hovering labels,
+  // headers or empty gaps shows the browser "no-drop" cursor.
+  const handlePageDragOver = (e) => {
+    if (!draggingRef.current) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  // Dropping outside a tier is a no-op, not a browser navigation.
+  const handlePageDrop = (e) => {
+    if (!draggingRef.current) return;
+    e.preventDefault();
+    handleDragEnd();
   };
 
   const handleDragEnd = () => {
@@ -500,7 +510,12 @@ export function TierList() {
   }
 
   return (
-    <div className="tierlist-page" onDragEnd={handleDragEnd}>
+    <div
+      className="tierlist-page"
+      onDragEnd={handleDragEnd}
+      onDragOver={handlePageDragOver}
+      onDrop={handlePageDrop}
+    >
       {/* Header */}
       <header className="tierlist-header">
         <button
