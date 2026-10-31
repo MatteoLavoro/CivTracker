@@ -145,3 +145,10 @@
     height: 30px;
   }
 }
+
+.player-draft-pref {
+  margin-top: 2px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(230, 197, 106, 0.95);
+}

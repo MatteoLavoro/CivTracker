@@ -1,0 +1,13 @@
+[Toqui] {Abilità esclusiva}
+
+Le città in cui è stabilito un Governatore forniscono +5% [CultureIcon] Cultura, +5% [ProductionIcon] Produzione e +10% all'esperienza in combattimento di tutte le unità addestrate in quella città. Tutti questi valori sono triplicati nelle città che non sono state fondate dai Mapuche. Tutte le città entro 9 caselle da una città con un tuo Governatore guadagnano +4 Lealtà per turno nei confronti della tua civiltà.
+
+[Scorridore Malón] {Unità speciali}
+
+Unità esclusiva Mapuche di epoca rinascimentale. +5 alla [StrengthIcon] Forza di combattimento se si trova entro 4 caselle dal territorio amico. Saccheggiare costa 1 punto [MovementIcon] movimento.
+
+[Chemamull] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Chemamull, edificio esclusivo dei Mapuche.
+
++1 [ProductionIcon] Produzione. Fornisce [CultureIcon] Cultura pari al 75% dell'Appeal della casella. Fornisce [TourismIcon] Turismo aggiuntivo dopo la scoperta del Volo. Appeal minimo: Mozzafiato.

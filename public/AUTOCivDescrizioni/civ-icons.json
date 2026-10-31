@@ -1,0 +1,387 @@
+{
+  "Abraham Lincoln": {
+    "path": "/IconeCiviltàAlterne/abraham-lincoln.webp",
+    "wikiName": "Abraham Lincoln",
+    "source": "America3.png"
+  },
+  "Alessandro": {
+    "path": "/IconeCiviltàAlterne/alessandro.webp",
+    "wikiName": "Alexander",
+    "source": "Macedonian (Civ6).png"
+  },
+  "Amanitore": {
+    "path": "/IconeCiviltàAlterne/amanitore.webp",
+    "wikiName": "Amanitore",
+    "source": "Nubian (Civ6).png"
+  },
+  "Ambiorix": {
+    "path": "/IconeCiviltàAlterne/ambiorix.webp",
+    "wikiName": "Ambiorix",
+    "source": "Gallic (Civ6).png"
+  },
+  "Ba Trieu": {
+    "path": "/IconeCiviltàAlterne/ba-trieu.webp",
+    "wikiName": "Bà Triệu",
+    "source": "Vietnamese (Civ6).png"
+  },
+  "Basilio II": {
+    "path": "/IconeCiviltàAlterne/basilio-ii.webp",
+    "wikiName": "Basil II",
+    "source": "Byzantine (Civ6).png"
+  },
+  "Caterina de' Medici (La Magnifica)": {
+    "path": "/IconeCiviltàAlterne/caterina-de-medici-la-magnifica.webp",
+    "wikiName": "Catherine de Medici (Magnificence)",
+    "source": "France2.png"
+  },
+  "Caterina de' Medici (Regina Nera)": {
+    "path": "/IconeCiviltàAlterne/caterina-de-medici-regina-nera.webp",
+    "wikiName": "Catherine de Medici (Black Queen)",
+    "source": "French (Civ6).png"
+  },
+  "Chandragupta": {
+    "path": "/IconeCiviltàAlterne/chandragupta.webp",
+    "wikiName": "Chandragupta",
+    "source": "India2.png"
+  },
+  "Ciro": {
+    "path": "/IconeCiviltàAlterne/ciro.webp",
+    "wikiName": "Cyrus",
+    "source": "Persian (Civ6).png"
+  },
+  "Cleopatra (Egiziana)": {
+    "path": "/IconeCiviltàAlterne/cleopatra-egiziana.webp",
+    "wikiName": "Cleopatra (Egyptian)",
+    "source": "Egyptian (Civ6).png"
+  },
+  "Cleopatra (Tolemaica)": {
+    "path": "/IconeCiviltàAlterne/cleopatra-tolemaica.webp",
+    "wikiName": "Cleopatra (Ptolemaic)",
+    "source": "Egypt3.png"
+  },
+  "Cristina": {
+    "path": "/IconeCiviltàAlterne/cristina.webp",
+    "wikiName": "Kristina",
+    "source": "Swedish (Civ6).png"
+  },
+  "Didone": {
+    "path": "/IconeCiviltàAlterne/didone.webp",
+    "wikiName": "Dido",
+    "source": "Phoenician (Civ6).png"
+  },
+  "Edvige": {
+    "path": "/IconeCiviltàAlterne/edvige.webp",
+    "wikiName": "Jadwiga",
+    "source": "Polish (Civ6).png"
+  },
+  "Eleonora d'Aquitania (Francia)": {
+    "path": "/IconeCiviltàAlterne/eleonora-d-aquitania-francia.webp",
+    "wikiName": "Eleanor of Aquitaine (French)",
+    "source": "French (Eleanor of Aquitaine) (Civ6).png"
+  },
+  "Eleonora d'Aquitania (Inghilterra)": {
+    "path": "/IconeCiviltàAlterne/eleonora-d-aquitania-inghilterra.webp",
+    "wikiName": "Eleanor of Aquitaine (English)",
+    "source": "English (Eleanor of Aquitaine) (Civ6).png"
+  },
+  "Elisabetta I": {
+    "path": "/IconeCiviltàAlterne/elisabetta-i.webp",
+    "wikiName": "Elizabeth I",
+    "source": "England2.png"
+  },
+  "Federico Barbarossa": {
+    "path": "/IconeCiviltàAlterne/federico-barbarossa.webp",
+    "wikiName": "Frederick Barbarossa",
+    "source": "German (Civ6).png"
+  },
+  "Filippo II": {
+    "path": "/IconeCiviltàAlterne/filippo-ii.webp",
+    "wikiName": "Philip II",
+    "source": "Spanish (Civ6).png"
+  },
+  "Gandhi": {
+    "path": "/IconeCiviltàAlterne/gandhi.webp",
+    "wikiName": "Gandhi",
+    "source": "Indian (Civ6).png"
+  },
+  "Genghis Khan": {
+    "path": "/IconeCiviltàAlterne/genghis-khan.webp",
+    "wikiName": "Genghis Khan",
+    "source": "Mongolian (Civ6).png"
+  },
+  "Gilgamesh": {
+    "path": "/IconeCiviltàAlterne/gilgamesh.webp",
+    "wikiName": "Gilgamesh",
+    "source": "Sumerian (Civ6).png"
+  },
+  "Gitarja": {
+    "path": "/IconeCiviltàAlterne/gitarja.webp",
+    "wikiName": "Gitarja",
+    "source": "Indonesian (Civ6).png"
+  },
+  "Giulio Cesare": {
+    "path": "/IconeCiviltàAlterne/giulio-cesare.webp",
+    "wikiName": "Julius Caesar",
+    "source": "Rome2.png"
+  },
+  "Gorgo": {
+    "path": "/IconeCiviltàAlterne/gorgo.webp",
+    "wikiName": "Gorgo",
+    "source": "Greek (Gorgo) (Civ6).png"
+  },
+  "Guglielmina": {
+    "path": "/IconeCiviltàAlterne/guglielmina.webp",
+    "wikiName": "Wilhelmina",
+    "source": "Dutch (Civ6).png"
+  },
+  "Hammurabi": {
+    "path": "/IconeCiviltàAlterne/hammurabi.webp",
+    "wikiName": "Hammurabi",
+    "source": "Babylonian (Civ6).png"
+  },
+  "Harald Hardrada (Konge)": {
+    "path": "/IconeCiviltàAlterne/harald-hardrada-konge.webp",
+    "wikiName": "Harald Hardrada (Konge)",
+    "source": "Norwegian (Civ6).png"
+  },
+  "Harald Hardrada (Variago)": {
+    "path": "/IconeCiviltàAlterne/harald-hardrada-variago.webp",
+    "wikiName": "Harald Hardrada (Varangian)",
+    "source": "Norway2.png"
+  },
+  "Hojo Tokimune": {
+    "path": "/IconeCiviltàAlterne/hojo-tokimune.webp",
+    "wikiName": "Hojo Tokimune",
+    "source": "Japanese (Civ6).png"
+  },
+  "Jayavarman VII": {
+    "path": "/IconeCiviltàAlterne/jayavarman-vii.webp",
+    "wikiName": "Jayavarman VII",
+    "source": "Khmer (Civ6).png"
+  },
+  "João III": {
+    "path": "/IconeCiviltàAlterne/joao-iii.webp",
+    "wikiName": "João III",
+    "source": "Portuguese (Civ6).png"
+  },
+  "John Curtin": {
+    "path": "/IconeCiviltàAlterne/john-curtin.webp",
+    "wikiName": "John Curtin",
+    "source": "Australian (Civ6).png"
+  },
+  "Kublai Khan (Cina)": {
+    "path": "/IconeCiviltàAlterne/kublai-khan-cina.webp",
+    "wikiName": "Kublai Khan (Chinese)",
+    "source": "Chinese (Kublai Khan) (Civ6).png"
+  },
+  "Kublai Khan (Mongolia)": {
+    "path": "/IconeCiviltàAlterne/kublai-khan-mongolia.webp",
+    "wikiName": "Kublai Khan (Mongolian)",
+    "source": "Mongolia2.png"
+  },
+  "Kupe": {
+    "path": "/IconeCiviltàAlterne/kupe.webp",
+    "wikiName": "Kupe",
+    "source": "Māori (Civ6).png"
+  },
+  "Lautaro": {
+    "path": "/IconeCiviltàAlterne/lautaro.webp",
+    "wikiName": "Lautaro",
+    "source": "Mapuche (Civ6).png"
+  },
+  "Ludovico II": {
+    "path": "/IconeCiviltàAlterne/ludovico-ii.webp",
+    "wikiName": "Ludwig II",
+    "source": "German_(Ludwig_II)_(Civ6).png"
+  },
+  "Mansa Musa": {
+    "path": "/IconeCiviltàAlterne/mansa-musa.webp",
+    "wikiName": "Mansa Musa",
+    "source": "Malian (Civ6).png"
+  },
+  "Mattia Corvino": {
+    "path": "/IconeCiviltàAlterne/mattia-corvino.webp",
+    "wikiName": "Matthias Corvinus",
+    "source": "Hungarian (Civ6).png"
+  },
+  "Menelik II": {
+    "path": "/IconeCiviltàAlterne/menelik-ii.webp",
+    "wikiName": "Menelik II",
+    "source": "Ethiopian (Civ6).png"
+  },
+  "Montezuma": {
+    "path": "/IconeCiviltàAlterne/montezuma.webp",
+    "wikiName": "Montezuma",
+    "source": "Aztec (Civ6).png"
+  },
+  "Mvemba a Nzinga": {
+    "path": "/IconeCiviltàAlterne/mvemba-a-nzinga.webp",
+    "wikiName": "Mvemba a Nzinga",
+    "source": "Kongolese (Civ6).png"
+  },
+  "Nadir Shah": {
+    "path": "/IconeCiviltàAlterne/nadir-shah.webp",
+    "wikiName": "Nader Shah",
+    "source": "Persia2.png"
+  },
+  "Nzinga Mbande": {
+    "path": "/IconeCiviltàAlterne/nzinga-mbande.webp",
+    "wikiName": "Nzinga Mbande",
+    "source": "Kongo3.png"
+  },
+  "Pachacuti": {
+    "path": "/IconeCiviltàAlterne/pachacuti.webp",
+    "wikiName": "Pachacuti",
+    "source": "Incan (Civ6).png"
+  },
+  "Pedro II": {
+    "path": "/IconeCiviltàAlterne/pedro-ii.webp",
+    "wikiName": "Pedro II",
+    "source": "Brazilian (Civ6).png"
+  },
+  "Pericle": {
+    "path": "/IconeCiviltàAlterne/pericle.webp",
+    "wikiName": "Pericles",
+    "source": "Greek (Civ6).png"
+  },
+  "Pietro": {
+    "path": "/IconeCiviltàAlterne/pietro.webp",
+    "wikiName": "Peter",
+    "source": "Russian (Civ6).png"
+  },
+  "Poundmaker": {
+    "path": "/IconeCiviltàAlterne/poundmaker.webp",
+    "wikiName": "Poundmaker",
+    "source": "Cree (Civ6).png"
+  },
+  "Qin Shi Huang (Mandato Divino)": {
+    "path": "/IconeCiviltàAlterne/qin-shi-huang-mandato-divino.webp",
+    "wikiName": "Qin Shi Huang (Mandate of Heaven)",
+    "source": "Chinese (Civ6).png"
+  },
+  "Qin Shi Huang (Unificatore)": {
+    "path": "/IconeCiviltàAlterne/qin-shi-huang-unificatore.webp",
+    "wikiName": "Qin Shi Huang (Unifier)",
+    "source": "Chinese (Qin Shi Huang (Unifier)) (Civ6).png"
+  },
+  "Ramses II": {
+    "path": "/IconeCiviltàAlterne/ramses-ii.webp",
+    "wikiName": "Ramses II",
+    "source": "Egypt2.png"
+  },
+  "Robert Bruce": {
+    "path": "/IconeCiviltàAlterne/robert-bruce.webp",
+    "wikiName": "Robert the Bruce",
+    "source": "Scottish (Civ6).png"
+  },
+  "Saladino (Sultano)": {
+    "path": "/IconeCiviltàAlterne/saladino-sultano.webp",
+    "wikiName": "Saladin (Sultan)",
+    "source": "Arabia2.png"
+  },
+  "Saladino (Visir)": {
+    "path": "/IconeCiviltàAlterne/saladino-visir.webp",
+    "wikiName": "Saladin (Vizier)",
+    "source": "Arabian (Civ6).png"
+  },
+  "Sejong": {
+    "path": "/IconeCiviltàAlterne/sejong.webp",
+    "wikiName": "Sejong",
+    "source": "Korea2.png"
+  },
+  "Seondeok": {
+    "path": "/IconeCiviltàAlterne/seondeok.webp",
+    "wikiName": "Seondeok",
+    "source": "Korean (Civ6).png"
+  },
+  "Shaka": {
+    "path": "/IconeCiviltàAlterne/shaka.webp",
+    "wikiName": "Shaka",
+    "source": "Zulu (Civ6).png"
+  },
+  "Simón Bolívar": {
+    "path": "/IconeCiviltàAlterne/simon-bolivar.webp",
+    "wikiName": "Simón Bolívar",
+    "source": "Gran Colombian (Civ6).png"
+  },
+  "Solimano (Kanuni)": {
+    "path": "/IconeCiviltàAlterne/solimano-kanuni.webp",
+    "wikiName": "Suleiman (Kanuni)",
+    "source": "Ottoman (Civ6).png"
+  },
+  "Solimano (Muhtesem)": {
+    "path": "/IconeCiviltàAlterne/solimano-muhtesem.webp",
+    "wikiName": "Suleiman (Muhteşem‎‎)",
+    "source": "Ottoman4.png"
+  },
+  "Sundiata Keita": {
+    "path": "/IconeCiviltàAlterne/sundiata-keita.webp",
+    "wikiName": "Sundiata Keita",
+    "source": "Mali2.png"
+  },
+  "Tamara": {
+    "path": "/IconeCiviltàAlterne/tamara.webp",
+    "wikiName": "Tamar",
+    "source": "Georgian (Civ6).png"
+  },
+  "Teddy Roosevelt (L'alce)": {
+    "path": "/IconeCiviltàAlterne/teddy-roosevelt-l-alce.webp",
+    "wikiName": "Teddy Roosevelt (Bull Moose)",
+    "source": "American (Civ6).png"
+  },
+  "Teddy Roosevelt (Rough Rider)": {
+    "path": "/IconeCiviltàAlterne/teddy-roosevelt-rough-rider.webp",
+    "wikiName": "Teddy Roosevelt (Rough Rider)",
+    "source": "America2.png"
+  },
+  "Teodora": {
+    "path": "/IconeCiviltàAlterne/teodora.webp",
+    "wikiName": "Theodora",
+    "source": "Byzantium4.png"
+  },
+  "Tokugawa": {
+    "path": "/IconeCiviltàAlterne/tokugawa.webp",
+    "wikiName": "Tokugawa",
+    "source": "Japan2.png"
+  },
+  "Tomiri": {
+    "path": "/IconeCiviltàAlterne/tomiri.webp",
+    "wikiName": "Tomyris",
+    "source": "Scythian (Civ6).png"
+  },
+  "Traiano": {
+    "path": "/IconeCiviltàAlterne/traiano.webp",
+    "wikiName": "Trajan",
+    "source": "Roman (Civ6).png"
+  },
+  "Vittoria (Età dell'Impero)": {
+    "path": "/IconeCiviltàAlterne/vittoria-eta-dell-impero.webp",
+    "wikiName": "Victoria (Age of Empire)",
+    "source": "English (Civ6).png"
+  },
+  "Vittoria (Età del Vapore)": {
+    "path": "/IconeCiviltàAlterne/vittoria-eta-del-vapore.webp",
+    "wikiName": "Victoria (Age of Steam)",
+    "source": "England3.png"
+  },
+  "Wac-Chanil-Ahau": {
+    "path": "/IconeCiviltàAlterne/wac-chanil-ahau.webp",
+    "wikiName": "Lady Six Sky",
+    "source": "Mayan (Civ6).png"
+  },
+  "Wilfrid Laurier": {
+    "path": "/IconeCiviltàAlterne/wilfrid-laurier.webp",
+    "wikiName": "Wilfrid Laurier",
+    "source": "Canadian (Civ6).png"
+  },
+  "Wu Zetian": {
+    "path": "/IconeCiviltàAlterne/wu-zetian.webp",
+    "wikiName": "Wu Zetian",
+    "source": "China2.png"
+  },
+  "Yongle": {
+    "path": "/IconeCiviltàAlterne/yongle.webp",
+    "wikiName": "Yongle",
+    "source": "China4.png"
+  }
+}

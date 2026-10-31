@@ -6,11 +6,11 @@ import {
   Pencil,
   Clock,
   Info,
-  AlertTriangle,
   Loader2,
 } from "lucide-react";
 import { Avatar } from "./Avatar";
 import { PlayerDraftInfoModal } from "./PlayerDraftInfoModal";
+import { getLeaderPalette } from "../../utils/leaderColors";
 import "./MatchRow.css";
 
 /**
@@ -22,7 +22,6 @@ import "./MatchRow.css";
  * @param {Function} onOpenChoiceMethod - Handler for opening method selection modal
  * @param {Function} onContinueChoice - Handler for continuing current selection flow
  * @param {Function} onCompleteMatch - Handler for completing match
- * @param {Function} onPenalty - Handler for opening penalty modal
  * @param {boolean} isCurrentMatch - Whether this is the current active match
  * @param {boolean} isChoiceStarted - Whether the draft/direct flow has started
  * @param {boolean} hasUserCompletedDraft - Whether current user has completed draft
@@ -39,13 +38,13 @@ export function MatchRow({
   onOpenChoiceMethod,
   onContinueChoice,
   onCompleteMatch,
-  onPenalty,
   isCurrentMatch,
   isChoiceStarted,
   hasUserCompletedDraft,
   hasUserCompletedDirectChoice,
   readyPlayersCount,
   directReadyPlayersCount,
+  preferenceReadyPlayersCount,
   totalPlayersCount,
   editLock,
   currentUserId,
@@ -77,6 +76,7 @@ export function MatchRow({
         draftedLeaders: draft.playerDrafts[userId],
         bannedLeader: draft.bannedLeaders?.[userId] || null,
         selectedLeader: draft.selectedLeaders?.[userId] || null,
+        preferences: draft.preferences?.[userId] || [],
       };
       setSelectedPlayerDraft(liveDraftHistory);
       setSelectedPlayerName(username);
@@ -100,6 +100,10 @@ export function MatchRow({
     return nameA.localeCompare(nameB);
   });
   const isCompleted = match.status === "completed";
+  // Whether any participant already has a raw score set (computed once)
+  const hasAnyRawScores = Object.values(match.participants || {}).some(
+    (participant) => participant.score !== undefined && participant.score > 0,
+  );
 
   // Get winner from match data
   const winner =
@@ -141,7 +145,9 @@ export function MatchRow({
       : null;
 
   const anyMethodReadyCount =
-    (readyPlayersCount || 0) + (directReadyPlayersCount || 0);
+    (readyPlayersCount || 0) +
+    (directReadyPlayersCount || 0) +
+    (preferenceReadyPlayersCount || 0);
 
   return (
     <div className={`match-row ${isCompleted ? "completed" : ""}`}>
@@ -168,6 +174,7 @@ export function MatchRow({
           } else if (isCurrentMatch && draft?.selectedLeaders?.[userId]) {
             leader = getLeaderById(draft.selectedLeaders[userId]);
           }
+          const palette = leader ? getLeaderPalette(leader) : null;
 
           return (
             <div key={userId} className="match-participant-row">
@@ -196,6 +203,14 @@ export function MatchRow({
                       src={leader.leaderIconPath}
                       alt={leader.name}
                       className="match-leader-icon"
+                      style={
+                        palette
+                          ? {
+                              boxShadow: `0 0 0 2px ${palette.primary}`,
+                              borderRadius: "50%",
+                            }
+                          : undefined
+                      }
                     />
                     <img
                       src={leader.civilizationIconPath}
@@ -284,11 +299,6 @@ export function MatchRow({
       {/* Column 4: Scores */}
       <div className="match-col match-col-scores">
         {participants.map(([userId, participant]) => {
-          // Check if any participant has a raw score set
-          const hasAnyRawScores = participants.some(
-            ([, p]) => p.score !== undefined && p.score > 0,
-          );
-
           return (
             <div key={userId} className="match-score-item">
               {isCompleted ? (
@@ -388,49 +398,29 @@ export function MatchRow({
                 </>
               )}
             </button>
-            <button
-              className="match-action-btn penalty-btn"
-              onClick={() => onPenalty && onPenalty(match.id)}
-              type="button"
-              title="Assegna penalità"
-            >
-              <AlertTriangle size={20} />
-              Penalità
-            </button>
           </>
         )}
         {isCompleted && (
-          <>
-            <button
-              className={`match-action-btn edit-btn ${
-                isLockedByOther ? "disabled-no-cursor" : ""
-              }`}
-              onClick={() => !isLockedByOther && onCompleteMatch(match.id)}
-              disabled={isLockedByOther}
-              type="button"
-            >
-              {isLockedByOther ? (
-                <>
-                  <Loader2 size={20} className="spinner-icon" />
-                  <span>In modifica da {lockedByUsername}</span>
-                </>
-              ) : (
-                <>
-                  <Pencil size={20} />
-                  Modifica
-                </>
-              )}
-            </button>
-            <button
-              className="match-action-btn penalty-btn"
-              onClick={() => onPenalty && onPenalty(match.id)}
-              type="button"
-              title="Assegna penalità"
-            >
-              <AlertTriangle size={20} />
-              Penalità
-            </button>
-          </>
+          <button
+            className={`match-action-btn edit-btn ${
+              isLockedByOther ? "disabled-no-cursor" : ""
+            }`}
+            onClick={() => !isLockedByOther && onCompleteMatch(match.id)}
+            disabled={isLockedByOther}
+            type="button"
+          >
+            {isLockedByOther ? (
+              <>
+                <Loader2 size={20} className="spinner-icon" />
+                <span>In modifica da {lockedByUsername}</span>
+              </>
+            ) : (
+              <>
+                <Pencil size={20} />
+                Modifica
+              </>
+            )}
+          </button>
         )}
       </div>
 

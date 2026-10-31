@@ -61,12 +61,10 @@ export function CampaignInfoModal({
     }
   };
 
-  const handleLeave = () => {
-    if (onLeaveCampaign) {
-      onLeaveCampaign();
-    }
-    // Close modal via history after leave action
-    window.history.back();
+  const handleLeave = async () => {
+    if (!onLeaveCampaign) return;
+    // The parent closes the modal (or navigates away) on success
+    await onLeaveCampaign();
   };
 
   if (!campaign) return null;

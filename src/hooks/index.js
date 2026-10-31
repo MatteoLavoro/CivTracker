@@ -5,3 +5,5 @@ export { useDocument } from "./useDocument";
 export { useFileUpload } from "./useFileUpload";
 export { useLeaders } from "./useLeaders";
 export { useLeader } from "./useLeader";
+export { useBodyScrollLock } from "./useBodyScrollLock";
+export { useCountdown } from "./useCountdown";

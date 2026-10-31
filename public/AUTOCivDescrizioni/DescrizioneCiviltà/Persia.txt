@@ -1,0 +1,13 @@
+[Satrapie] {Abilità esclusiva}
+
++1 capacità [TradeRouteIcon] Rotte commerciali con il Progresso civico Filosofia politica. Ricevi +2 [GoldIcon] Oro e +1 [CultureIcon] Cultura dalle Rotte che collegano due città che ti appartengono. Nel tuo territorio le strade facilitano il movimento come se fossero di un livello più avanzate.
+
+[Immortale] {Unità speciali}
+
+Unità da mischia, esclusiva della Persia, che sostituisce lo Spadaccino. Unità da mischia dotata di un attacco a distanza con raggio di tiro 2. Forte in difesa.
+
+[Pairidaeza] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare una Pairidaeza, esclusiva della Persia.
+
++1 [CultureIcon] Cultura e +2 [GoldIcon] Oro. +1 Appeal. +1 [CultureIcon] Cultura per ogni Luogo Santo e Piazza del Teatro adiacenti. +1 [GoldIcon] Oro per ogni Snodo commerciale e Centro cittadino adiacenti. Bonus aggiuntivi a [CultureIcon] Cultura e [TourismIcon] Turismo con il progressivo avanzamento nell'Albero delle tecnologie e in quello dei Progressi civici. Non può essere costruita su Neve, Tundra, colline su Neve o colline su Tundra, e neppure adiacente a un'altra Pairidaeza.

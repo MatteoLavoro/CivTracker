@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Mail, User, LogOut, Upload, Camera, Trash2 } from "lucide-react";
 import { Modal } from "./Modal";
 import { TextInputModal } from "./TextInputModal";
@@ -48,13 +48,6 @@ export function ProfileModal({
   const displayUsername =
     optimisticOverride ?? user?.displayName ?? "Non impostato";
 
-  // Clear errors when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setUploadError(null);
-    }
-  }, [isOpen]);
-
   const handleUsernameSubmit = async (newUsername) => {
     // Optimistic update: show immediately in UI
     setOptimisticOverride(newUsername);
@@ -77,6 +70,12 @@ export function ProfileModal({
     if (onLogout) {
       onLogout();
     }
+  };
+
+  // Clear transient errors when the modal is closed
+  const handleClose = () => {
+    setUploadError(null);
+    onClose();
   };
 
   const handlePhotoUpload = async (event) => {
@@ -176,7 +175,7 @@ export function ProfileModal({
     <>
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         title="Profilo"
         footer={{
           dangerous: true,
@@ -271,7 +270,7 @@ export function ProfileModal({
         defaultValue={user?.displayName || ""}
         minLength={1}
         maxLength={30}
-        submitLabel="Salva"
+        confirmLabel="Salva"
       />
     </>
   );

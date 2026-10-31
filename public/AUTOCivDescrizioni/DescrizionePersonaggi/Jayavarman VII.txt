@@ -1,0 +1,3 @@
+[Monasteri del re] {Abilità esclusiva}
+
+I Luoghi Santi adiacenti a un fiume fanno scattare una Bomba culturale. Inoltre ricevono un grande bonus per la posizione e forniscono [FoodIcon] Cibo pari al bonus stesso e +2 [CitizenIcon] Abitazioni.

@@ -4,8 +4,10 @@ import { AuthProvider, ModalProvider } from "./contexts";
 import "./index.css";
 import App from "./App.jsx";
 
-// Import seeding utilities for development (accessible via window object)
-import "./utils/seedDatabase";
+// Import seeding utilities only in development (exposed on window)
+if (import.meta.env.DEV) {
+  import("./utils/seedDatabase");
+}
 
 // Register Service Worker
 if ("serviceWorker" in navigator) {
@@ -20,7 +22,10 @@ if ("serviceWorker" in navigator) {
 
         // Check for updates periodically
         setInterval(() => {
-          registration.update();
+          registration.update().catch((error) => {
+            // Offline or transient network errors must not break the app
+            console.warn("Service Worker update failed:", error);
+          });
         }, 60000); // Check every minute
       })
       .catch((error) => {

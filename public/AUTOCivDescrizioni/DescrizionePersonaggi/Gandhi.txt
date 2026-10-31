@@ -1,0 +1,3 @@
+[Satyagraha] {Abilità esclusiva}
+
++5 [FaithIcon] Fede per ogni civiltà (compresa l'India) conosciuta che ha fondato una religione e non si trova attualmente in guerra. Le civiltà che combattono contro Gandhi ricevono il doppio della stanchezza di guerra.

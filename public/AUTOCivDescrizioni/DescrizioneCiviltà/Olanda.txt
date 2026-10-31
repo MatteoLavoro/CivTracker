@@ -1,0 +1,13 @@
+[Grote Rivieren] {Abilità esclusiva}
+
+Grandi bonus per la posizione ai distretti Campus, Piazza del Teatro e Zona industriale se adiacenti a un fiume. Il completamento di un porto fa scattare una Bomba culturale nelle caselle adiacenti. +50% alla [ProductionIcon] Produzione per la costruzione del distretto Diga e dell'edificio Barriera anti inondazione.
+
+[De Zeven Provinciën] {Unità speciali}
+
+Unità esclusiva olandese di epoca rinascimentale che sostituisce la Fregata. +7 alla [StrengthIcon] Forza di combattimento quando attacca distretti difendibili.
+
+[Polder] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Polder, esclusivo dei Paesi Bassi.
+
++1 [FoodIcon] Cibo, +1 [ProductionIcon] Produzione e +0,5 [CitizenIcon] Abitazioni. +1 [FoodIcon] Cibo se adiacente a un altro miglioramento Polder. Bonus aggiuntivi a [ProductionIcon] Produzione, [GoldIcon] Oro e [FoodIcon] Cibo con il progressivo avanzamento nell'Albero delle tecnologie e in quello dei Progressi civici. Dev'essere costruito in una casella costiera o di lago adiacente a 3 o più caselle di terraferma non invalicabili. Aumenta il costo di [MovementIcon] movimento della casella, portandolo a 3.

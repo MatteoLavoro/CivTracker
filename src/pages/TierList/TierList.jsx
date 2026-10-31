@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { ArrowLeft, Swords } from "lucide-react";
 import { useAuthContext } from "../../contexts";
 import { useLeaders } from "../../hooks";
+import { getLeaderPalette, paletteStyle } from "../../utils/leaderColors";
 import {
   subscribeTierList,
   initTierList,
@@ -101,6 +102,15 @@ function AbilityList({ abilities }) {
   return abilities.map((ability, i) => (
     <div key={i} className="leader-tooltip-ability">
       <div className="leader-tooltip-ability-header">
+        {ability.icon ? (
+          <span className="leader-tooltip-ability-icon">
+            <img src={ability.icon} alt="" loading="lazy" />
+          </span>
+        ) : (
+          <span className="leader-tooltip-ability-icon fallback">
+            <Swords size={13} />
+          </span>
+        )}
         <strong>{ability.name}</strong>
         <span className="leader-tooltip-ability-separator"> | </span>
         <em>{ability.type}</em>
@@ -120,6 +130,7 @@ function LeaderCard({
   tierId,
   index,
   isDragging,
+  isDraggingAny,
   onDragStart,
   onDragOverCard,
   dropIndicator,
@@ -129,9 +140,9 @@ function LeaderCard({
   const tooltipRef = useRef(null);
   const cursorRef = useRef({ x: 0, y: 0 });
 
-  const hasLeaderAbilities = (leader?.abilities || []).length > 0;
-  const hasCivAbilities = (leader?.civilizationAbilities || []).length > 0;
+  const tooltipVisible = visible && !isDraggingAny;
   const leaderTitle = `${leader.name}${leader.variant ? ` (${leader.variant})` : ""}`;
+  const palette = getLeaderPalette(leader);
 
   const recalcPos = (cx, cy) => {
     const M = 10,
@@ -148,20 +159,19 @@ function LeaderCard({
 
   // Recompute position once tooltip has rendered and its dimensions are known
   useLayoutEffect(() => {
-    if (visible) recalcPos(cursorRef.current.x, cursorRef.current.y);
-  }, [visible]);
-
-  // Hide tooltip immediately when this card starts being dragged
-  useEffect(() => {
-    if (isDragging) setVisible(false);
-  }, [isDragging]);
+    if (tooltipVisible) recalcPos(cursorRef.current.x, cursorRef.current.y);
+  }, [tooltipVisible]);
 
   return (
     <>
       <div
         className={`tierlist-card${isDragging ? " dragging" : ""}${dropIndicator === "before" ? " drop-before" : ""}${dropIndicator === "after" ? " drop-after" : ""}`}
+        style={paletteStyle(palette)}
         draggable
-        onDragStart={(e) => onDragStart(e, leader.id, tierId)}
+        onDragStart={(e) => {
+          setVisible(false);
+          onDragStart(e, leader.id, tierId);
+        }}
         onDragOver={(e) => {
           if (!onDragOverCard) return;
           e.preventDefault();
@@ -172,13 +182,13 @@ function LeaderCard({
           onDragOverCard(tierId, insertIndex);
         }}
         onMouseEnter={(e) => {
-          if (isDragging) return;
+          if (isDraggingAny) return;
           cursorRef.current = { x: e.clientX, y: e.clientY };
           setVisible(true);
           recalcPos(e.clientX, e.clientY);
         }}
         onMouseMove={(e) => {
-          if (!visible) return;
+          if (!tooltipVisible) return;
           cursorRef.current = { x: e.clientX, y: e.clientY };
           recalcPos(e.clientX, e.clientY);
         }}
@@ -202,15 +212,20 @@ function LeaderCard({
         </div>
       </div>
 
-      {visible &&
+      {tooltipVisible &&
         createPortal(
           <div
             ref={tooltipRef}
             className="tl-dual-tooltip"
-            style={{ position: "fixed", left: pos.x, top: pos.y }}
+            style={{
+              position: "fixed",
+              left: pos.x,
+              top: pos.y,
+              ...paletteStyle(palette),
+            }}
           >
             {/* Leader panel */}
-            <div className="leader-tooltip">
+            <div className="leader-tooltip" style={paletteStyle(palette)}>
               <div className="leader-tooltip-header">
                 <div className="leader-tooltip-title">
                   <span
@@ -234,7 +249,7 @@ function LeaderCard({
             </div>
 
             {/* Civilization panel */}
-            <div className="leader-tooltip">
+            <div className="leader-tooltip" style={paletteStyle(palette)}>
               <div className="leader-tooltip-header">
                 <div className="leader-tooltip-title">
                   <span
@@ -259,15 +274,25 @@ function LeaderCard({
 export function TierList() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
-  const { leaders, loading: leadersLoading } = useLeaders();
+  const {
+    leaders,
+    loading: leadersLoading,
+    error: leadersError,
+  } = useLeaders();
 
   const [localTiers, setLocalTiers] = useState(null);
   const [tierMeta, setTierMeta] = useState(null);
+  const [tierError, setTierError] = useState(null);
   const [dragState, setDragState] = useState(null); // { leaderId, fromTier }
   const [dragInsertInfo, setDragInsertInfo] = useState(null); // { tierId, insertIndex }
   const draggingRef = useRef(null);
   const rafRef = useRef(null); // requestAnimationFrame handle for throttling
   const pendingInsertRef = useRef(null); // latest dragover position between RAF frames
+
+  // Safety: never leave the drag class on <body> if the page unmounts mid-drag
+  useEffect(() => {
+    return () => document.body.classList.remove("tierlist-dragging");
+  }, []);
   // Initialize tier list when leaders are loaded
   useEffect(() => {
     if (leaders && leaders.length > 0) {
@@ -277,15 +302,19 @@ export function TierList() {
 
   // Real-time subscription — skip update while user is dragging
   useEffect(() => {
-    const unsub = subscribeTierList((data) => {
-      if (!draggingRef.current && data) {
-        setLocalTiers(data.tiers || {});
-        setTierMeta({
-          lastUpdatedByName: data.lastUpdatedByName,
-          updatedAt: data.updatedAt,
-        });
-      }
-    });
+    const unsub = subscribeTierList(
+      (data) => {
+        if (!draggingRef.current && data) {
+          setTierError(null);
+          setLocalTiers(data.tiers || {});
+          setTierMeta({
+            lastUpdatedByName: data.lastUpdatedByName,
+            updatedAt: data.updatedAt,
+          });
+        }
+      },
+      () => setTierError(new Error("tierlist-unavailable")),
+    );
     return unsub;
   }, []);
 
@@ -311,8 +340,17 @@ export function TierList() {
   const handleDragStart = (e, leaderId, fromTier) => {
     draggingRef.current = { leaderId, fromTier };
     setDragState({ leaderId, fromTier });
+    document.body.classList.add("tierlist-dragging");
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", leaderId); // required for Firefox
+
+    // No ghost image following the cursor while dragging.
+    const ghost = document.createElement("div");
+    ghost.style.cssText =
+      "position:fixed;top:-1000px;left:-1000px;width:1px;height:1px;opacity:0;pointer-events:none;";
+    document.body.appendChild(ghost);
+    e.dataTransfer.setDragImage(ghost, 0, 0);
+    setTimeout(() => ghost.remove(), 300);
   };
 
   const handleDragEnd = () => {
@@ -323,6 +361,7 @@ export function TierList() {
     draggingRef.current = null;
     setDragState(null);
     setDragInsertInfo(null);
+    document.body.classList.remove("tierlist-dragging");
   };
 
   // Throttle dragInsertInfo updates to one React render per animation frame
@@ -366,9 +405,11 @@ export function TierList() {
       rafRef.current = null;
     }
     const current = draggingRef.current;
-    if (!current) return;
+    if (!current || !user?.uid) return;
 
     const { leaderId, fromTier } = current;
+    // Snapshot for rollback if the write fails
+    const previousTiers = localTiers;
 
     // For unranked, always append (display is alphabetical anyway)
     const rawInsertIndex =
@@ -397,7 +438,7 @@ export function TierList() {
       return next;
     });
 
-    await moveTierListLeader(
+    const { error } = await moveTierListLeader(
       leaderId,
       fromTier,
       toTier,
@@ -405,7 +446,49 @@ export function TierList() {
       user.uid,
       user.displayName || "Utente",
     );
+
+    if (error) {
+      // Rollback the optimistic reorder
+      setLocalTiers(previousTiers);
+      alert("Impossibile salvare la modifica della tier list. Riprova.");
+    }
   };
+
+  if (tierError && localTiers === null) {
+    return (
+      <div className="tierlist-error">
+        <p>Impossibile caricare la tier list.</p>
+        <p className="tierlist-error-hint">
+          Controlla la connessione e riprova.
+        </p>
+        <button
+          className="tierlist-error-btn"
+          type="button"
+          onClick={() => navigate("/home")}
+        >
+          Torna alla Home
+        </button>
+      </div>
+    );
+  }
+
+  if (leaders.length === 0 && (leadersError || !leadersLoading)) {
+    return (
+      <div className="tierlist-error">
+        <p>Impossibile caricare i personaggi.</p>
+        <p className="tierlist-error-hint">
+          Controlla la connessione e riprova.
+        </p>
+        <button
+          className="tierlist-error-btn"
+          type="button"
+          onClick={() => navigate("/home")}
+        >
+          Torna alla Home
+        </button>
+      </div>
+    );
+  }
 
   if (leadersLoading || localTiers === null) {
     return (
@@ -467,6 +550,7 @@ export function TierList() {
                         tierId={tier.id}
                         index={index}
                         isDragging={dragState?.leaderId === leaderId}
+                        isDraggingAny={!!dragState}
                         onDragStart={handleDragStart}
                         onDragOverCard={handleDragOverCard}
                         dropIndicator={dropIndicator}
@@ -498,6 +582,7 @@ export function TierList() {
                     leader={leader}
                     tierId="unranked"
                     isDragging={dragState?.leaderId === leaderId}
+                    isDraggingAny={!!dragState}
                     onDragStart={handleDragStart}
                   />
                 );

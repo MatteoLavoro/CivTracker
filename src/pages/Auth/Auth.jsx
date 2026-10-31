@@ -46,11 +46,9 @@ export function Auth() {
     }
 
     // Username validation (only for register)
-    if (!isLogin && !formData.username) {
+    if (!isLogin && !formData.username.trim()) {
       errors.username = "Il nome utente è obbligatorio";
-    } else if (!isLogin && formData.username.length < 1) {
-      errors.username = "Il nome utente deve avere almeno 1 carattere";
-    } else if (!isLogin && formData.username.length > 30) {
+    } else if (!isLogin && formData.username.trim().length > 30) {
       errors.username = "Il nome utente non può superare i 30 caratteri";
     }
 
@@ -79,7 +77,10 @@ export function Auth() {
     try {
       if (isLogin) {
         // Login
-        const { error } = await signIn(formData.email, formData.password);
+        const { error } = await signIn(
+          formData.email.trim(),
+          formData.password,
+        );
 
         if (error) {
           setError(error);
@@ -92,9 +93,9 @@ export function Auth() {
       } else {
         // Register
         const { error } = await signUp(
-          formData.email,
+          formData.email.trim(),
           formData.password,
-          formData.username,
+          formData.username.trim(),
         );
 
         if (error) {
@@ -128,7 +129,7 @@ export function Auth() {
           : "Registrati per iniziare a tracciare la tua civiltà"
       }
     >
-      <form onSubmit={handleSubmit} className="auth-form">
+      <form onSubmit={handleSubmit} className="auth-form" noValidate>
         {error && <div className="auth-error">{error}</div>}
 
         <Input

@@ -1,0 +1,3 @@
+[Kandake di Meroe] {Abilità esclusiva}
+
++20% alla [ProductionIcon] Produzione per la costruzione di qualsiasi distretto, che sale a +40% se c'è una Piramide nubiana adiacente al Centro cittadino.

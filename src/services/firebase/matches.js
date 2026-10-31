@@ -5,8 +5,58 @@ import {
   calculateProcessedScores,
   calculateFinalScores,
   getVictoryCounts,
-  BONUS_TAGS,
 } from "../../utils/scoreUtils";
+import { createEmptyDraft } from "../../utils/draftUtils";
+
+/**
+ * Recalculate processed/final scores of every completed match using the
+ * current victory counts. Runs after a match is completed or edited.
+ * @param {Object} campaignRef - Firestore reference to the campaign
+ */
+const recalculateAllScores = async (campaignRef) => {
+  const campaignDoc = await getDoc(campaignRef);
+  if (!campaignDoc.exists()) return;
+
+  const campaign = campaignDoc.data();
+  const matches = campaign.matches || [];
+  const victoryCounts = getVictoryCounts(matches);
+
+  const recalculatedMatches = matches.map((match) => {
+    const isScored =
+      match.status === "completed" &&
+      match.victoryType &&
+      (match.victoryType === "canceled" ||
+        match.victoryType === "defeat" ||
+        match.winnerId);
+
+    if (!isScored) return match;
+
+    const participants = match.participants || {};
+    const processedScores = calculateProcessedScores(
+      participants,
+      match.winnerId,
+      match.victoryType,
+      victoryCounts,
+    );
+    const finalScores = calculateFinalScores(processedScores, participants);
+
+    const updatedParticipants = {};
+    Object.entries(participants).forEach(([userId, participant]) => {
+      updatedParticipants[userId] = {
+        ...participant,
+        processedScore: processedScores[userId] ?? 0,
+        finalScore: finalScores[userId] ?? 0,
+      };
+    });
+
+    return { ...match, participants: updatedParticipants };
+  });
+
+  await updateDoc(campaignRef, {
+    matches: recalculatedMatches,
+    updatedAt: new Date().toISOString(),
+  });
+};
 
 /**
  * Create a new match in a campaign
@@ -25,9 +75,24 @@ export const createMatch = async (campaignId, memberIds, memberDetails) => {
     }
 
     const campaign = campaignDoc.data();
-    const matches = campaign.matches || [];
+    const existingMatches = campaign.matches || [];
+    const lastMatch = existingMatches[existingMatches.length - 1];
 
-    // Create new match (without checking for active matches)
+    // Mirrors the UI rule: a new match can start only when the current one
+    // is completed or its draft is already done
+    if (
+      lastMatch &&
+      lastMatch.status === "in-progress" &&
+      !lastMatch.draftCompleted
+    ) {
+      return {
+        success: false,
+        match: null,
+        error: "C'è già una partita in corso in questa campagna",
+      };
+    }
+
+    // Create new match
     const matchId = `match-${Date.now()}`;
     const participants = {};
 
@@ -51,21 +116,9 @@ export const createMatch = async (campaignId, memberIds, memberDetails) => {
       createdAt: new Date().toISOString(),
     };
 
-    // Reset draft for new match
-    const newDraft = {
-      phase: "waiting",
-      readyPlayers: [],
-      countdownStartAt: null,
-      playerDrafts: {},
-      playerStates: {},
-      banVotes: {},
-      bannedLeaders: {},
-      selectedLeaders: {},
-    };
-
     await updateDoc(campaignRef, {
       matches: arrayUnion(newMatch),
-      draft: newDraft,
+      draft: createEmptyDraft(),
       updatedAt: new Date().toISOString(),
     });
 
@@ -190,22 +243,23 @@ export const updateMatchPenalties = async (
     const campaign = campaignDoc.data();
     const matches = campaign.matches || [];
 
-    // Update penaltyTags for participants
+    // Update penaltyTags for participants (immutably)
     const updatedMatches = matches.map((match) => {
-      if (match.id === matchId) {
-        const updatedParticipants = { ...match.participants };
-        Object.keys(penaltyTags).forEach((userId) => {
-          if (updatedParticipants[userId]) {
-            updatedParticipants[userId].penaltyTags = penaltyTags[userId] || [];
-          }
-        });
+      if (match.id !== matchId) return match;
 
-        return {
-          ...match,
-          participants: updatedParticipants,
-        };
-      }
-      return match;
+      const updatedParticipants = {};
+      Object.entries(match.participants || {}).forEach(
+        ([userId, participant]) => {
+          updatedParticipants[userId] = penaltyTags[userId]
+            ? { ...participant, penaltyTags: penaltyTags[userId] }
+            : participant;
+        },
+      );
+
+      return {
+        ...match,
+        participants: updatedParticipants,
+      };
     });
 
     await updateDoc(campaignRef, {
@@ -213,67 +267,17 @@ export const updateMatchPenalties = async (
       updatedAt: new Date().toISOString(),
     });
 
-    // If match is completed, trigger recalculation of scores
+    // If the match is completed, recalculate scores with the new penalties
     const updatedMatch = updatedMatches.find((m) => m.id === matchId);
     if (updatedMatch && updatedMatch.status === "completed") {
-      // Re-calculate scores in background
-      setTimeout(async () => {
-        try {
-          const latestCampaignDoc = await getDoc(campaignRef);
-          if (!latestCampaignDoc.exists()) return;
-
-          const latestCampaign = latestCampaignDoc.data();
-          const latestMatches = latestCampaign.matches || [];
-          const newVictoryCounts = getVictoryCounts(latestMatches);
-
-          // Recalculate ALL completed matches
-          const recalculatedMatches = latestMatches.map((match) => {
-            if (
-              match.status === "completed" &&
-              match.victoryType &&
-              match.victoryType !== "canceled"
-            ) {
-              const processedScores = calculateProcessedScores(
-                match.participants,
-                match.winnerId,
-                match.victoryType,
-                newVictoryCounts,
-              );
-              const finalScores = calculateFinalScores(
-                processedScores,
-                match.participants,
-              );
-
-              const updatedParticipants = {};
-              Object.entries(match.participants).forEach(
-                ([userId, participant]) => {
-                  updatedParticipants[userId] = {
-                    ...participant,
-                    processedScore: processedScores[userId] || 0,
-                    finalScore: finalScores[userId] || 0,
-                  };
-                },
-              );
-
-              return {
-                ...match,
-                participants: updatedParticipants,
-              };
-            }
-            return match;
-          });
-
-          await updateDoc(campaignRef, {
-            matches: recalculatedMatches,
-            updatedAt: new Date().toISOString(),
-          });
-        } catch (error) {
-          console.error(
-            "Error recalculating scores after penalty update:",
-            error,
-          );
-        }
-      }, 100);
+      try {
+        await recalculateAllScores(campaignRef);
+      } catch (error) {
+        console.error(
+          "Error recalculating scores after penalty update:",
+          error,
+        );
+      }
     }
 
     return { success: true, error: null };
@@ -293,6 +297,7 @@ export const updateMatchPenalties = async (
  * @param {Object} bonusTags - Bonus tags for all participants { userId: [tagIds] }
  * @param {string} winnerId - Winner user ID
  * @param {string} victoryType - Victory type ID
+ * @param {Object} penaltyTags - Malus tags for all participants { userId: [tagIds] }
  * @returns {Object} { success, error }
  */
 export const completeMatch = async (
@@ -303,6 +308,7 @@ export const completeMatch = async (
   bonusTags,
   winnerId,
   victoryType,
+  penaltyTags = {},
 ) => {
   try {
     const campaignRef = doc(db, "campaigns", campaignId);
@@ -315,100 +321,44 @@ export const completeMatch = async (
     const campaign = campaignDoc.data();
     const matches = campaign.matches || [];
 
-    // PHASE 1: Save basic data immediately (fast operation)
+    // PHASE 1: Save the raw result
     const matchesWithBasicUpdate = matches.map((match) => {
-      if (match.id === matchId) {
-        const updatedParticipants = { ...match.participants };
-        Object.keys(scores).forEach((userId) => {
-          if (updatedParticipants[userId]) {
-            updatedParticipants[userId].score = scores[userId];
-            updatedParticipants[userId].bonusTags = bonusTags[userId] || [];
-          }
-        });
+      if (match.id !== matchId) return match;
 
-        return {
-          ...match,
-          status: "completed",
-          endDate: new Date().toISOString(),
-          turns: turns,
-          participants: updatedParticipants,
-          winnerId: winnerId,
-          victoryType: victoryType,
-        };
-      }
-      return match;
+      const updatedParticipants = {};
+      Object.entries(match.participants || {}).forEach(
+        ([userId, participant]) => {
+          updatedParticipants[userId] = {
+            ...participant,
+            score: scores[userId] ?? participant.score ?? 0,
+            bonusTags: bonusTags[userId] || participant.bonusTags || [],
+            penaltyTags: penaltyTags[userId] || participant.penaltyTags || [],
+          };
+        },
+      );
+
+      return {
+        ...match,
+        status: "completed",
+        endDate: new Date().toISOString(),
+        turns: turns,
+        participants: updatedParticipants,
+        winnerId: winnerId,
+        victoryType: victoryType,
+      };
     });
 
-    // Save basic data immediately
     await updateDoc(campaignRef, {
       matches: matchesWithBasicUpdate,
       updatedAt: new Date().toISOString(),
     });
 
-    // PHASE 2: Calculate scores in background (heavy operation)
-    // This happens after returning success to the user
-    setTimeout(async () => {
-      try {
-        // Re-fetch the campaign to ensure we have the latest data
-        const updatedCampaignDoc = await getDoc(campaignRef);
-        if (!updatedCampaignDoc.exists()) return;
-
-        const updatedCampaign = updatedCampaignDoc.data();
-        const latestMatches = updatedCampaign.matches || [];
-
-        // Calculate NEW victory counts (including the newly completed match)
-        const newVictoryCounts = getVictoryCounts(latestMatches);
-
-        // Recalculate ALL completed matches with the new victory counts
-        const finalMatches = latestMatches.map((match) => {
-          if (
-            match.status === "completed" &&
-            match.victoryType &&
-            (match.victoryType === "canceled" ||
-              match.victoryType === "defeat" ||
-              match.winnerId)
-          ) {
-            // Recalculate processed scores with NEW victory counts
-            const processedScores = calculateProcessedScores(
-              match.participants,
-              match.winnerId,
-              match.victoryType,
-              newVictoryCounts,
-            );
-
-            // Calculate final scores with bonus tags
-            const finalScores = calculateFinalScores(
-              processedScores,
-              match.participants,
-            );
-
-            // Update participants with new scores
-            const updatedParticipants = { ...match.participants };
-            Object.keys(processedScores).forEach((userId) => {
-              if (updatedParticipants[userId]) {
-                updatedParticipants[userId].processedScore =
-                  processedScores[userId];
-                updatedParticipants[userId].finalScore = finalScores[userId];
-              }
-            });
-
-            return {
-              ...match,
-              participants: updatedParticipants,
-            };
-          }
-          return match;
-        });
-
-        // Save calculated scores
-        await updateDoc(campaignRef, {
-          matches: finalMatches,
-          updatedAt: new Date().toISOString(),
-        });
-      } catch (error) {
-        console.error("Error calculating scores in background:", error);
-      }
-    }, 0);
+    // PHASE 2: Recalculate every completed match with the new victory counts
+    try {
+      await recalculateAllScores(campaignRef);
+    } catch (error) {
+      console.error("Error calculating scores after completion:", error);
+    }
 
     return { success: true, error: null };
   } catch (error) {

@@ -1,0 +1,11 @@
+[Ta-Seti] {Abilità esclusiva}
+
++30% alla [ProductionIcon] Produzione per la costruzione di unità che attaccano a distanza. Tutte le unità che attaccano a distanza guadagnano il 50% di esperienza in più. Le miniere costruite su risorse strategiche forniscono +1 [ProductionIcon] Produzione. Le miniere costruite su risorse bonus e di lusso forniscono +2 [GoldIcon] Oro.
+
+[Arciere Pìtati] {Unità speciali}
+
+Unità esclusiva nubiana di epoca antica che sostituisce l'Arciere. Più forte della controparte, gode di [MovementIcon] movimento extra. Si può aggiornare in Balestriere.
+
+[Piramide nubiana] {Infrastruttura speciale}
+
+Miglioramento sbloccato dalla scoperta della Muratura. Può essere costruito in una casella di deserto, deserto con colline o terreni allagati. +2 [FaithIcon] Fede e +2 [FoodIcon] Cibo. Riceve rese addizionali per la vicinanza con i distretti. +1 [FoodIcon] Cibo se adiacente a un Centro cittadino. Per tutti gli altri distretti che forniscono bonus per la posizione: +1 alla resa appropriata se adiacente al relativo distretto.

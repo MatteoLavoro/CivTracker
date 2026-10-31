@@ -18,6 +18,33 @@ const auth = getAuth(app);
 // Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
 
+// User-facing messages for the most common Firebase Auth errors
+const AUTH_ERROR_MESSAGES = {
+  "auth/invalid-email": "Email non valida",
+  "auth/user-not-found": "Email o password errati",
+  "auth/wrong-password": "Email o password errati",
+  "auth/invalid-credential": "Email o password errati",
+  "auth/user-disabled": "Questo account è stato disabilitato",
+  "auth/email-already-in-use": "Questa email è già registrata",
+  "auth/weak-password": "La password deve avere almeno 6 caratteri",
+  "auth/too-many-requests": "Troppi tentativi. Riprova più tardi.",
+  "auth/network-request-failed":
+    "Problema di rete. Controlla la connessione e riprova.",
+  "auth/popup-closed-by-user": "Accesso annullato",
+};
+
+/**
+ * Convert a Firebase Auth error into an Italian user-facing message
+ * @param {Object} error - Firebase error
+ * @returns {string} Friendly message
+ */
+const getAuthErrorMessage = (error) => {
+  if (error?.code && AUTH_ERROR_MESSAGES[error.code]) {
+    return AUTH_ERROR_MESSAGES[error.code];
+  }
+  return "Si è verificato un errore. Riprova.";
+};
+
 // Sign up with email and password
 export const signUp = async (email, password, displayName = null) => {
   try {
@@ -31,7 +58,8 @@ export const signUp = async (email, password, displayName = null) => {
     }
     return { user: userCredential.user, error: null };
   } catch (error) {
-    return { user: null, error: error.message };
+    console.error("Error signing up:", error);
+    return { user: null, error: getAuthErrorMessage(error) };
   }
 };
 
@@ -45,7 +73,8 @@ export const signIn = async (email, password) => {
     );
     return { user: userCredential.user, error: null };
   } catch (error) {
-    return { user: null, error: error.message };
+    console.error("Error signing in:", error);
+    return { user: null, error: getAuthErrorMessage(error) };
   }
 };
 
@@ -55,7 +84,8 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     return { user: result.user, error: null };
   } catch (error) {
-    return { user: null, error: error.message };
+    console.error("Error signing in with Google:", error);
+    return { user: null, error: getAuthErrorMessage(error) };
   }
 };
 

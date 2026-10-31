@@ -1,0 +1,13 @@
+[Popolo della steppa] {Abilità esclusiva}
+
+Ogni volta che addestri un'unità di Cavalleria leggera o un Arciere Saka a cavallo ricevi una seconda unità identica.
+
+[Arciere Saka a cavallo] {Unità speciali}
+
+Unità esclusiva scita di epoca classica. Attacca a distanza con un raggio di tiro di 1 e ha 4 punti [MovementIcon] movimento.
+
+[Kurgan] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Kurgan, esclusivo della Scizia.
+
++1 [FaithIcon] Fede e +3 [GoldIcon] Oro. +1 [FaithIcon] Fede per ogni Pascolo adiacente (diventa +2 dopo la scoperta delle Staffe). Fornisce [TourismIcon] Turismo dalla [FaithIcon] Fede dopo la scoperta del Volo. Non può essere costruito in collina.

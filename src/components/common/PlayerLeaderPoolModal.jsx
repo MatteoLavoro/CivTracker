@@ -79,7 +79,6 @@ export function PlayerLeaderPoolModal({
       isOpen={isOpen}
       onClose={onClose}
       title={`Pool di ${playerName}`}
-      size="large"
     >
       <div className="player-leader-pool-modal-container">
         <div className="player-leader-pool-header">

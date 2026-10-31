@@ -1,0 +1,13 @@
+[Nkisi] {Abilità esclusiva}
+
++2 [FoodIcon] Cibo, +2 [ProductionIcon] Produzione, +1 [FaithIcon] Fede e +4 [GoldIcon] Oro da ogni [RelicIcon] Reliquia, [RelicIcon] Reliquia Eroica, [ArtifactAncientIcon] Manufatto e [SculptureIcon] Capolavoro scultoreo, oltre alla normale [CultureIcon] Cultura. Ricevi il 50% in più dei punti [GreatPersonIcon] Grande Artista, [GreatPersonIcon] Grande Musicista e [MerchantIcon] Grande Mercante. Il Palazzo ha slot per 5 Capolavori.
+
+[Ngao Mbeba] {Unità speciali}
+
+Unità esclusiva del Congo di epoca classica che sostituisce lo Spadaccino. +10 alla [StrengthIcon] Forza di combattimento quando si difende dagli attacchi a distanza. Le caselle di bosco e di foresta pluviale non limitano il suo movimento né la sua visione.
+
+[Mbanza] {Infrastruttura speciale}
+
+Un distretto esclusivo del Congo che si può costruire solo in caselle di bosco o di foresta pluviale. Sostituisce il distretto Quartiere residenziale, ma è disponibile prima ed è più economico da costruire.
+
+Fornisce +5 [CitizenIcon] Abitazioni, +2 [FoodIcon] Cibo e +4 [GoldIcon] Oro, indipendentemente dall'Appeal.

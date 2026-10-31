@@ -1,0 +1,3 @@
+[Spada della Persia] {Abilità esclusiva}
+
++5 alla [StrengthIcon] Forza di combattimento quando attacca unità in piena salute. Le città non fondate da Nadir Shah ricevono +2 [FaithIcon] Fede e +3 [GoldIcon] Oro dalle [TradeRouteIcon] Rotte commerciali interne.

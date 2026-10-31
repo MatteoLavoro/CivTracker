@@ -1,0 +1,11 @@
+[Forza nell'unità] {Abilità esclusiva}
+
+All'inizio di un'Età dell'oro o Eroica, quando scegli una Dedizione, oltre al bonus speciale il tuo Punteggio Epoca riceve il consueto bonus per un'Età normale. +50% alla [ProductionIcon] Produzione per la costruzione di edifici difensivi.
+
+[Khevsur] {Unità speciali}
+
+Unità esclusiva georgiana di epoca medievale che sostituisce l'Uomo d'arme. +7 alla [StrengthIcon] Forza di combattimento quando combatte in collina. Nessuna penalità al [MovementIcon] movimento in collina.
+
+[Tsikhe] {Infrastruttura speciale}
+
+Edificio esclusivo georgiano. La sua costruzione costa meno rispetto alle Mura rinascimentali e la forza delle difese esterne è superiore. Fornisce +3 [TourismIcon] Turismo dopo l'acquisizione del Progresso civico Conservazione. Fornisce +4 [FaithIcon] Fede. +100% al [TourismIcon] Turismo e alla [FaithIcon] Fede quando ti trovi in un'Età dell'oro.

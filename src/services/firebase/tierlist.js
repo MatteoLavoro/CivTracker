@@ -15,10 +15,17 @@ const TIER_IDS = ["S", "A", "B", "C", "D", "E", "F", "unranked"];
 const getTierlistRef = () => doc(db, "tierlist", "global");
 
 // Subscribe to real-time tier list updates
-export const subscribeTierList = (callback) => {
-  return onSnapshot(getTierlistRef(), (snap) => {
-    callback(snap.exists() ? { id: snap.id, ...snap.data() } : null);
-  });
+export const subscribeTierList = (callback, onError) => {
+  return onSnapshot(
+    getTierlistRef(),
+    (snap) => {
+      callback(snap.exists() ? { id: snap.id, ...snap.data() } : null);
+    },
+    (error) => {
+      console.error("Error listening to tier list:", error);
+      if (onError) onError(error);
+    },
+  );
 };
 
 // Create tier list if missing, or add new leaders to unranked

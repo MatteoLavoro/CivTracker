@@ -39,7 +39,6 @@ export function LeaderPoolModal({ isOpen, onClose, campaign, leaders }) {
         isOpen={isOpen}
         onClose={onClose}
         title="Pool Personaggi"
-        size="medium"
       >
         <div className="leader-pool-modal-container">
           <div className="leader-pool-body">

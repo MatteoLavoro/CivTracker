@@ -1,17 +1,21 @@
 // Draft Modal - Multi-phase draft system in modal format
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Check, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { Check, X, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Modal } from "./Modal";
 import { Avatar } from "./Avatar";
 import { LeaderTooltip } from "./LeaderTooltip";
+import { useCountdown } from "../../hooks";
+import { DRAFT_COUNTDOWN_SECONDS } from "../../utils/draftUtils";
+import { getLeaderPalette, paletteStyle } from "../../utils/leaderColors";
 import "./DraftModal.css";
 
 /**
  * DraftModal Component
- * Handles all phases of the classic draft system in a modal format
+ * Handles all phases of the draft system (classic and preference variants):
  * - Waiting: Players mark themselves as ready
  * - Countdown: 5-second server-synced countdown before draft starts
  * - Active: Step-by-step banning phase (one opponent at a time)
+ *   Preference mode also asks for one +10% preference per ban step
  * - Completed: Final leader selection from remaining leaders (roulette reveal)
  */
 export function DraftModal({
@@ -23,34 +27,46 @@ export function DraftModal({
   user,
   countdownStartAt,
   onToggleReady,
+  onTogglePreferenceReady,
   onSubmitBan,
   onSelectLeader,
   tierMap,
+  confirmSelectOpen = false,
 }) {
-  const [myCountdown, setMyCountdown] = useState(5);
   // Step-by-step ban state
   const [banStep, setBanStep] = useState(0);
   const [localBanSelections, setLocalBanSelections] = useState({});
+  const [localPreferences, setLocalPreferences] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
 
   // Roulette reveal state
-  // revealIndex: index of last fully-revealed leader (-1 = none yet)
-  // shuffleLeader: the random leader currently shown during slot animation (null when idle)
+  // revealIndex: number of fully-revealed leaders (0 = none, 5 = all)
+  // shuffleLeaders: random leader shown on each still-animating row
   // banRevealed: whether the banned leader dim has played
   // choosingMode: all reveals done, show SCEGLI/BANNATO tags
   // revealState: "idle" | "animating" | "done"
-  const [revealIndex, setRevealIndex] = useState(-1);
-  const [shuffleLeader, setShuffleLeader] = useState(null);
+  const [revealIndex, setRevealIndex] = useState(0);
+  const [shuffleLeaders, setShuffleLeaders] = useState([]);
   const [banRevealed, setBanRevealed] = useState(false);
   const [choosingMode, setChoosingMode] = useState(false);
   const [revealState, setRevealState] = useState("idle");
   const cancelRef = useRef(null);
 
   const draftPhase = draft?.phase || null;
-  const isReady = draft?.readyPlayers?.includes(user?.uid) || false;
-  const myDraftedLeaders = draft?.playerDrafts?.[user?.uid] || [];
+  const isPreferenceMode = draft?.mode === "preference";
+  const isReady = isPreferenceMode
+    ? draft?.preferenceReadyPlayers?.includes(user?.uid) || false
+    : draft?.readyPlayers?.includes(user?.uid) || false;
+  const myDraftedLeaders = useMemo(
+    () => draft?.playerDrafts?.[user?.uid] || [],
+    [draft?.playerDrafts, user?.uid],
+  );
   const bannedLeaderId = draft?.bannedLeaders?.[user?.uid] || null;
+  const myPreferences = useMemo(
+    () => draft?.preferences?.[user?.uid] || [],
+    [draft?.preferences, user?.uid],
+  );
   const myPlayerState = draft?.playerStates?.[user?.uid] || {};
   const hasCompletedBans = myPlayerState.hasCompletedBans || false;
   const selectedLeaders = draft?.selectedLeaders || {};
@@ -60,102 +76,126 @@ export function DraftModal({
   const otherPlayers =
     campaign?.members?.filter((id) => id !== user?.uid) || [];
 
-  // Server-synced countdown — requestAnimationFrame for smooth SVG ring
-  useEffect(() => {
-    if (!isOpen || draftPhase !== "countdown" || !countdownStartAt) {
-      setMyCountdown(5);
-      return;
-    }
-    let rafId;
-    const startMs = new Date(countdownStartAt).getTime();
-    const tick = () => {
-      const remaining = Math.max(0, 5 - (Date.now() - startMs) / 1000);
-      setMyCountdown(remaining);
-      if (remaining > 0) rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, [isOpen, draftPhase, countdownStartAt]);
+  // Server-synced countdown shared with the other draft windows
+  const myCountdown = useCountdown(countdownStartAt, {
+    seconds: DRAFT_COUNTDOWN_SECONDS,
+    enabled: isOpen && draftPhase === "countdown",
+  });
 
-  // Reset ban state when modal opens
+  // Reset ban state when modal opens (deferred to avoid a cascading render)
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) return;
+    const timer = setTimeout(() => {
       setBanStep(0);
       setLocalBanSelections({});
+      setLocalPreferences({});
       setIsSubmitting(false);
       setIsSelecting(false);
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, [isOpen]);
+
+  // Reset the "selecting" guard when the confirmation modal is dismissed
+  // (including with the browser back button), otherwise SCEGLI stays disabled.
+  useEffect(() => {
+    if (!confirmSelectOpen) setIsSelecting(false);
+  }, [confirmSelectOpen]);
 
   // Reset animation state when draft phase leaves "completed" (new draft started)
   useEffect(() => {
-    if (draftPhase !== "completed") {
-      cancelRef.current?.();
-      setRevealIndex(-1);
-      setShuffleLeader(null);
+    if (draftPhase === "completed") return;
+    cancelRef.current?.();
+    const timer = setTimeout(() => {
+      setRevealIndex(0);
+      setShuffleLeaders([]);
       setBanRevealed(false);
       setChoosingMode(false);
       setRevealState("idle");
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, [draftPhase]);
 
   // Cancel running animation when modal closes (but preserve progress)
   useEffect(() => {
-    if (!isOpen && revealState === "animating") {
-      // Stop the loop, keep revealIndex where it is
-      cancelRef.current?.();
-      setShuffleLeader(null);
+    if (isOpen || revealState !== "animating") return;
+    // Stop the loop, keep revealIndex where it is
+    cancelRef.current?.();
+    const timer = setTimeout(() => {
+      setShuffleLeaders([]);
       setRevealState("idle");
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, [isOpen, revealState]);
 
-  // Roulette reveal orchestrator — only runs when modal is open
+  // Roulette reveal orchestrator — only runs when modal is open.
+  // All rows spin continuously; one locks at a time, the others never pause.
   const runReveal = useCallback(
     async (startFrom) => {
       if (!myDraftedLeaders.length || !leaders?.length) return;
 
       let cancelled = false;
+      let spinTimer = null;
       cancelRef.current = () => {
         cancelled = true;
+        if (spinTimer) clearInterval(spinTimer);
       };
       setRevealState("animating");
 
+      const total = myDraftedLeaders.length;
+      const randomLeader = () =>
+        leaders[Math.floor(Math.random() * leaders.length)];
+      const seed = myDraftedLeaders.map(() => randomLeader());
+      setShuffleLeaders(seed);
+
+      let lockedIndex = Math.min(Math.max(0, startFrom), total);
+      setRevealIndex(lockedIndex);
+
+      // Continuous slot-machine spin for every row that is not locked yet.
+      // This keeps running during the delays between one lock and the next.
+      spinTimer = setInterval(() => {
+        if (cancelled || lockedIndex >= total) return;
+        setShuffleLeaders((prev) => {
+          const next = prev.length === total ? [...prev] : [...seed];
+          for (let index = lockedIndex; index < total; index++) {
+            next[index] = randomLeader();
+          }
+          return next;
+        });
+      }, 65);
+
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-      // Small pause before starting
-      if (startFrom <= 0) {
-        await wait(400);
-      } else {
-        await wait(200);
-      }
+      try {
+        // Small pause before the first lock
+        await wait(startFrom <= 0 ? 450 : 200);
 
-      for (let i = Math.max(0, startFrom); i < myDraftedLeaders.length; i++) {
-        if (cancelled) return;
-        setRevealIndex(i);
-
-        // Slot-machine shuffle with deceleration
-        const frames = 8 + Math.floor(Math.random() * 4);
-        for (let f = 0; f < frames; f++) {
+        for (let i = lockedIndex; i < total; i++) {
           if (cancelled) return;
-          const rand = leaders[Math.floor(Math.random() * leaders.length)];
-          setShuffleLeader(rand);
-          await wait(55 + Math.pow(f / frames, 1.8) * 160);
+          // The row keeps spinning for a moment, then locks forever.
+          await wait(1150);
+          if (cancelled) return;
+          setRevealIndex(i + 1);
+          lockedIndex = i + 1;
+          // Others keep spinning through this short beat.
+          await wait(140);
         }
-
-        // Land on actual leader
-        setShuffleLeader(null);
-        await wait(450);
+      } finally {
+        if (spinTimer) clearInterval(spinTimer);
+        spinTimer = null;
       }
 
-      // Ban reveal
-      if (bannedLeaderId && !cancelled) {
-        await wait(500);
+      if (cancelled) return;
+
+      // Ban reveal only after all five leaders have been shown
+      if (bannedLeaderId) {
+        await wait(450);
         if (cancelled) return;
         setBanRevealed(true);
-        await wait(800);
+        await wait(850);
       }
 
       if (!cancelled) {
+        setShuffleLeaders([]);
         setChoosingMode(true);
         setRevealState("done");
       }
@@ -172,9 +212,10 @@ export function DraftModal({
     if (choosingMode) return; // already done from a previous run
     if (!myDraftedLeaders.length || !leaders?.length) return;
 
-    // Determine start position
-    const startFrom = revealIndex + 1; // -1 → 0 (fresh), or resume position
-    runReveal(startFrom);
+    // Determine start position: number of already-locked leaders
+    const startFrom = revealIndex;
+    const timer = setTimeout(() => runReveal(startFrom), 0);
+    return () => clearTimeout(timer);
   }, [
     isOpen,
     draftPhase,
@@ -188,16 +229,25 @@ export function DraftModal({
   ]);
 
   // Auto-close modal after leader selection is confirmed
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (isOpen && mySelectedLeader && draftPhase === "completed") {
-      onClose();
+      onCloseRef.current();
     }
-  }, [isOpen, mySelectedLeader, draftPhase, onClose]);
+  }, [isOpen, mySelectedLeader, draftPhase]);
 
   // Handle modal close
   const handleClose = () => {
     if (draftPhase === "waiting" && isReady) {
-      onToggleReady();
+      if (isPreferenceMode) {
+        onTogglePreferenceReady?.();
+      } else {
+        onToggleReady();
+      }
     }
     onClose();
   };
@@ -217,20 +267,46 @@ export function DraftModal({
     });
   };
 
+  // Toggle the current preference for the opponent being banned.
+  // Preferences are picked from the opponent's pool, not from our own.
+  const handleSelectPreference = (leaderId) => {
+    const targetId = otherPlayers[banStep];
+    setLocalPreferences((prev) => {
+      if (prev[targetId] === leaderId) {
+        const next = { ...prev };
+        delete next[targetId];
+        return next;
+      }
+      return { ...prev, [targetId]: leaderId };
+    });
+  };
+
   // Advance to next step or submit all bans on last step
   const handleNextStep = async () => {
     if (banStep < otherPlayers.length - 1) {
       setBanStep((prev) => prev + 1);
     } else {
       setIsSubmitting(true);
-      await onSubmitBan(localBanSelections);
+      let preferenceMap = null;
+      if (isPreferenceMode) {
+        preferenceMap = {};
+        otherPlayers.forEach((targetId) => {
+          if (localPreferences[targetId]) {
+            preferenceMap[targetId] = localPreferences[targetId];
+          }
+        });
+      }
+      await onSubmitBan(localBanSelections, preferenceMap);
       setIsSubmitting(false);
     }
   };
 
   // Render waiting phase
   const renderWaitingPhase = () => {
-    const readyCount = draft?.readyPlayers?.length || 0;
+    const readyList = isPreferenceMode
+      ? draft?.preferenceReadyPlayers || []
+      : draft?.readyPlayers || [];
+    const readyCount = readyList.length;
     const totalPlayers = campaign?.members?.length || 0;
 
     return (
@@ -249,8 +325,7 @@ export function DraftModal({
             <div className="ready-players">
               {campaign?.members?.map((memberId) => {
                 const memberData = campaign.memberDetails?.[memberId];
-                const isPlayerReady =
-                  draft?.readyPlayers?.includes(memberId) || false;
+                const isPlayerReady = readyList.includes(memberId);
 
                 return (
                   <div
@@ -281,7 +356,9 @@ export function DraftModal({
         <div className="draft-modal-footer">
           <button
             className={`draft-ready-btn ${isReady ? "ready" : ""}`}
-            onClick={onToggleReady}
+            onClick={
+              isPreferenceMode ? onTogglePreferenceReady : onToggleReady
+            }
             type="button"
           >
             {isReady ? (
@@ -303,11 +380,14 @@ export function DraftModal({
 
   // Render countdown phase — smooth SVG ring
   const renderCountdownPhase = () => {
-    const readyCount = draft?.readyPlayers?.length || 0;
+    const readyList = isPreferenceMode
+      ? draft?.preferenceReadyPlayers || []
+      : draft?.readyPlayers || [];
+    const readyCount = readyList.length;
     const totalPlayers = campaign?.members?.length || 0;
     const displaySeconds = Math.ceil(myCountdown);
     const circumference = 2 * Math.PI * 42;
-    const progress = myCountdown / 5;
+    const progress = myCountdown / DRAFT_COUNTDOWN_SECONDS;
 
     return (
       <>
@@ -345,7 +425,9 @@ export function DraftModal({
         <div className="draft-modal-footer">
           <button
             className="draft-ready-btn ready"
-            onClick={onToggleReady}
+            onClick={
+              isPreferenceMode ? onTogglePreferenceReady : onToggleReady
+            }
             type="button"
           >
             <X size={20} />
@@ -423,10 +505,14 @@ export function DraftModal({
     const currentTargetData = campaign?.memberDetails?.[currentTargetId];
     const currentTargetLeaders = draft?.playerDrafts?.[currentTargetId] || [];
     const currentStepSelection = localBanSelections[currentTargetId] || null;
+    const currentPreference = localPreferences[currentTargetId] || null;
     const isLastStep = banStep === otherPlayers.length - 1;
     const allStepsSelected = otherPlayers.every(
       (id) => !!localBanSelections[id],
     );
+    const allPreferencesSelected =
+      !isPreferenceMode ||
+      otherPlayers.every((id) => !!localPreferences[id]);
 
     return (
       <>
@@ -434,7 +520,9 @@ export function DraftModal({
           {/* Step progress header */}
           <div className="ban-step-header">
             <span className="ban-step-label">
-              Ban {banStep + 1} di {otherPlayers.length}
+              {isPreferenceMode
+                ? `Ban e preferenza ${banStep + 1} di ${otherPlayers.length}`
+                : `Ban ${banStep + 1} di ${otherPlayers.length}`}
             </span>
             <div className="ban-step-dots">
               {otherPlayers.map((targetId, i) => (
@@ -524,6 +612,50 @@ export function DraftModal({
               );
             })}
           </div>
+
+          {isPreferenceMode && (
+            <div className="preference-picker">
+              <div className="preference-picker-head">
+                <Star size={15} />
+                <span>
+                  Preferenza per {currentTargetData?.username || "l'avversario"}
+                </span>
+                <em>se la sceglie, +10%</em>
+              </div>
+              <div className="preference-leaders">
+                {currentTargetLeaders.map((leaderId) => {
+                  const leader = getLeaderById(leaderId);
+                  if (!leader) return null;
+                  const selected = currentPreference === leaderId;
+                  return (
+                    <button
+                      key={leaderId}
+                      type="button"
+                      className={`preference-leader-card ${selected ? "selected" : ""}`}
+                      onClick={() => handleSelectPreference(leaderId)}
+                      aria-pressed={selected}
+                    >
+                      <img
+                        src={leader.leaderIconPath}
+                        alt=""
+                        className="preference-leader-icon"
+                      />
+                      <span className="preference-leader-name">
+                        {leader.name}
+                        {leader.variant ? ` (${leader.variant})` : ""}
+                      </span>
+                      {selected && <Check size={15} />}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="preference-hint">
+                Scegli un leader del suo pool: se lo sceglierà, riceverà +10%
+                per ogni preferenza. Se verrà bannato, la preferenza non darà
+                alcun bonus.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="draft-modal-divider"></div>
@@ -547,7 +679,10 @@ export function DraftModal({
             onClick={handleNextStep}
             disabled={
               !currentStepSelection ||
-              (isLastStep && !allStepsSelected) ||
+              (isPreferenceMode && !currentPreference) ||
+              (isLastStep &&
+                (!allStepsSelected ||
+                  (isPreferenceMode && !allPreferencesSelected))) ||
               isSubmitting
             }
             type="button"
@@ -560,7 +695,9 @@ export function DraftModal({
             ) : isLastStep ? (
               <>
                 <Check size={18} />
-                Conferma tutti i ban
+                {isPreferenceMode
+                  ? "Conferma ban e preferenze"
+                  : "Conferma tutti i ban"}
               </>
             ) : (
               <>
@@ -589,31 +726,6 @@ export function DraftModal({
 
     return (
       <div className="draft-modal-body">
-        {/* Progress indicator during reveal */}
-        {!choosingMode && (
-          <div className="reveal-progress">
-            <span className="reveal-progress-text">
-              Leader{" "}
-              {Math.max(1, Math.min(revealIndex + 1, myDraftedLeaders.length))}{" "}
-              di {myDraftedLeaders.length}
-            </span>
-            <div className="reveal-progress-dots">
-              {myDraftedLeaders.map((_, i) => (
-                <div
-                  key={i}
-                  className={`reveal-dot ${
-                    i < revealIndex || (i === revealIndex && !shuffleLeader)
-                      ? "done"
-                      : i === revealIndex
-                        ? "active"
-                        : ""
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Leader cards */}
         <div className="reveal-leaders">
           {myDraftedLeaders.map((leaderId, i) => {
@@ -621,26 +733,25 @@ export function DraftModal({
             if (!actualLeader) return null;
 
             const isBanned = leaderId === bannedLeaderId;
-            const isHidden = i > revealIndex && !choosingMode;
-            const isShuffling =
-              i === revealIndex && shuffleLeader && !choosingMode;
+            const isRevealed = i < revealIndex;
+            // Every row that has not locked yet keeps spinning (all 5 at first)
+            const isShuffling = !choosingMode && !isRevealed;
             const isJustRevealed =
-              i === revealIndex && !shuffleLeader && !choosingMode;
-            const displayLeader = isShuffling ? shuffleLeader : actualLeader;
-
-            if (isHidden) {
-              return (
-                <div key={leaderId} className="reveal-card mystery">
-                  <div className="mystery-placeholder">
-                    <span className="mystery-mark">?</span>
-                  </div>
-                </div>
-              );
-            }
+              !choosingMode && isRevealed && i === revealIndex - 1;
+            const displayLeader = isShuffling
+              ? shuffleLeaders[i] || actualLeader
+              : actualLeader;
+            const palette = getLeaderPalette(actualLeader);
+            const prefCount = myPreferences.filter(
+              (id) => id === leaderId,
+            ).length;
+            const showPreference =
+              prefCount > 0 && (isRevealed || choosingMode);
 
             return (
               <div
                 key={leaderId}
+                style={paletteStyle(palette)}
                 className={[
                   "reveal-card",
                   isShuffling && "shuffling",
@@ -682,7 +793,20 @@ export function DraftModal({
                   </LeaderTooltip>
                 )}
                 <div className="reveal-leader-info">
-                  <div className="reveal-leader-name">{displayLeader.name}</div>
+                  <div className="reveal-leader-name-row">
+                    <div className="reveal-leader-name">
+                      {displayLeader.name}
+                    </div>
+                    {showPreference && (
+                      <span
+                        className="reveal-pref-pill"
+                        title={`Preferenza ×${prefCount} (+${prefCount * 10}%)`}
+                      >
+                        <Star size={11} />
+                        {prefCount}
+                      </span>
+                    )}
+                  </div>
                   {displayLeader.variant && (
                     <div className="reveal-leader-variant">
                       {displayLeader.variant}
@@ -731,13 +855,17 @@ export function DraftModal({
   const getTitle = () => {
     switch (draftPhase) {
       case "waiting":
-        return "Pronto per il Draft?";
+        return isPreferenceMode
+          ? "Pronto per il Draft Preferenze?"
+          : "Pronto per il Draft?";
       case "countdown":
         return "Inizia il Draft!";
       case "active":
         if (hasCompletedBans) return "In Attesa...";
         if (otherPlayers.length === 0) return "Nessun Ban";
-        return `Banna un Leader — ${banStep + 1} / ${otherPlayers.length}`;
+        return isPreferenceMode
+          ? `Ban e Preferenza — ${banStep + 1} / ${otherPlayers.length}`
+          : `Banna un Leader — ${banStep + 1} / ${otherPlayers.length}`;
       case "completed":
         if (mySelectedLeader) return "Risultati Draft";
         if (choosingMode) return "Scegli il tuo Leader!";
@@ -754,7 +882,6 @@ export function DraftModal({
       isOpen={isOpen}
       onClose={handleClose}
       title={getTitle()}
-      size="large"
     >
       <div className="draft-modal-container">
         {draftPhase === "waiting" && renderWaitingPhase()}

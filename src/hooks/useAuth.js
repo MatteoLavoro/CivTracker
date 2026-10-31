@@ -13,6 +13,7 @@ export function useAuth() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let errorTimer;
     try {
       const unsubscribe = onAuthChange((user) => {
         setUser(user);
@@ -28,8 +29,12 @@ export function useAuth() {
 
       return unsubscribe;
     } catch (err) {
-      setError(err.message);
-      setLoading(false);
+      // Deferred so the error is not reported during the effect's render pass
+      errorTimer = setTimeout(() => {
+        setError(err.message);
+        setLoading(false);
+      }, 0);
+      return () => clearTimeout(errorTimer);
     }
   }, []);
 

@@ -1,0 +1,3 @@
+[Consiglio dei ministri] {Abilità esclusiva}
+
+Le città fondate in collina ricevono [ScienceIcon] Scienza e [CultureIcon] Cultura pari al 15% della [FaithIcon] Fede generata. Le unità hanno +4 alla [StrengthIcon] Forza di combattimento in collina.

@@ -1,0 +1,3 @@
+[Doni per il Tlatoani] {Abilità esclusiva}
+
+Le risorse di lusso nel suo territorio forniscono 1 [AmenitiesIcon] Attrattiva a 2 città aggiuntive. Le unità militari ricevono +1 alla [StrengthIcon] Forza di combattimento in attacco per ogni diversa risorsa di lusso migliorata nelle terre azteche.

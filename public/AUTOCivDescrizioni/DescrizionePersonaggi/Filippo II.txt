@@ -1,0 +1,3 @@
+[El Escorial] {Abilità esclusiva}
+
+Gli Inquisitori possono rimuovere l'eresia una volta in più. Gli Inquisitori eliminano al 100% la presenza delle altre religioni. Le unità militari e religiose hanno +5 alla [StrengthIcon] Forza di combattimento contro i giocatori che seguono altre religioni.

@@ -1,0 +1,7 @@
+[Folgore del nord] {Abilità esclusiva}
+
+Permette di eseguire incursioni costiere con tutte le unità navali da mischia e fornisce +50% alla [ProductionIcon] Produzione per la costruzione di unità navali da mischia. Incursioni costiere e saccheggi di miniere forniscono [ScienceIcon] Scienza oltre all' [GoldIcon] Oro. Incursioni costiere e saccheggi di Cave, Pascoli, Piantagioni e Campi forniscono [CultureIcon] Cultura oltre alla [FaithIcon] Fede. La scoperta della Vela sblocca l'unità esclusiva Nave lunga vichinga.
+
+[Nave lunga vichinga] {Unità speciali}
+
+Unità navale esclusiva norvegese di epoca antica che sostituisce la Galea. Può saccheggiare le coste nemiche e catturare le unità civili adiacenti utilizzando la sua abilità di incursione costiera. Quando si trova in acque costiere ha 4 punti [MovementIcon] movimento.

@@ -28,7 +28,8 @@ export function PlayerDraftInfoModal({
 }) {
   if (!playerDraftData || !leaders) return null;
 
-  const { draftedLeaders, bannedLeader, selectedLeader } = playerDraftData;
+  const { draftedLeaders, bannedLeader, selectedLeader, preferences = [] } =
+    playerDraftData;
 
   const getLeaderById = (leaderId) => {
     return leaders?.find((l) => l.id === leaderId);
@@ -39,7 +40,6 @@ export function PlayerDraftInfoModal({
       isOpen={isOpen}
       onClose={onClose}
       title={`Draft di ${playerName}`}
-      size="large"
     >
       <div className="player-draft-info-modal-container">
         <div className="player-draft-info-body">
@@ -50,6 +50,9 @@ export function PlayerDraftInfoModal({
 
               const isBanned = leaderId === bannedLeader;
               const isSelected = leaderId === selectedLeader;
+              const preferenceCount = preferences.filter(
+                (id) => id === leaderId,
+              ).length;
 
               return (
                 <div
@@ -82,6 +85,12 @@ export function PlayerDraftInfoModal({
                     <div className="player-draft-leader-civ">
                       {leader.civilization}
                     </div>
+                    {preferenceCount > 0 && (
+                      <div className="player-draft-pref">
+                        Preferenza ×{preferenceCount} (+
+                        {preferenceCount * 10}%)
+                      </div>
+                    )}
                   </div>
 
                   {isBanned && (

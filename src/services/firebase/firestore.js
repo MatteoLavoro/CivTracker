@@ -141,7 +141,12 @@ export const queryDocuments = async (collectionName, conditions = []) => {
 };
 
 // Real-time listener for a document
-export const subscribeToDocument = (collectionName, documentId, callback) => {
+export const subscribeToDocument = (
+  collectionName,
+  documentId,
+  callback,
+  onError,
+) => {
   return onSnapshot(
     doc(db, collectionName, documentId),
     (doc) => {
@@ -154,6 +159,7 @@ export const subscribeToDocument = (collectionName, documentId, callback) => {
     },
     (error) => {
       console.error("Error listening to document:", error);
+      if (onError) onError(error);
     },
   );
 };
@@ -163,6 +169,7 @@ export const subscribeToCollection = (
   collectionName,
   callback,
   conditions = [],
+  onError,
 ) => {
   let q = collection(db, collectionName);
 
@@ -194,6 +201,7 @@ export const subscribeToCollection = (
     },
     (error) => {
       console.error("Error listening to collection:", error);
+      if (onError) onError(error);
     },
   );
 };

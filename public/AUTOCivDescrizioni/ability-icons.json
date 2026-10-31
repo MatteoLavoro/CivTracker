@@ -1,0 +1,499 @@
+{
+  "leaders": {
+    "Abraham Lincoln": {
+      "Proclama di Emancipazione": "/IconeAbilità/icon_leader_abraham_lincoln.png"
+    },
+    "Alessandro": {
+      "Fino ai confini del mondo": "/IconeAbilità/icon_leader_alexander.png",
+      "Etèro": "/IconeAbilità/icon_unit_macedonian_hetairoi.png"
+    },
+    "Amanitore": {
+      "Kandake di Meroe": "/IconeAbilità/icon_leader_amanitore.png"
+    },
+    "Ambiorix": {
+      "Re degli Eburoni": "/IconeAbilità/icon_leader_ambiorix.png"
+    },
+    "Ba Trieu": {
+      "Scacciare gli aggressori": "/IconeAbilità/icon_leader_lady_trieu.png"
+    },
+    "Basilio II": {
+      "Porfirogenito": "/IconeAbilità/icon_leader_basil.png",
+      "Tagma": "/IconeAbilità/icon_unit_byzantine_tagma.png"
+    },
+    "Caterina de' Medici (La Magnifica)": {
+      "La magnificenza di Caterina": "/IconeAbilità/icon_leader_catherine_de_medici_alt.png"
+    },
+    "Caterina de' Medici (Regina Nera)": {
+      "Lo Squadrone Volante di Caterina": "/IconeAbilità/icon_leader_catherine_de_medici.png"
+    },
+    "Chandragupta": {
+      "Arthashastra": "/IconeAbilità/icon_leader_chandragupta.png"
+    },
+    "Ciro": {
+      "La caduta di Babilonia": "/IconeAbilità/icon_leader_cyrus.png"
+    },
+    "Cleopatra (Egiziana)": {
+      "La sposa del Mediterraneo": "/IconeAbilità/icon_leader_cleopatra.png"
+    },
+    "Cleopatra (Tolemaica)": {
+      "L'arrivo di Hapi": "/IconeAbilità/icon_leader_cleopatra_alt.png"
+    },
+    "Cristina": {
+      "Minerva del Nord": "/IconeAbilità/icon_leader_kristina.png",
+      "Biblioteca della Regina": "/IconeAbilità/icon_building_queens_bibliotheque.png"
+    },
+    "Didone": {
+      "Fondazione di Cartagine": "/IconeAbilità/icon_leader_dido.png"
+    },
+    "Edvige": {
+      "Unione Lituana": "/IconeAbilità/icon_leader_jadwiga.png"
+    },
+    "Eleonora d'Aquitania (Francia)": {
+      "Corte dell'Amore": "/IconeAbilità/icon_leader_eleanor_france.png"
+    },
+    "Eleonora d'Aquitania (Inghilterra)": {
+      "Corte dell'Amore": "/IconeAbilità/icon_leader_eleanor_england.png"
+    },
+    "Elisabetta I": {
+      "Il Retaggio di Drake": "/IconeAbilità/icon_leader_elizabeth.png"
+    },
+    "Federico Barbarossa": {
+      "Sacro Romano Imperatore": "/IconeAbilità/icon_leader_barbarossa.png"
+    },
+    "Filippo II": {
+      "El Escorial": "/IconeAbilità/icon_leader_philip_ii.png"
+    },
+    "Gandhi": {
+      "Satyagraha": "/IconeAbilità/icon_leader_gandhi.png"
+    },
+    "Genghis Khan": {
+      "Orda mongola": "/IconeAbilità/icon_leader_genghis_khan.png"
+    },
+    "Gilgamesh": {
+      "L'eredità di Enkidu": "/IconeAbilità/icon_leader_gilgamesh.png"
+    },
+    "Gitarja": {
+      "Dea dei tre mondi": "/IconeAbilità/icon_leader_gitarja.png"
+    },
+    "Giulio Cesare": {
+      "Veni, Vidi, Vici": "/IconeAbilità/icon_leader_julius_caesar.png"
+    },
+    "Gorgo": {
+      "Termopili": "/IconeAbilità/icon_leader_gorgo.png"
+    },
+    "Guglielmina": {
+      "Radio Oranje": "/IconeAbilità/icon_leader_wilhelmina.png"
+    },
+    "Hammurabi": {
+      "Ninu Ilu Sirum": "/IconeAbilità/icon_leader_hammurabi.png"
+    },
+    "Harald Hardrada (Konge)": {
+      "Folgore del nord": "/IconeAbilità/icon_leader_hardrada.png",
+      "Nave lunga vichinga": "/IconeAbilità/icon_unit_norwegian_longship.png"
+    },
+    "Harald Hardrada (Variago)": {
+      "Guardia variaga": "/IconeAbilità/icon_leader_harald_alt.png"
+    },
+    "Hojo Tokimune": {
+      "Vento divino": "/IconeAbilità/icon_leader_hojo.png"
+    },
+    "Jayavarman VII": {
+      "Monasteri del re": "/IconeAbilità/icon_leader_jayavarman.png"
+    },
+    "João III": {
+      "Porta do Cerco": "/IconeAbilità/icon_leader_joao_iii.png"
+    },
+    "John Curtin": {
+      "Baluardo di civiltà": "/IconeAbilità/icon_leader_john_curtin.png"
+    },
+    "Kublai Khan (Cina)": {
+      "Gerege": "/IconeAbilità/icon_leader_kublai_khan_china.png"
+    },
+    "Kublai Khan (Mongolia)": {
+      "Gerege": "/IconeAbilità/icon_leader_kublai_khan_mongolia.png"
+    },
+    "Kupe": {
+      "Il Viaggio di Kupe": "/IconeAbilità/icon_leader_kupe.png"
+    },
+    "Lautaro": {
+      "Falco Veloce": "/IconeAbilità/icon_leader_lautaro.png"
+    },
+    "Ludovico II": {
+      "Re Cigno": "/IconeAbilità/icon_leader_ludwig.png"
+    },
+    "Mansa Musa": {
+      "Mercanti del Sahel": "/IconeAbilità/icon_leader_mansa_musa.png"
+    },
+    "Mattia Corvino": {
+      "Re Corvo": "/IconeAbilità/icon_leader_matthias_corvinus.png",
+      "Armata Nera": "/IconeAbilità/icon_unit_hungary_black_army.png"
+    },
+    "Menelik II": {
+      "Consiglio dei ministri": "/IconeAbilità/icon_leader_menelik.png"
+    },
+    "Montezuma": {
+      "Doni per il Tlatoani": "/IconeAbilità/icon_leader_montezuma.png"
+    },
+    "Mvemba a Nzinga": {
+      "Convertito religioso": "/IconeAbilità/icon_leader_mvemba.png"
+    },
+    "Nadir Shah": {
+      "Spada della Persia": "/IconeAbilità/icon_leader_nader_shah.png"
+    },
+    "Nzinga Mbande": {
+      "Regina di Ndongo e Matamba": "/IconeAbilità/icon_leader_nzinga_mbande.png"
+    },
+    "Pachacuti": {
+      "Qhapaq Nan": "/IconeAbilità/icon_improvement_mountain_road.png"
+    },
+    "Pedro II": {
+      "Magnanimo": "/IconeAbilità/icon_leader_pedro.png"
+    },
+    "Pericle": {
+      "Circonfuso dalla Gloria": "/IconeAbilità/icon_leader_pericles.png"
+    },
+    "Pietro": {
+      "La Grande Ambasciata": "/IconeAbilità/icon_leader_peter_great.png"
+    },
+    "Poundmaker": {
+      "Condizioni favorevoli": "/IconeAbilità/icon_leader_poundmaker.png"
+    },
+    "Qin Shi Huang (Mandato Divino)": {
+      "Primo imperatore": "/IconeAbilità/icon_leader_qin.png"
+    },
+    "Qin Shi Huang (Unificatore)": {
+      "I trentasei stratagemmi": "/IconeAbilità/icon_leader_qin_alt.png"
+    },
+    "Ramses II": {
+      "Abu Simbel": "/IconeAbilità/icon_leader_ramses.png"
+    },
+    "Robert Bruce": {
+      "Bannockburn": "/IconeAbilità/icon_leader_robert_the_bruce.png"
+    },
+    "Saladino (Sultano)": {
+      "La Rettitudine della Fede": "/IconeAbilità/icon_leader_saladin.png"
+    },
+    "Saladino (Visir)": {
+      "Il Vittorioso": "/IconeAbilità/icon_leader_saladin_alt.png"
+    },
+    "Sejong": {
+      "Hangul": "/IconeAbilità/icon_leader_sejong.png"
+    },
+    "Seondeok": {
+      "Hwarang": "/IconeAbilità/icon_leader_seondeok.png"
+    },
+    "Shaka": {
+      "Amabutho": "/IconeAbilità/icon_leader_shaka.png"
+    },
+    "Simón Bolívar": {
+      "Campaña Admirable": "/IconeAbilità/icon_leader_simon_bolivar.png"
+    },
+    "Solimano (Kanuni)": {
+      "Gran Visir": "/IconeAbilità/icon_leader_suleiman.png",
+      "Giannizzero": "/IconeAbilità/icon_unit_suleiman_janissary.png"
+    },
+    "Solimano (Muhtesem)": {
+      "Il Magnifico": "/IconeAbilità/icon_leader_suleiman_alt.png"
+    },
+    "Sundiata Keita": {
+      "Sogolon": "/IconeAbilità/icon_leader_sundiata_keita.png"
+    },
+    "Tamara": {
+      "Gloria del mondo, del Regno e della Fede": "/IconeAbilità/icon_leader_tamar.png"
+    },
+    "Teddy Roosevelt (L'alce)": {
+      "Antichità e Parchi": "/IconeAbilità/icon_leader_t_roosevelt.png"
+    },
+    "Teddy Roosevelt (Rough Rider)": {
+      "Il corollario di Roosevelt": "/IconeAbilità/icon_leader_t_roosevelt_roughrider.png",
+      "Rough Rider": "/IconeAbilità/icon_unit_american_rough_rider.png"
+    },
+    "Teodora": {
+      "Metanoia": "/IconeAbilità/icon_leader_theodora.png"
+    },
+    "Tokugawa": {
+      "Bakuhan": "/IconeAbilità/icon_leader_tokugawa.png"
+    },
+    "Tomiri": {
+      "Uccisore di Ciro": "/IconeAbilità/icon_leader_tomyris.png"
+    },
+    "Traiano": {
+      "Colonna Traiana": "/IconeAbilità/icon_leader_trajan.png"
+    },
+    "Vittoria (Età dell'Impero)": {
+      "Pax Britannica": "/IconeAbilità/icon_leader_victoria.png",
+      "Giubba Rossa": "/IconeAbilità/icon_unit_english_redcoat.png"
+    },
+    "Vittoria (Età del Vapore)": {
+      "Età del vapore": "/IconeAbilità/icon_leader_victoria_alt.png"
+    },
+    "Wac-Chanil-Ahau": {
+      "Ix Mutal Ajaw": "/IconeAbilità/icon_leader_lady_six_sky.png"
+    },
+    "Wilfrid Laurier": {
+      "L'ultimo West": "/IconeAbilità/icon_leader_laurier.png"
+    },
+    "Wu Zetian": {
+      "Manuale delle trappole": "/IconeAbilità/icon_leader_wu_zetian.png"
+    },
+    "Yongle": {
+      "Lijia": "/IconeAbilità/icon_leader_yongle.png"
+    }
+  },
+  "civs": {
+    "America": {
+      "Padri fondatori": "/IconeAbilità/icon_civilization_america.png",
+      "P-51 Mustang": "/IconeAbilità/icon_unit_american_p51.png",
+      "Studio cinematografico": "/IconeAbilità/icon_building_film_studio.png"
+    },
+    "Macedonia": {
+      "Fusione ellenistica": "/IconeAbilità/icon_civilization_macedon.png",
+      "Ipaspista": "/IconeAbilità/icon_unit_macedonian_hypaspist.png",
+      "Basilikoi Paides": "/IconeAbilità/icon_building_basilikoi_paides.png"
+    },
+    "Nubia": {
+      "Ta-Seti": "/IconeAbilità/icon_civilization_nubia.png",
+      "Arciere Pìtati": "/IconeAbilità/icon_unit_nubian_pitati.png",
+      "Piramide nubiana": "/IconeAbilità/icon_improvement_pyramid.png"
+    },
+    "Gallia": {
+      "Cultura di Hallstatt": "/IconeAbilità/icon_civilization_gaul.png",
+      "Gesate": "/IconeAbilità/icon_unit_gaul_gaesatae.png",
+      "Oppidum": "/IconeAbilità/icon_district_oppidum.png"
+    },
+    "Vietnam": {
+      "Delta del Fiume dei Nove Draghi": "/IconeAbilità/icon_civilization_vietnam.png",
+      "Voi Chiến": "/IconeAbilità/icon_unit_vietnamese_voi_chien.png",
+      "Thành": "/IconeAbilità/icon_district_thanh.png"
+    },
+    "Bisanzio": {
+      "Taxis": "/IconeAbilità/icon_civilization_byzantium.png",
+      "Dromone": "/IconeAbilità/icon_unit_byzantine_dromon.png",
+      "Ippodromo": "/IconeAbilità/icon_district_hippodrome.png"
+    },
+    "Francia": {
+      "Grand Tour": "/IconeAbilità/icon_civilization_france.png",
+      "Garde Impériale": "/IconeAbilità/icon_unit_french_garde_imperiale.png",
+      "Château": "/IconeAbilità/icon_improvement_chateau.png"
+    },
+    "India": {
+      "Dharma": "/IconeAbilità/icon_civilization_india.png",
+      "Varu": "/IconeAbilità/icon_unit_indian_varu.png",
+      "Pozzo a gradini": "/IconeAbilità/icon_improvement_stepwell.png"
+    },
+    "Persia": {
+      "Satrapie": "/IconeAbilità/icon_civilization_persia.png",
+      "Immortale": "/IconeAbilità/icon_unit_persian_immortal.png",
+      "Pairidaeza": "/IconeAbilità/icon_improvement_pairidaeza.png"
+    },
+    "Egitto": {
+      "Iteru": "/IconeAbilità/icon_civilization_egypt.png",
+      "Arciere Maryannu su carro": "/IconeAbilità/icon_unit_egyptian_chariot_archer.png",
+      "Sfinge": "/IconeAbilità/icon_improvement_sphinx.png"
+    },
+    "Svezia": {
+      "Premio Nobel": "/IconeAbilità/icon_civilization_sweden.png",
+      "Karoliner": "/IconeAbilità/icon_unit_sweden_carolean.png",
+      "Museo all'aperto": "/IconeAbilità/icon_improvement_open_air_museum.png"
+    },
+    "Fenicia": {
+      "Colonie nel Mediterraneo": "/IconeAbilità/icon_civilization_phoenicia.png",
+      "Bireme": "/IconeAbilità/icon_unit_phoenicia_bireme.png",
+      "Kothon": "/IconeAbilità/icon_district_cothon.png"
+    },
+    "Polonia": {
+      "Libertà dorata": "/IconeAbilità/icon_civilization_poland.png",
+      "Ussaro alato": "/IconeAbilità/icon_unit_polish_hussar.png",
+      "Sukiennice": "/IconeAbilità/icon_building_sukiennice.png"
+    },
+    "Inghilterra": {
+      "Officina del mondo": "/IconeAbilità/icon_civilization_england.png",
+      "Lupo di mare": "/IconeAbilità/icon_unit_english_seadog.png",
+      "Cantiere della Marina Reale": "/IconeAbilità/icon_district_royal_navy_dockyard.png"
+    },
+    "Germania": {
+      "Città libere imperiali": "/IconeAbilità/icon_civilization_germany.png",
+      "U-Boot": "/IconeAbilità/icon_unit_german_uboat.png",
+      "Hansa": "/IconeAbilità/icon_district_hansa.png"
+    },
+    "Spagna": {
+      "Flotta del tesoro": "/IconeAbilità/icon_civilization_spain.png",
+      "Conquistador": "/IconeAbilità/icon_unit_spanish_conquistador.png",
+      "Misión": "/IconeAbilità/icon_improvement_mission.png"
+    },
+    "Mongolia": {
+      "Örtöö": "/IconeAbilità/icon_civilization_mongolia.png",
+      "Keshig": "/IconeAbilità/icon_unit_mongolian_keshig.png",
+      "Ordu": "/IconeAbilità/icon_building_ordu.png"
+    },
+    "Sumeria": {
+      "Missioni epiche": "/IconeAbilità/icon_civilization_sumeria.png",
+      "Carro sumero": "/IconeAbilità/icon_unit_sumerian_war_cart.png",
+      "Ziqqurat": "/IconeAbilità/icon_improvement_ziggurat.png"
+    },
+    "Indonesia": {
+      "Grande Nusantara": "/IconeAbilità/icon_civilization_indonesia.png",
+      "Jong": "/IconeAbilità/icon_unit_indonesian_jong.png",
+      "Kampung": "/IconeAbilità/icon_improvement_kampung.png"
+    },
+    "Roma": {
+      "Tutte le strade portano a Roma": "/IconeAbilità/icon_civilization_rome.png",
+      "Legione": "/IconeAbilità/icon_unit_roman_legion.png",
+      "Terme": "/IconeAbilità/icon_district_bath.png"
+    },
+    "Grecia": {
+      "La Repubblica di Platone": "/IconeAbilità/icon_civilization_greece.png",
+      "Oplita": "/IconeAbilità/icon_unit_greek_hoplite.png",
+      "Acropoli": "/IconeAbilità/icon_district_acropolis.png"
+    },
+    "Olanda": {
+      "Grote Rivieren": "/IconeAbilità/icon_civilization_netherlands.png",
+      "De Zeven Provinciën": "/IconeAbilità/icon_unit_de_zeven_provincien.png",
+      "Polder": "/IconeAbilità/icon_improvement_polder.png"
+    },
+    "Babilonia": {
+      "Enuma Anu Enlil": "/IconeAbilità/icon_civilization_babylon_stk.png",
+      "Sabum Kibittum": "/IconeAbilità/icon_unit_babylonian_sabum_kibittum.png",
+      "Palgum": "/IconeAbilità/icon_building_palgum.png"
+    },
+    "Norvegia": {
+      "Knarr": "/IconeAbilità/icon_civilization_norway.png",
+      "Berserker": "/IconeAbilità/icon_unit_norwegian_berserker.png",
+      "Chiesa di legno": "/IconeAbilità/icon_building_stave_church.png"
+    },
+    "Giappone": {
+      "Restaurazione Meiji": "/IconeAbilità/icon_civilization_japan.png",
+      "Samurai": "/IconeAbilità/icon_unit_japanese_samurai.png",
+      "Fabbrica di elettronica": "/IconeAbilità/icon_building_electronics_factory.png"
+    },
+    "Khmer": {
+      "Grandi baray": "/IconeAbilità/icon_civilization_khmer.png",
+      "Domrey": "/IconeAbilità/icon_unit_khmer_domrey.png",
+      "Prasat": "/IconeAbilità/icon_building_prasat.png"
+    },
+    "Portogallo": {
+      "Casa da Índia": "/IconeAbilità/icon_civilization_portugal.png",
+      "Caracca": "/IconeAbilità/icon_unit_portuguese_nau.png",
+      "Scuola di navigazione": "/IconeAbilità/icon_building_navigation_school.png",
+      "Feitoria": "/IconeAbilità/icon_improvement_feitoria.png"
+    },
+    "Australia": {
+      "Il paese agli antipodi": "/IconeAbilità/icon_civilization_australia.png",
+      "Digger": "/IconeAbilità/icon_unit_digger.png",
+      "Allevamento nell'Outback": "/IconeAbilità/icon_improvement_outback_station.png"
+    },
+    "Cina": {
+      "Ciclo dinastico": "/IconeAbilità/icon_civilization_china.png",
+      "Tigre accucciata": "/IconeAbilità/icon_unit_chinese_crouching_tiger.png",
+      "Grande Muraglia": "/IconeAbilità/icon_improvement_great_wall.png"
+    },
+    "Maori": {
+      "Mana": "/IconeAbilità/icon_civilization_maori.png",
+      "Toa": "/IconeAbilità/icon_unit_maori_toa.png",
+      "Marae": "/IconeAbilità/icon_building_marae.png",
+      "Pa": "/IconeAbilità/icon_improvement_maori_pa.png"
+    },
+    "Mapuche": {
+      "Toqui": "/IconeAbilità/icon_civilization_mapuche.png",
+      "Scorridore Malón": "/IconeAbilità/icon_unit_mapuche_malon_raider.png",
+      "Chemamull": "/IconeAbilità/icon_improvement_chemamull.png"
+    },
+    "Mali": {
+      "Canzoni del griot": "/IconeAbilità/icon_civilization_mali.png",
+      "Cavaliere Mandekalu": "/IconeAbilità/icon_unit_mali_mandekalu_cavalry.png",
+      "Suguba": "/IconeAbilità/icon_district_suguba.png"
+    },
+    "Ungheria": {
+      "Perla del Danubio": "/IconeAbilità/icon_civilization_hungary.png",
+      "Ussaro": "/IconeAbilità/icon_unit_hungary_huszar.png",
+      "Bagno termale": "/IconeAbilità/icon_building_thermal_bath.png"
+    },
+    "Etiopia": {
+      "Eredità di Axum": "/IconeAbilità/icon_civilization_ethiopia.png",
+      "Cavalleria Oromo": "/IconeAbilità/icon_unit_ethiopian_oromo_cavalry.png",
+      "Chiesa nella roccia": "/IconeAbilità/icon_improvement_rock_hewn_church.png"
+    },
+    "Aztechi": {
+      "La leggenda dei Cinque Soli": "/IconeAbilità/icon_civilization_aztec.png",
+      "Guerriero aquila": "/IconeAbilità/icon_unit_aztec_eagle_warrior.png",
+      "Tlachtli": "/IconeAbilità/icon_building_tlachtli.png"
+    },
+    "Congo": {
+      "Nkisi": "/IconeAbilità/icon_civilization_kongo.png",
+      "Ngao Mbeba": "/IconeAbilità/icon_unit_kongo_shield_bearer.png",
+      "Mbanza": "/IconeAbilità/icon_district_mbanza.png"
+    },
+    "Inca": {
+      "Mit'a": "/IconeAbilità/icon_civilization_inca.png",
+      "Warak'aq": "/IconeAbilità/icon_unit_inca_warakaq.png",
+      "Fattoria a terrazze": "/IconeAbilità/icon_improvement_terrace_farm.png"
+    },
+    "Brasile": {
+      "Amazzonia": "/IconeAbilità/icon_civilization_brazil.png",
+      "Minas Gerais": "/IconeAbilità/icon_unit_brazilian_minas_geraes.png",
+      "Carnevale": "/IconeAbilità/icon_district_street_carnival.png",
+      "Copacabana": "/IconeAbilità/icon_civilization_brazil.png"
+    },
+    "Russia": {
+      "Madre Russia": "/IconeAbilità/icon_civilization_russia.png",
+      "Cosacco": "/IconeAbilità/icon_unit_russian_cossack.png",
+      "Lavra": "/IconeAbilità/icon_district_lavra.png"
+    },
+    "Cree": {
+      "Nîhithaw": "/IconeAbilità/icon_civilization_cree.png",
+      "Okihtcitaw": "/IconeAbilità/icon_unit_cree_okihtcitaw.png",
+      "Mekewap": "/IconeAbilità/icon_improvement_mekewap.png"
+    },
+    "Scozia": {
+      "Illuminismo scozzese": "/IconeAbilità/icon_civilization_scotland.png",
+      "Highlander": "/IconeAbilità/icon_unit_scottish_highlander.png",
+      "Campo da golf": "/IconeAbilità/icon_improvement_golf_course.png"
+    },
+    "Arabia": {
+      "L'ultimo Profeta": "/IconeAbilità/icon_civilization_arabia.png",
+      "Mamelucco": "/IconeAbilità/icon_unit_arabian_mamluk.png",
+      "Madrasa": "/IconeAbilità/icon_building_madrasa.png"
+    },
+    "Corea": {
+      "Tre Regni": "/IconeAbilità/icon_civilization_korea.png",
+      "Hwacha": "/IconeAbilità/icon_unit_korean_hwacha.png",
+      "Seowon": "/IconeAbilità/icon_district_seowon.png"
+    },
+    "Zulù": {
+      "Isibongo": "/IconeAbilità/icon_civilization_zulu.png",
+      "Impi": "/IconeAbilità/icon_unit_zulu_impi.png",
+      "Ikanda": "/IconeAbilità/icon_district_ikanda.png"
+    },
+    "Gran Colombia": {
+      "Ejército Patriota": "/IconeAbilità/icon_civilization_gran_colombia.png",
+      "Comandante General": "/IconeAbilità/icon_unit_comandante_general.png",
+      "Llanero": "/IconeAbilità/icon_unit_colombian_llanero.png",
+      "Hacienda": "/IconeAbilità/icon_improvement_hacienda.png"
+    },
+    "Impero Ottomano": {
+      "Grande Bombarda Turca": "/IconeAbilità/icon_civilization_ottoman.png",
+      "Corsaro barbaresco": "/IconeAbilità/icon_unit_ottoman_barbary_corsair.png",
+      "Gran Bazaar": "/IconeAbilità/icon_building_grand_bazaar.png"
+    },
+    "Georgia": {
+      "Forza nell'unità": "/IconeAbilità/icon_civilization_georgia.png",
+      "Khevsur": "/IconeAbilità/icon_unit_georgian_khevsureti.png",
+      "Tsikhe": "/IconeAbilità/icon_building_tsikhe.png"
+    },
+    "Scizia": {
+      "Popolo della steppa": "/IconeAbilità/icon_civilization_scythia.png",
+      "Arciere Saka a cavallo": "/IconeAbilità/icon_unit_scythian_horse_archer.png",
+      "Kurgan": "/IconeAbilità/icon_improvement_kurgan.png"
+    },
+    "Maya": {
+      "Mayab": "/IconeAbilità/icon_civilization_maya.png",
+      "Hul'che": "/IconeAbilità/icon_unit_mayan_hulche.png",
+      "Osservatorio": "/IconeAbilità/icon_district_observatory.png"
+    },
+    "Canada": {
+      "Le quattro facce della pace": "/IconeAbilità/icon_civilization_canada.png",
+      "Mountie": "/IconeAbilità/icon_unit_canada_mountie.png",
+      "Campo da hockey": "/IconeAbilità/icon_improvement_ice_hockey_rink.png"
+    }
+  }
+}

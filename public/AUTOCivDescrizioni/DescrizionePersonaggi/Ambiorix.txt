@@ -1,0 +1,3 @@
+[Re degli Eburoni] {Abilità esclusiva}
+
+Quando addestri un'unità non civile la tua civiltà ottiene [CultureIcon] Cultura pari al 20% del costo dell'unità. Le unità da mischia, anti-cavalleria e a distanza ricevono +2 alla [StrengthIcon] Forza di combattimento per ogni unità adiacente.

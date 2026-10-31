@@ -1,0 +1,3 @@
+[Termopili] {Abilità esclusiva}
+
+Le vittorie in combattimento forniscono [CultureIcon] Cultura pari al 50% della [StrengthIcon] Forza di combattimento dell'unità sconfitta (a velocità standard). +1 alla [StrengthIcon] Forza di combattimento per ogni Politica militare adottata.

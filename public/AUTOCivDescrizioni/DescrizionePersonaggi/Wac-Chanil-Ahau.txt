@@ -1,0 +1,3 @@
+[Ix Mutal Ajaw] {Abilità esclusiva}
+
+Le città non capitali entro 6 caselle dalla [CapitalIcon] capitale hanno +10% a tutte le rese e ricevono un Costruttore al momento della fondazione. Le altre città non capitali hanno -15% a tutte le rese. +5 alla [StrengthIcon] Forza di combattimento delle unità che si trovano entro 6 caselle dalla loro [CapitalIcon] capitale.

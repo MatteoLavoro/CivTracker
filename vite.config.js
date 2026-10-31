@@ -12,7 +12,10 @@ export default defineConfig({
             return undefined;
           }
 
-          if (id.includes("node_modules/firebase/")) {
+          if (
+            id.includes("node_modules/firebase/") ||
+            id.includes("node_modules/@firebase/")
+          ) {
             return "firebase";
           }
 

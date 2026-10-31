@@ -1,5 +1,35 @@
 // Draft System Utilities
 
+/** Countdown length (seconds) before a draft starts */
+export const DRAFT_COUNTDOWN_SECONDS = 5;
+
+/** Countdown length in milliseconds */
+export const DRAFT_COUNTDOWN_MS = DRAFT_COUNTDOWN_SECONDS * 1000;
+
+/**
+ * Empty draft state used when a campaign or a match is created
+ * @returns {Object} Fresh draft object
+ */
+export function createEmptyDraft() {
+  return {
+    phase: "waiting",
+    mode: null,
+    readyPlayers: [],
+    directReadyPlayers: [],
+    preferenceReadyPlayers: [],
+    countdownStartAt: null,
+    playerDrafts: {},
+    playerStates: {},
+    banVotes: {},
+    preferenceVotes: {},
+    bannedLeaders: {},
+    selectedLeaders: {},
+    directChoices: {},
+    preferences: {},
+    suggestion: "",
+  };
+}
+
 /**
  * Shuffle array using Fisher-Yates algorithm
  * @param {Array} array - Array to shuffle
@@ -12,15 +42,6 @@ function shuffleArray(array) {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
-}
-
-/**
- * Get base leader name without variant
- * @param {Object} leader - Leader object
- * @returns {string} Base name
- */
-function getBaseLeaderName(leader) {
-  return leader.name;
 }
 
 /**
@@ -171,6 +192,19 @@ export function areAllPlayersReady(readyPlayers, allPlayers) {
     readyPlayers.length === allPlayers.length &&
     allPlayers.every((playerId) => readyPlayers.includes(playerId))
   );
+}
+
+/**
+ * Number of preferences a player assigned to a specific leader.
+ * Preferences are leader ids, may contain duplicates.
+ * @param {Object} preferences - { playerId: [leaderId, ...] }
+ * @param {string} playerId - Owner of the pool
+ * @param {string} leaderId - Leader to count
+ * @returns {number} Preference count
+ */
+export function getPreferenceCount(preferences, playerId, leaderId) {
+  if (!preferences || !playerId || !leaderId) return 0;
+  return (preferences[playerId] || []).filter((id) => id === leaderId).length;
 }
 
 /**

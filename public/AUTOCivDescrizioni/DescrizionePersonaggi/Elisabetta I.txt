@@ -1,0 +1,3 @@
+[Il Retaggio di Drake] {Abilità esclusiva}
+
+La [TradeRouteIcon] Capacità Rotte commerciali dell'Inghilterra aumenta di 2 dopo l'acquisizione del tuo primo [GeneralIcon] Grande Ammiraglio (che dev'essere di epoca rinascimentale o precedente e appartenere all'insieme di regole standard). Le [TradeRouteIcon] Rotte commerciali verso una città-stato forniscono +3 [GoldIcon] Oro per ogni distretto specializzato nella città d'origine. +100% alle rese del saccheggio delle [TradeRouteIcon] Rotte commerciali effettuato con unità navali.

@@ -1,0 +1,3 @@
+[Lijia] {Abilità esclusiva}
+
+Tutte le città ricevono Progetti che permettono di convertire il 50% della loro [ProductionIcon] Produzione in [FoodIcon] Cibo o [FaithIcon] Fede, oppure il 100% della produzione in [GoldIcon] Oro. Le città con una Popolazione pari a 10 o superiore ricevono +2 [GoldIcon] Oro, +1 [ScienceIcon] Scienza e +1 [CultureIcon] Cultura ogni turno per ogni punto di Popolazione.

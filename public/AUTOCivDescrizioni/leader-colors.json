@@ -1,0 +1,1546 @@
+{
+  "generatedAt": "2026-10-31T16:39:05.542Z",
+  "note": "Colori ufficiali da Civilization VI PlayerColors.xml; per i leader senza riga nei dati di gioco il colore è campionato dall'immagine della jersey principale della Civilization Wiki.",
+  "palette": {
+    "Abraham Lincoln": {
+      "primary": "#f9f9f9",
+      "secondary": "#012a6c",
+      "alternates": [
+        {
+          "primary": "#012a6c",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "America",
+      "source": "game-data"
+    },
+    "Alessandro": {
+      "primary": "#aeaeae",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#012a6c",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Macedonia",
+      "source": "game-data"
+    },
+    "Amanitore": {
+      "primary": "#eae19d",
+      "secondary": "#783d02",
+      "alternates": [
+        {
+          "primary": "#783d02",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#783d02"
+        },
+        {
+          "primary": "#783d02",
+          "secondary": "#f9f9f9"
+        }
+      ],
+      "civilization": "Nubia",
+      "source": "game-data"
+    },
+    "Ambiorix": {
+      "primary": "#156c30",
+      "secondary": "#7dece3",
+      "alternates": [
+        {
+          "primary": "#eae19d",
+          "secondary": "#156c30"
+        },
+        {
+          "primary": "#783d02",
+          "secondary": "#ff8112"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#eae19d"
+        }
+      ],
+      "civilization": "Gallia",
+      "source": "game-data"
+    },
+    "Ba Trieu": {
+      "primary": "#f7d801",
+      "secondary": "#750073",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#783d02"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#181818"
+        }
+      ],
+      "civilization": "Vietnam",
+      "source": "game-data"
+    },
+    "Basilio II": {
+      "primary": "#370065",
+      "secondary": "#eae19d",
+      "alternates": [
+        {
+          "primary": "#780001",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#6d00cd",
+          "secondary": "#f7d801"
+        }
+      ],
+      "civilization": "Bisanzio",
+      "source": "game-data"
+    },
+    "Caterina de' Medici (La Magnifica)": {
+      "primary": "#f9f9f9",
+      "secondary": "#867202",
+      "alternates": [
+        {
+          "primary": "#004fce",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#004fce"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Francia",
+      "source": "game-data"
+    },
+    "Caterina de' Medici (Regina Nera)": {
+      "primary": "#004fce",
+      "secondary": "#eae19d",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#867202"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#004fce"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Francia",
+      "source": "game-data"
+    },
+    "Ciro": {
+      "primary": "#b780e6",
+      "secondary": "#780001",
+      "alternates": [
+        {
+          "primary": "#780001",
+          "secondary": "#b780e6"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#00c09b",
+          "secondary": "#780001"
+        }
+      ],
+      "civilization": "Persia",
+      "source": "game-data"
+    },
+    "Cleopatra (Egiziana)": {
+      "primary": "#014f51",
+      "secondary": "#eae19d",
+      "alternates": [
+        {
+          "primary": "#eae19d",
+          "secondary": "#6d00cd"
+        },
+        {
+          "primary": "#eae19d",
+          "secondary": "#014f51"
+        },
+        {
+          "primary": "#6d00cd",
+          "secondary": "#eae19d"
+        }
+      ],
+      "civilization": "Egitto",
+      "source": "game-data"
+    },
+    "Cleopatra (Tolemaica)": {
+      "primary": "#eae19d",
+      "secondary": "#014f51",
+      "alternates": [
+        {
+          "primary": "#eae19d",
+          "secondary": "#6d00cd"
+        },
+        {
+          "primary": "#014f51",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#6d00cd",
+          "secondary": "#eae19d"
+        }
+      ],
+      "civilization": "Egitto",
+      "source": "game-data"
+    },
+    "Edvige": {
+      "primary": "#780001",
+      "secondary": "#e57574",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#e57574"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Polonia",
+      "source": "game-data"
+    },
+    "Elisabetta I": {
+      "primary": "#f9f9f9",
+      "secondary": "#ca1415",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Inghilterra",
+      "source": "game-data"
+    },
+    "Federico Barbarossa": {
+      "primary": "#aeaeae",
+      "secondary": "#181818",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#181818"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Germania",
+      "source": "game-data"
+    },
+    "Filippo II": {
+      "primary": "#ca1415",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Spagna",
+      "source": "game-data"
+    },
+    "Gandhi": {
+      "primary": "#370065",
+      "secondary": "#00c09b",
+      "alternates": [
+        {
+          "primary": "#00c09b",
+          "secondary": "#370065"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#ffb23c"
+        },
+        {
+          "primary": "#ffb23c",
+          "secondary": "#156c30"
+        }
+      ],
+      "civilization": "India",
+      "source": "game-data"
+    },
+    "Gilgamesh": {
+      "primary": "#012a6c",
+      "secondary": "#ff8112",
+      "alternates": [
+        {
+          "primary": "#012a6c",
+          "secondary": "#7dece3"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#b780e6"
+        }
+      ],
+      "civilization": "Sumeria",
+      "source": "game-data"
+    },
+    "Gitarja": {
+      "primary": "#780001",
+      "secondary": "#00c09b",
+      "alternates": [
+        {
+          "primary": "#00c09b",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#00c09b"
+        }
+      ],
+      "civilization": "Indonesia",
+      "source": "game-data"
+    },
+    "Giulio Cesare": {
+      "primary": "#780001",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#6d00cd",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#370065"
+        },
+        {
+          "primary": "#6d00cd",
+          "secondary": "#f9f9f9"
+        }
+      ],
+      "civilization": "Roma",
+      "source": "game-data"
+    },
+    "Gorgo": {
+      "primary": "#780001",
+      "secondary": "#74a3f3",
+      "alternates": [
+        {
+          "primary": "#74a3f3",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#74a3f3",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#74a3f3"
+        }
+      ],
+      "civilization": "Grecia",
+      "source": "game-data"
+    },
+    "Hammurabi": {
+      "primary": "#74a3f3",
+      "secondary": "#012a6c",
+      "alternates": [
+        {
+          "primary": "#eae19d",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#f7d801"
+        }
+      ],
+      "civilization": "Babilonia",
+      "source": "game-data"
+    },
+    "Harald Hardrada (Konge)": {
+      "primary": "#012a6c",
+      "secondary": "#ca1415",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Norvegia",
+      "source": "game-data"
+    },
+    "Harald Hardrada (Variago)": {
+      "primary": "#ca1415",
+      "secondary": "#012a6c",
+      "alternates": [
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Norvegia",
+      "source": "game-data"
+    },
+    "Hojo Tokimune": {
+      "primary": "#f9f9f9",
+      "secondary": "#780001",
+      "alternates": [
+        {
+          "primary": "#780001",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#004fce",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#004fce"
+        }
+      ],
+      "civilization": "Giappone",
+      "source": "game-data"
+    },
+    "Jayavarman VII": {
+      "primary": "#750073",
+      "secondary": "#ff8112",
+      "alternates": [
+        {
+          "primary": "#012a6c",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#783d02",
+          "secondary": "#ff8112"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#750073"
+        }
+      ],
+      "civilization": "Khmer",
+      "source": "game-data"
+    },
+    "João III": {
+      "primary": "#f9f9f9",
+      "secondary": "#012a6c",
+      "alternates": [
+        {
+          "primary": "#61bf22",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#780001",
+          "secondary": "#f7d801"
+        }
+      ],
+      "civilization": "Portogallo",
+      "source": "game-data"
+    },
+    "John Curtin": {
+      "primary": "#156c30",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#ff8112"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Australia",
+      "source": "game-data"
+    },
+    "Kublai Khan (Cina)": {
+      "primary": "#eae19d",
+      "secondary": "#780001",
+      "alternates": [
+        {
+          "primary": "#156c30",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#780001",
+          "secondary": "#f7d801"
+        }
+      ],
+      "civilization": "Cina",
+      "source": "game-data"
+    },
+    "Kublai Khan (Mongolia)": {
+      "primary": "#ff8112",
+      "secondary": "#780001",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#780001",
+          "secondary": "#f7d801"
+        }
+      ],
+      "civilization": "Mongolia",
+      "source": "game-data"
+    },
+    "Ludovico II": {
+      "primary": "#74a3f3",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#181818"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Germania",
+      "source": "game-data"
+    },
+    "Menelik II": {
+      "primary": "#f7d801",
+      "secondary": "#156c30",
+      "alternates": [
+        {
+          "primary": "#156c30",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "Etiopia",
+      "source": "game-data"
+    },
+    "Montezuma": {
+      "primary": "#7dece3",
+      "secondary": "#780001",
+      "alternates": [
+        {
+          "primary": "#780001",
+          "secondary": "#7dece3"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#014f51"
+        },
+        {
+          "primary": "#014f51",
+          "secondary": "#ff8112"
+        }
+      ],
+      "civilization": "Aztechi",
+      "source": "game-data"
+    },
+    "Mvemba a Nzinga": {
+      "primary": "#f7d801",
+      "secondary": "#ca1415",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#79e077",
+          "secondary": "#783d02"
+        },
+        {
+          "primary": "#783d02",
+          "secondary": "#79e077"
+        }
+      ],
+      "civilization": "Congo",
+      "source": "game-data"
+    },
+    "Nadir Shah": {
+      "primary": "#780001",
+      "secondary": "#b780e6",
+      "alternates": [
+        {
+          "primary": "#b780e6",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#00c09b",
+          "secondary": "#780001"
+        }
+      ],
+      "civilization": "Persia",
+      "source": "game-data"
+    },
+    "Nzinga Mbande": {
+      "primary": "#79e077",
+      "secondary": "#783d02",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#783d02",
+          "secondary": "#79e077"
+        }
+      ],
+      "civilization": "Congo",
+      "source": "game-data"
+    },
+    "Pedro II": {
+      "primary": "#61bf22",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#61bf22",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#156c30"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#79e077"
+        }
+      ],
+      "civilization": "Brasile",
+      "source": "game-data"
+    },
+    "Pericle": {
+      "primary": "#74a3f3",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#74a3f3"
+        },
+        {
+          "primary": "#74a3f3",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#74a3f3"
+        }
+      ],
+      "civilization": "Grecia",
+      "source": "game-data"
+    },
+    "Pietro": {
+      "primary": "#f7d801",
+      "secondary": "#181818",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#004fce"
+        },
+        {
+          "primary": "#004fce",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#e57574"
+        }
+      ],
+      "civilization": "Russia",
+      "source": "game-data"
+    },
+    "Qin Shi Huang (Mandato Divino)": {
+      "primary": "#156c30",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Cina",
+      "source": "game-data"
+    },
+    "Qin Shi Huang (Unificatore)": {
+      "primary": "#f9f9f9",
+      "secondary": "#156c30",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Cina",
+      "source": "game-data"
+    },
+    "Ramses II": {
+      "primary": "#eae19d",
+      "secondary": "#6d00cd",
+      "alternates": [
+        {
+          "primary": "#014f51",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#eae19d",
+          "secondary": "#014f51"
+        },
+        {
+          "primary": "#6d00cd",
+          "secondary": "#eae19d"
+        }
+      ],
+      "civilization": "Egitto",
+      "source": "game-data"
+    },
+    "Saladino (Sultano)": {
+      "primary": "#f7d801",
+      "secondary": "#156c30",
+      "alternates": [
+        {
+          "primary": "#156c30",
+          "secondary": "#79e077"
+        },
+        {
+          "primary": "#79e077",
+          "secondary": "#181818"
+        },
+        {
+          "primary": "#867202",
+          "secondary": "#61bf22"
+        }
+      ],
+      "civilization": "Arabia",
+      "source": "game-data"
+    },
+    "Saladino (Visir)": {
+      "primary": "#156c30",
+      "secondary": "#79e077",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#156c30"
+        },
+        {
+          "primary": "#79e077",
+          "secondary": "#181818"
+        },
+        {
+          "primary": "#867202",
+          "secondary": "#61bf22"
+        }
+      ],
+      "civilization": "Arabia",
+      "source": "game-data"
+    },
+    "Sejong": {
+      "primary": "#74a3f3",
+      "secondary": "#ca1415",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#74a3f3"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#ff8112"
+        }
+      ],
+      "civilization": "Corea",
+      "source": "game-data"
+    },
+    "Simón Bolívar": {
+      "primary": "#012a6c",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#eae19d",
+          "secondary": "#780001"
+        }
+      ],
+      "civilization": "Gran Colombia",
+      "source": "game-data"
+    },
+    "Solimano (Muhtesem)": {
+      "primary": "#156c30",
+      "secondary": "#e57574",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#156c30"
+        }
+      ],
+      "civilization": "Impero Ottomano",
+      "source": "game-data"
+    },
+    "Sundiata Keita": {
+      "primary": "#eae19d",
+      "secondary": "#780001",
+      "alternates": [
+        {
+          "primary": "#780001",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#867202",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#867202",
+          "secondary": "#79e077"
+        }
+      ],
+      "civilization": "Mali",
+      "source": "game-data"
+    },
+    "Teddy Roosevelt (L'alce)": {
+      "primary": "#012a6c",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "America",
+      "source": "game-data"
+    },
+    "Teddy Roosevelt (Rough Rider)": {
+      "primary": "#ca1415",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#012a6c",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        }
+      ],
+      "civilization": "America",
+      "source": "game-data"
+    },
+    "Teodora": {
+      "primary": "#6d00cd",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#780001",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#370065",
+          "secondary": "#eae19d"
+        }
+      ],
+      "civilization": "Bisanzio",
+      "source": "game-data"
+    },
+    "Tokugawa": {
+      "primary": "#780001",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#004fce",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#004fce"
+        }
+      ],
+      "civilization": "Giappone",
+      "source": "game-data"
+    },
+    "Tomiri": {
+      "primary": "#ffb23c",
+      "secondary": "#780001",
+      "alternates": [
+        {
+          "primary": "#783d02",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#780001",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#783d02",
+          "secondary": "#eae19d"
+        }
+      ],
+      "civilization": "Scizia",
+      "source": "game-data"
+    },
+    "Traiano": {
+      "primary": "#6d00cd",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#780001",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#370065"
+        },
+        {
+          "primary": "#6d00cd",
+          "secondary": "#f9f9f9"
+        }
+      ],
+      "civilization": "Roma",
+      "source": "game-data"
+    },
+    "Vittoria (Età dell'Impero)": {
+      "primary": "#ca1415",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#012a6c",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Inghilterra",
+      "source": "game-data"
+    },
+    "Vittoria (Età del Vapore)": {
+      "primary": "#012a6c",
+      "secondary": "#ca1415",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#ca1415",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Inghilterra",
+      "source": "game-data"
+    },
+    "Wac-Chanil-Ahau": {
+      "primary": "#74a3f3",
+      "secondary": "#014f51",
+      "alternates": [
+        {
+          "primary": "#014f51",
+          "secondary": "#74a3f3"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#ffb23c",
+          "secondary": "#014f51"
+        }
+      ],
+      "civilization": "Maya",
+      "source": "game-data"
+    },
+    "Wu Zetian": {
+      "primary": "#ca1415",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#156c30",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Cina",
+      "source": "game-data"
+    },
+    "Yongle": {
+      "primary": "#f7d801",
+      "secondary": "#012a6c",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#f9f9f9"
+        }
+      ],
+      "civilization": "Cina",
+      "source": "game-data"
+    },
+    "Chandragupta": {
+      "primary": "#00c09b",
+      "secondary": "#370065",
+      "alternates": [
+        {
+          "primary": "#370065",
+          "secondary": "#00c09b"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#ffb23c"
+        },
+        {
+          "primary": "#ffb23c",
+          "secondary": "#156c30"
+        }
+      ],
+      "civilization": "India",
+      "source": "jersey-image"
+    },
+    "Cristina": {
+      "primary": "#74a3f3",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#004fce",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Svezia",
+      "source": "jersey-image"
+    },
+    "Didone": {
+      "primary": "#6d00cd",
+      "secondary": "#74a3f3",
+      "alternates": [
+        {
+          "primary": "#6d00cd",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#370065",
+          "secondary": "#ffb23c"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#370065"
+        }
+      ],
+      "civilization": "Fenicia",
+      "source": "jersey-image"
+    },
+    "Eleonora d'Aquitania (Francia)": {
+      "primary": "#e57574",
+      "secondary": "#eae19d",
+      "alternates": [
+        {
+          "primary": "#004fce",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#eae19d",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#e57574",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Francia",
+      "source": "jersey-image"
+    },
+    "Eleonora d'Aquitania (Inghilterra)": {
+      "primary": "#e57574",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#e57574",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#e57574",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Inghilterra",
+      "source": "jersey-image"
+    },
+    "Genghis Khan": {
+      "primary": "#780001",
+      "secondary": "#ff8112",
+      "alternates": [
+        {
+          "primary": "#ff8112",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#eae19d",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#780001",
+          "secondary": "#f7d801"
+        }
+      ],
+      "civilization": "Mongolia",
+      "source": "jersey-image"
+    },
+    "Guglielmina": {
+      "primary": "#ff8112",
+      "secondary": "#004fce",
+      "alternates": [
+        {
+          "primary": "#ff8112",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#ffb23c"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#780001"
+        }
+      ],
+      "civilization": "Olanda",
+      "source": "jersey-image"
+    },
+    "Kupe": {
+      "primary": "#ca1415",
+      "secondary": "#7dece3",
+      "alternates": [
+        {
+          "primary": "#7dece3",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#00c09b",
+          "secondary": "#7dece3"
+        },
+        {
+          "primary": "#783d02",
+          "secondary": "#eae19d"
+        }
+      ],
+      "civilization": "Maori",
+      "source": "jersey-image"
+    },
+    "Lautaro": {
+      "primary": "#004fce",
+      "secondary": "#7dece3",
+      "alternates": [
+        {
+          "primary": "#f7d801",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#eae19d",
+          "secondary": "#783d02"
+        },
+        {
+          "primary": "#74a3f3",
+          "secondary": "#012a6c"
+        }
+      ],
+      "civilization": "Mapuche",
+      "source": "jersey-image"
+    },
+    "Mansa Musa": {
+      "primary": "#780001",
+      "secondary": "#eae19d",
+      "alternates": [
+        {
+          "primary": "#eae19d",
+          "secondary": "#780001"
+        },
+        {
+          "primary": "#867202",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#867202",
+          "secondary": "#79e077"
+        }
+      ],
+      "civilization": "Mali",
+      "source": "jersey-image"
+    },
+    "Mattia Corvino": {
+      "primary": "#156c30",
+      "secondary": "#ff8112",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#156c30"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#f9f9f9"
+        }
+      ],
+      "civilization": "Ungheria",
+      "source": "jersey-image"
+    },
+    "Pachacuti": {
+      "primary": "#783d02",
+      "secondary": "#f7d801",
+      "alternates": [
+        {
+          "primary": "#ffb23c",
+          "secondary": "#014f51"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#783d02"
+        },
+        {
+          "primary": "#014f51",
+          "secondary": "#ffb23c"
+        }
+      ],
+      "civilization": "Inca",
+      "source": "jersey-image"
+    },
+    "Poundmaker": {
+      "primary": "#012a6c",
+      "secondary": "#61bf22",
+      "alternates": [
+        {
+          "primary": "#61bf22",
+          "secondary": "#012a6c"
+        },
+        {
+          "primary": "#74a3f3",
+          "secondary": "#f7d801"
+        },
+        {
+          "primary": "#61bf22",
+          "secondary": "#f7d801"
+        }
+      ],
+      "civilization": "Cree",
+      "source": "jersey-image"
+    },
+    "Robert Bruce": {
+      "primary": "#f9f9f9",
+      "secondary": "#004fce",
+      "alternates": [
+        {
+          "primary": "#004fce",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#004fce"
+        }
+      ],
+      "civilization": "Scozia",
+      "source": "jersey-image"
+    },
+    "Seondeok": {
+      "primary": "#ca1415",
+      "secondary": "#74a3f3",
+      "alternates": [
+        {
+          "primary": "#74a3f3",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#ff8112",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#ff8112"
+        }
+      ],
+      "civilization": "Corea",
+      "source": "jersey-image"
+    },
+    "Shaka": {
+      "primary": "#783d02",
+      "secondary": "#f9f9f9",
+      "alternates": [
+        {
+          "primary": "#156c30",
+          "secondary": "#eae19d"
+        },
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#783d02"
+        },
+        {
+          "primary": "#61bf22",
+          "secondary": "#181818"
+        }
+      ],
+      "civilization": "Zulù",
+      "source": "jersey-image"
+    },
+    "Solimano (Kanuni)": {
+      "primary": "#f9f9f9",
+      "secondary": "#156c30",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#156c30",
+          "secondary": "#e57574"
+        }
+      ],
+      "civilization": "Impero Ottomano",
+      "source": "jersey-image"
+    },
+    "Tamara": {
+      "primary": "#f9f9f9",
+      "secondary": "#ff8112",
+      "alternates": [
+        {
+          "primary": "#f9f9f9",
+          "secondary": "#ca1415"
+        },
+        {
+          "primary": "#780001",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#f7d801",
+          "secondary": "#181818"
+        }
+      ],
+      "civilization": "Georgia",
+      "source": "jersey-image"
+    },
+    "Wilfrid Laurier": {
+      "primary": "#f9f9f9",
+      "secondary": "#ca1415",
+      "alternates": [
+        {
+          "primary": "#ca1415",
+          "secondary": "#f9f9f9"
+        },
+        {
+          "primary": "#780001",
+          "secondary": "#e57574"
+        },
+        {
+          "primary": "#e57574",
+          "secondary": "#780001"
+        }
+      ],
+      "civilization": "Canada",
+      "source": "jersey-image"
+    }
+  }
+}

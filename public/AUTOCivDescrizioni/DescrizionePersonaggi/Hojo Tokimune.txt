@@ -1,0 +1,3 @@
+[Vento divino] {Abilità esclusiva}
+
+Le unità terrestri hanno +5 alla [StrengthIcon] Forza di combattimento nelle caselle terrestri adiacenti alla costa; le unità navali hanno +5 alla [StrengthIcon] Forza di combattimento nelle caselle di acqua bassa. La costruzione dei distretti Accampamento, Luogo Santo e Piazza del Teatro richiede metà del tempo. Le unità non sono danneggiate dagli uragani. Le unità delle civiltà che sono in guerra con il Giappone e si trovano in territorio giapponese ricevono danni doppi dagli uragani.

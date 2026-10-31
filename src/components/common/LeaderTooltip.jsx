@@ -1,6 +1,8 @@
 // Leader Tooltip - Show leader/civilization abilities on hover
 import { useState, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
+import { Award } from "lucide-react";
+import { getLeaderPalette, paletteStyle } from "../../utils/leaderColors";
 import "./LeaderTooltip.css";
 
 /**
@@ -174,6 +176,8 @@ export function LeaderTooltip({ children, leader, type = "leader" }) {
     setIsVisible(false);
   };
 
+  const palette = getLeaderPalette(leader);
+
   return (
     <>
       <div
@@ -194,6 +198,7 @@ export function LeaderTooltip({ children, leader, type = "leader" }) {
               position: "fixed",
               left: `${position.x}px`,
               top: `${position.y}px`,
+              ...paletteStyle(palette),
             }}
           >
             <div className="leader-tooltip-header">
@@ -220,6 +225,15 @@ export function LeaderTooltip({ children, leader, type = "leader" }) {
                 abilities.map((ability, index) => (
                   <div key={index} className="leader-tooltip-ability">
                     <div className="leader-tooltip-ability-header">
+                      {ability.icon ? (
+                        <span className="leader-tooltip-ability-icon">
+                          <img src={ability.icon} alt="" loading="lazy" />
+                        </span>
+                      ) : (
+                        <span className="leader-tooltip-ability-icon fallback">
+                          <Award size={14} />
+                        </span>
+                      )}
                       <strong>{ability.name}</strong>
                       <span className="leader-tooltip-ability-separator">
                         {" "}

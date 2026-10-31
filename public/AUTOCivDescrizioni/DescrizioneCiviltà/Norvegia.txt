@@ -1,0 +1,11 @@
+[Knarr] {Abilità esclusiva}
+
+Con la scoperta della Costruzione navale le unità acquisiscono la capacità di entrare nelle caselle oceaniche. Le unità navali da mischia possono curare i danni subiti in territorio neutrale. Le unità ignorano i costi aggiuntivi di [MovementIcon] movimento per l'imbarco e lo sbarco.
+
+[Berserker] {Unità speciali}
+
+Unità da mischia esclusiva norvegese di epoca medievale che sostituisce l'Uomo d'arme. 4 [MovementIcon] movimento se l'unità comincia la mossa in territorio nemico. +10 alla [StrengthIcon] Forza di combattimento quando attacca e -5 alla [StrengthIcon] Forza di combattimento quando si difende dagli attacchi in mischia.
+
+[Chiesa di legno] {Infrastruttura speciale}
+
+Edificio esclusivo della Norvegia, necessario per acquistare Apostoli e Inquisitori in cambio di [FaithIcon] Fede. I distretti Luogo Santo ricevono un bonus standard aggiuntivo per la vicinanza ai boschi. +1 [ProductionIcon] Produzione in questa città da ogni casella costiera che contiene una risorsa. Richiamare un Eroe in questa città costa il 15% di [FaithIcon] Fede in meno.

@@ -1,8 +1,10 @@
 // Direct Choice Modal - Players pick their leader directly from the full pool
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Clock, Check, X, Search } from "lucide-react";
 import { Modal } from "./Modal";
 import { Avatar } from "./Avatar";
+import { useCountdown } from "../../hooks";
+import { DRAFT_COUNTDOWN_SECONDS } from "../../utils/draftUtils";
 import "./DirectChoiceModal.css";
 
 export function DirectChoiceModal({
@@ -19,8 +21,6 @@ export function DirectChoiceModal({
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingLeader, setPendingLeader] = useState(null);
   const [confirming, setConfirming] = useState(false);
-  const [myCountdown, setMyCountdown] = useState(5);
-  const [hasStartedDirect, setHasStartedDirect] = useState(false);
 
   const draftPhase = draft?.phase || null;
   const draftMode = draft?.mode || null;
@@ -28,6 +28,11 @@ export function DirectChoiceModal({
   const isDirectReady = directReadyPlayers.includes(user?.uid);
   const directChoices = draft?.directChoices || {};
   const myChoice = directChoices[user?.uid] || null;
+
+  const countdown = useCountdown(draft?.countdownStartAt, {
+    seconds: DRAFT_COUNTDOWN_SECONDS,
+    enabled: isOpen && draftPhase === "countdown" && draftMode === "direct",
+  });
 
   const takenByOthers = new Set(
     Object.entries(directChoices)
@@ -54,37 +59,12 @@ export function DirectChoiceModal({
 
   const getLeaderById = (id) => leaders?.find((l) => l.id === id);
 
-  // Countdown timer for direct choice phase
-  useEffect(() => {
-    if (
-      draftPhase === "countdown" &&
-      draftMode === "direct" &&
-      !hasStartedDirect
-    ) {
-      setMyCountdown(5);
-      const interval = setInterval(() => {
-        setMyCountdown((prev) => {
-          const newValue = prev - 1;
-          if (newValue <= 0) {
-            clearInterval(interval);
-            setHasStartedDirect(true);
-            return 0;
-          }
-          return newValue;
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [draftPhase, draftMode, hasStartedDirect]);
-
-  // Reset countdown and search when direct choice becomes active
-  useEffect(() => {
-    if (draftPhase === "active") {
-      setHasStartedDirect(false);
-      setMyCountdown(5);
-      setSearchQuery("");
-    }
-  }, [draftPhase]);
+  // Reset transient UI state when the modal is closed
+  const handleClose = () => {
+    setSearchQuery("");
+    setPendingLeader(null);
+    onClose();
+  };
 
   const handleConfirmChoice = async () => {
     if (!pendingLeader || confirming) return;
@@ -107,7 +87,6 @@ export function DirectChoiceModal({
         isOpen={isOpen}
         onClose={() => setPendingLeader(null)}
         title="Conferma Scelta"
-        size="medium"
       >
         <div className="draft-modal-container">
           <div className="draft-modal-body dc-confirm-body">
@@ -173,22 +152,22 @@ export function DirectChoiceModal({
 
   // ─── FASE: COUNTDOWN ─────────────────────────────────────────
   if (draftPhase === "countdown" && draftMode === "direct") {
+    const displayCountdown = Math.ceil(countdown);
     return (
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         title="Inizia la Scelta Diretta!"
-        size="medium"
       >
         <div className="draft-modal-container">
           <div className="draft-modal-body">
             <div className="countdown-display">
               <Clock size={48} />
-              <div className="countdown-number">{myCountdown}</div>
+              <div className="countdown-number">{displayCountdown}</div>
             </div>
             <p className="draft-modal-description">
-              La scelta dei personaggi inizierà tra {myCountdown} second
-              {myCountdown !== 1 ? "i" : "o"}...
+              La scelta dei personaggi inizierà tra {displayCountdown} second
+              {displayCountdown !== 1 ? "i" : "o"}...
             </p>
             <div className="countdown-ready-status">
               <div className="ready-count">
@@ -222,9 +201,8 @@ export function DirectChoiceModal({
     return (
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         title="In Attesa..."
-        size="medium"
       >
         <div className="draft-modal-container">
           <div className="draft-modal-body">
@@ -327,9 +305,8 @@ export function DirectChoiceModal({
     return (
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         title="Scegli il tuo Personaggio"
-        size="large"
       >
         <div className="draft-modal-container">
           <div className="dc-search-header">
@@ -433,9 +410,8 @@ export function DirectChoiceModal({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="Pronto per la Scelta Diretta?"
-      size="medium"
     >
       <div className="draft-modal-container">
         <div className="draft-modal-body">

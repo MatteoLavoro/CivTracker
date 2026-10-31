@@ -5,6 +5,7 @@ import {
   draftLeadersForPlayers,
   processBanVotes,
   areAllPlayersReady,
+  createEmptyDraft,
 } from "../../utils/draftUtils";
 import { getAllLeaders } from "./leaders";
 
@@ -18,19 +19,7 @@ export const initializeDraft = async (campaignId) => {
     const campaignRef = doc(db, "campaigns", campaignId);
 
     await updateDoc(campaignRef, {
-      draft: {
-        phase: "waiting",
-        mode: null,
-        readyPlayers: [],
-        directReadyPlayers: [],
-        countdownStartAt: null,
-        playerDrafts: {},
-        playerStates: {},
-        banVotes: {},
-        bannedLeaders: {},
-        selectedLeaders: {},
-        directChoices: {},
-      },
+      draft: createEmptyDraft(),
       updatedAt: new Date().toISOString(),
     });
 
@@ -70,8 +59,11 @@ export const togglePlayerReady = async (
     };
 
     let readyPlayers = draft.readyPlayers || [];
-    // If switching to draft, remove from direct ready list
+    // If switching to draft, remove from the other ready lists
     let directReadyPlayers = (draft.directReadyPlayers || []).filter(
+      (id) => id !== playerId,
+    );
+    let preferenceReadyPlayers = (draft.preferenceReadyPlayers || []).filter(
       (id) => id !== playerId,
     );
 
@@ -89,11 +81,15 @@ export const togglePlayerReady = async (
     const allReady = areAllPlayersReady(readyPlayers, allMembers);
     const newPhase = allReady ? "countdown" : "waiting";
     const countdownStartAt = allReady ? new Date().toISOString() : null;
+    const resetFromCountdown =
+      draft.phase === "countdown" && draft.mode !== "direct";
 
     await updateDoc(campaignRef, {
       "draft.readyPlayers": readyPlayers,
       "draft.directReadyPlayers": directReadyPlayers,
+      "draft.preferenceReadyPlayers": preferenceReadyPlayers,
       "draft.phase": newPhase,
+      "draft.mode": allReady ? "classic" : resetFromCountdown ? null : draft.mode,
       "draft.countdownStartAt": countdownStartAt,
       updatedAt: new Date().toISOString(),
     });
@@ -132,8 +128,11 @@ export const toggleDirectReady = async (
     const draft = campaign.draft || { phase: "waiting" };
 
     let directReadyPlayers = draft.directReadyPlayers || [];
-    // If switching to direct, remove from draft ready list
+    // If switching to direct, remove from the other ready lists
     let readyPlayers = (draft.readyPlayers || []).filter(
+      (id) => id !== playerId,
+    );
+    let preferenceReadyPlayers = (draft.preferenceReadyPlayers || []).filter(
       (id) => id !== playerId,
     );
 
@@ -154,6 +153,7 @@ export const toggleDirectReady = async (
       await updateDoc(campaignRef, {
         "draft.directReadyPlayers": directReadyPlayers,
         "draft.readyPlayers": readyPlayers,
+        "draft.preferenceReadyPlayers": preferenceReadyPlayers,
         "draft.phase": "countdown",
         "draft.mode": "direct",
         "draft.countdownStartAt": new Date().toISOString(),
@@ -167,6 +167,7 @@ export const toggleDirectReady = async (
       await updateDoc(campaignRef, {
         "draft.directReadyPlayers": directReadyPlayers,
         "draft.readyPlayers": readyPlayers,
+        "draft.preferenceReadyPlayers": preferenceReadyPlayers,
         ...(resetFromCountdown
           ? {
               "draft.phase": "waiting",
@@ -181,6 +182,91 @@ export const toggleDirectReady = async (
     return { success: true, error: null };
   } catch (error) {
     console.error("Error toggling direct ready:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Toggle preference-draft ready status.
+ * Same draft flow as classic, with an extra preference choice per ban step.
+ * @param {string} campaignId - Campaign ID
+ * @param {string} playerId - Player ID
+ * @param {boolean} isReady - Ready status
+ * @param {Array} allMembers - All campaign members
+ * @returns {Object} { success, error }
+ */
+export const togglePreferenceReady = async (
+  campaignId,
+  playerId,
+  isReady,
+  allMembers,
+) => {
+  try {
+    const campaignRef = doc(db, "campaigns", campaignId);
+    const campaignDoc = await getDoc(campaignRef);
+
+    if (!campaignDoc.exists()) {
+      return { success: false, error: "Campaign not found" };
+    }
+
+    const campaign = campaignDoc.data();
+    const draft = campaign.draft || { phase: "waiting" };
+
+    let preferenceReadyPlayers = draft.preferenceReadyPlayers || [];
+    let readyPlayers = (draft.readyPlayers || []).filter(
+      (id) => id !== playerId,
+    );
+    let directReadyPlayers = (draft.directReadyPlayers || []).filter(
+      (id) => id !== playerId,
+    );
+
+    if (isReady) {
+      if (!preferenceReadyPlayers.includes(playerId)) {
+        preferenceReadyPlayers.push(playerId);
+      }
+    } else {
+      preferenceReadyPlayers = preferenceReadyPlayers.filter(
+        (id) => id !== playerId,
+      );
+    }
+
+    const allPreferenceReady =
+      allMembers.length > 0 &&
+      allMembers.every((id) => preferenceReadyPlayers.includes(id));
+
+    if (allPreferenceReady) {
+      await updateDoc(campaignRef, {
+        "draft.preferenceReadyPlayers": preferenceReadyPlayers,
+        "draft.readyPlayers": readyPlayers,
+        "draft.directReadyPlayers": directReadyPlayers,
+        "draft.phase": "countdown",
+        "draft.mode": "preference",
+        "draft.countdownStartAt": new Date().toISOString(),
+        "draft.preferenceVotes": {},
+        "draft.preferences": {},
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      const resetFromCountdown =
+        draft.phase === "countdown" && draft.mode === "preference";
+      await updateDoc(campaignRef, {
+        "draft.preferenceReadyPlayers": preferenceReadyPlayers,
+        "draft.readyPlayers": readyPlayers,
+        "draft.directReadyPlayers": directReadyPlayers,
+        ...(resetFromCountdown
+          ? {
+              "draft.phase": "waiting",
+              "draft.mode": null,
+              "draft.countdownStartAt": null,
+            }
+          : {}),
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error toggling preference ready:", error);
     return { success: false, error: error.message };
   }
 };
@@ -380,6 +466,8 @@ export const executeDraft = async (campaignId, playerIds) => {
         "draft.playerDrafts": playerDrafts,
         "draft.playerStates": playerStates,
         "draft.banVotes": {},
+        "draft.preferenceVotes": {},
+        "draft.preferences": {},
         "draft.bannedLeaders": {},
         status: "in-progress",
         updatedAt: new Date().toISOString(),
@@ -451,7 +539,6 @@ export const markPlayerSeenDraft = async (campaignId, playerId) => {
  * @param {string} voterId - ID of player voting
  * @param {string} targetPlayerId - ID of player being voted against
  * @param {string} bannedLeaderId - ID of leader to ban
- * @param {Array} allPlayerIds - Array of all player IDs (unused, kept for API compat)
  * @returns {Object} { success, error }
  */
 export const submitBanVote = async (
@@ -459,7 +546,6 @@ export const submitBanVote = async (
   voterId,
   targetPlayerId,
   bannedLeaderId,
-  allPlayerIds,
 ) => {
   try {
     const campaignRef = doc(db, "campaigns", campaignId);
@@ -501,7 +587,12 @@ export const submitBanVote = async (
  * @param {Object} banMap - Map of targetPlayerId → bannedLeaderId
  * @returns {Object} { success, error }
  */
-export const submitAllBanVotes = async (campaignId, voterId, banMap) => {
+export const submitAllBanVotes = async (
+  campaignId,
+  voterId,
+  banMap,
+  preferenceMap = null,
+) => {
   try {
     const campaignRef = doc(db, "campaigns", campaignId);
     const campaignDoc = await getDoc(campaignRef);
@@ -517,15 +608,42 @@ export const submitAllBanVotes = async (campaignId, voterId, banMap) => {
     // Store the full ban map for this voter (one entry per opponent)
     banVotes[voterId] = banMap;
 
-    await updateDoc(campaignRef, {
+    const updates = {
       "draft.banVotes": banVotes,
       [`draft.playerStates.${voterId}.hasCompletedBans`]: true,
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    // Preference draft: one preferred leader for each opponent's pool.
+    // Stored per voter so multiple voters cannot overwrite each other.
+    if (preferenceMap && typeof preferenceMap === "object") {
+      updates[`draft.preferenceVotes.${voterId}`] = preferenceMap;
+    }
+
+    await updateDoc(campaignRef, updates);
 
     return { success: true, error: null };
   } catch (error) {
     console.error("Error submitting all ban votes:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Save the free-text suggestion for future draft methods
+ * @param {string} campaignId - Campaign ID
+ * @param {string} suggestion - Suggestion text
+ * @returns {Object} { success, error }
+ */
+export const saveDraftSuggestion = async (campaignId, suggestion) => {
+  try {
+    await updateDoc(doc(db, "campaigns", campaignId), {
+      "draft.suggestion": String(suggestion || "").slice(0, 500),
+      updatedAt: new Date().toISOString(),
+    });
+    return { success: true, error: null };
+  } catch (error) {
+    console.error("Error saving draft suggestion:", error);
     return { success: false, error: error.message };
   }
 };
@@ -552,9 +670,25 @@ export const finalizeBans = async (campaignId, playerIds) => {
     // Process votes to determine banned leaders
     const bannedLeaders = processBanVotes(banVotes, playerIds);
 
+    // Resolve the preference votes: each voter chooses one leader in every
+    // opponent's pool. A leader can receive preferences from multiple voters.
+    const preferenceVotes = draft.preferenceVotes || {};
+    const preferences = {};
+    playerIds.forEach((targetPlayerId) => {
+      preferences[targetPlayerId] = [];
+      Object.entries(preferenceVotes).forEach(([voterId, votes]) => {
+        if (voterId === targetPlayerId) return;
+        const preferredLeaderId = votes?.[targetPlayerId];
+        if (preferredLeaderId) {
+          preferences[targetPlayerId].push(preferredLeaderId);
+        }
+      });
+    });
+
     await updateDoc(campaignRef, {
       "draft.phase": "completed",
       "draft.bannedLeaders": bannedLeaders,
+      "draft.preferences": preferences,
       updatedAt: new Date().toISOString(),
     });
 
@@ -655,8 +789,16 @@ export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
               // Save complete draft history for each player
               Object.keys(selectedLeaders).forEach((userId) => {
                 if (updatedParticipants[userId]) {
+                  const playerPreferences = draft.preferences?.[userId] || [];
+                  const preferenceCount = playerPreferences.filter(
+                    (id) => id === selectedLeaders[userId],
+                  ).length;
+
                   updatedParticipants[userId].leaderId =
                     selectedLeaders[userId];
+                  updatedParticipants[userId].preferenceCount = preferenceCount;
+                  updatedParticipants[userId].preferenceLeaderIds =
+                    playerPreferences;
 
                   // Extract this player's ban vote: { targetPlayerId, leaderId } or null
                   const rawVote = draft.banVotes?.[userId];
@@ -675,6 +817,8 @@ export const selectFinalLeader = async (campaignId, playerId, leaderId) => {
                     bannedLeader: draft.bannedLeaders?.[userId] || null,
                     selectedLeader: selectedLeaders[userId],
                     banVoteCast,
+                    preferences: playerPreferences,
+                    preferenceCount,
                   };
                 }
               });

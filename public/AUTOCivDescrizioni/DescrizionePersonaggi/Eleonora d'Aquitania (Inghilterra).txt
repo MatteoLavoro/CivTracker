@@ -1,0 +1,3 @@
+[Corte dell'Amore] {Abilità esclusiva}
+
+Ogni Capolavoro presente in una città di Eleonora causa -1 Lealtà per turno nelle città straniere in un raggio di 9 caselle. Una città che lascia un'altra civiltà a causa di una perdita di Lealtà e sta ricevendo la massima Lealtà per turno dalla civiltà di Eleonora salta la fase di città libera e si unisce direttamente a quest'ultima.

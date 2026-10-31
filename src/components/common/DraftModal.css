@@ -668,7 +668,8 @@
 .reveal-leaders {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 8px;
+  width: 100%;
 }
 
 /* Base card */
@@ -676,11 +677,13 @@
   display: flex;
   align-items: center;
   gap: 0.875rem;
-  padding: 0.875rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(15, 50, 82, 0.15);
-  min-height: 76px;
+  height: 88px;
+  width: 100%;
+  box-sizing: border-box;
   transition:
     background 0.3s ease,
     border-color 0.3s ease,
@@ -688,6 +691,8 @@
   position: relative;
   overflow: hidden;
 }
+
+/* Leader colour strip removed: the row stays neutral and uniform */
 
 /* Mystery / unrevealed card */
 .reveal-card.mystery {
@@ -752,11 +757,9 @@
 
 @keyframes revealFlash {
   0% {
-    transform: scale(1.025);
-    box-shadow: 0 0 28px rgba(212, 175, 55, 0.5);
+    box-shadow: 0 0 22px rgba(212, 175, 55, 0.4);
   }
   100% {
-    transform: scale(1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 }
@@ -806,8 +809,8 @@
 
 /* Card contents */
 .reveal-leader-icon {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(212, 175, 55, 0.3);
@@ -815,9 +818,9 @@
 }
 
 .reveal-civ-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 6px;
+  width: 38px;
+  height: 38px;
+  border-radius: 7px;
   object-fit: cover;
   border: 2px solid rgba(212, 175, 55, 0.3);
   flex-shrink: 0;
@@ -859,6 +862,133 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.reveal-leader-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.reveal-leader-name-row .reveal-leader-name {
+  min-width: 0;
+}
+
+.reveal-pref-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #1a1405;
+  background: rgba(230, 197, 106, 0.95);
+}
+
+/* Preference picker during the ban phase */
+.preference-picker {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: rgba(212, 175, 55, 0.035);
+}
+
+.preference-picker-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(230, 197, 106, 0.95);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.preference-picker-head em {
+  margin-left: auto;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.7rem;
+  color: rgba(160, 168, 178, 1);
+}
+
+.preference-leaders {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.preference-leader-card {
+  flex: 1 1 100px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(232, 235, 238, 0.92);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.preference-leader-card:hover {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.preference-leader-card.selected {
+  border-color: rgba(230, 197, 106, 0.65);
+  background: rgba(212, 175, 55, 0.12);
+  color: rgba(246, 233, 196, 1);
+}
+
+.preference-leader-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.preference-leader-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preference-count-badge {
+  flex-shrink: 0;
+  padding: 1px 5px;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #1c1606;
+  background: rgba(230, 197, 106, 0.9);
+}
+
+.preference-hint {
+  margin: 8px 0 0;
+  font-size: 0.68rem;
+  line-height: 1.4;
+  color: rgba(145, 155, 165, 0.95);
+}
+
+/* Keep the original horizontal draft modal size (no custom width) */
 
 /* Leader Tags */
 .leader-tag {

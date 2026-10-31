@@ -10,30 +10,42 @@ import { subscribeToDocument } from "../services/firebase/firestore";
  */
 export function useDocument(collectionName, documentId) {
   const [document, setDocument] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(
+    Boolean(collectionName && documentId),
+  );
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!collectionName || !documentId) {
-      setLoading(false);
-      return;
-    }
+    if (!collectionName || !documentId) return;
 
+    let unsubscribe;
+    let errorTimer;
     try {
-      const unsubscribe = subscribeToDocument(
+      unsubscribe = subscribeToDocument(
         collectionName,
         documentId,
         (doc) => {
           setDocument(doc);
+          setError(null);
+          setLoading(false);
+        },
+        (err) => {
+          setError(err?.message || "Errore di connessione");
           setLoading(false);
         },
       );
-
-      return unsubscribe;
     } catch (err) {
-      setError(err.message);
-      setLoading(false);
+      // Invalid listener (e.g. missing parameters): report it instead of hanging
+      errorTimer = setTimeout(() => {
+        setError(err?.message || "Errore di connessione");
+        setLoading(false);
+      }, 0);
     }
+
+    return () => {
+      clearTimeout(errorTimer);
+      if (unsubscribe) unsubscribe();
+    };
   }, [collectionName, documentId]);
 
   return { document, loading, error };

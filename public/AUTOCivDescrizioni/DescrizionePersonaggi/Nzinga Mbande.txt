@@ -1,0 +1,3 @@
+[Regina di Ndongo e Matamba] {Abilità esclusiva}
+
+Le città ricevono +10% a tutte le rese se si trovano nello stesso continente della tua [CapitalIcon] capitale (inclusa la tua stessa [CapitalIcon] capitale), -15% se si trovano in un altro continente.

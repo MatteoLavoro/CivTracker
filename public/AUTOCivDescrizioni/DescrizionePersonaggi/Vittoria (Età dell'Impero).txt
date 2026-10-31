@@ -1,0 +1,7 @@
+[Pax Britannica] {Abilità esclusiva}
+
+Ogni volta che stabilisci la tua prima città su un continente diverso da quello di origine, ricevi un'unità da mischia gratuita e +1 alla capacità delle [TradeRouteIcon] Rotte commerciali. La costruzione di un Cantiere della Marina Reale fornisce una copia gratuita della più forte unità navale che puoi costruire. Quando scopri la tecnologia Scienza militare ottieni l'unità esclusiva Giubba Rossa.
+
+[Giubba Rossa] {Unità speciali}
+
+Unità esclusiva inglese di epoca industriale che sostituisce la Fanteria di linea, disponibile quando Vittoria è leader dell'Inghilterra. +10 alla [StrengthIcon] Forza di combattimento quando si trova su un continente diverso da quello che contiene la tua capitale. Nessun costo per lo sbarco.

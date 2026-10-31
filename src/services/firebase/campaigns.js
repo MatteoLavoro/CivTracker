@@ -142,6 +142,14 @@ export const joinCampaign = async (code, userId, username, photoURL = null) => {
       };
     }
 
+    // Check if campaign is completed - block joining
+    if (campaign.status === "completed") {
+      return {
+        campaign: null,
+        error: "Non puoi entrare in una campagna terminata",
+      };
+    }
+
     // Add user to campaign
     const campaignRef = doc(db, "campaigns", campaign.id);
 

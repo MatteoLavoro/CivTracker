@@ -207,7 +207,11 @@ export function getVictoryCounts(matches) {
 export const BONUS_TAGS = {
   SECOND_PLACE: "second-place",
   SURVIVOR: "survivor",
+  PREFERENCE: "preference",
 };
+
+/** Percentage granted by each draft preference (+10% each) */
+export const PREFERENCE_BONUS_PERCENT = 10;
 
 /**
  * Available penalty tags
@@ -217,6 +221,80 @@ export const PENALTY_TAGS = {
   RAGE_QUIT: "rage-quit",
   RULE_VIOLATION: "rule-violation",
 };
+
+/**
+ * Presentation metadata for bonus tags (used by the UI and rules modal)
+ */
+export const BONUS_INFO = [
+  {
+    id: BONUS_TAGS.SECOND_PLACE,
+    name: "Secondo Posto",
+    percent: 15,
+    color: "silver",
+    description:
+      "Assegnato al secondo classificato. +15% sui punti elaborati della partita.",
+  },
+  {
+    id: BONUS_TAGS.SURVIVOR,
+    name: "Sopravvissuto",
+    percent: 10,
+    color: "green",
+    description:
+      "Vincere mentre si è in guerra con un altro giocatore (non un bot) da meno di 30 turni. +10% per ogni guerra, cumulabile.",
+  },
+  {
+    id: BONUS_TAGS.PREFERENCE,
+    name: "Preferenza Draft",
+    percent: PREFERENCE_BONUS_PERCENT,
+    color: "green",
+    automatic: true,
+    description:
+      "Bonus automatico del Draft Preferenze: +10% per ogni preferenza assegnata al leader che hai scelto. Non è rimovibile.",
+  },
+];
+
+/**
+ * Presentation metadata for penalty tags (used by the UI and rules modal)
+ */
+export const PENALTY_INFO = [
+  {
+    id: PENALTY_TAGS.MAP_REROLL,
+    name: "Reroll Mappa",
+    percent: 10,
+    color: "orange",
+    description:
+      "Richiesta di rigiocare la mappa per spawn o eventi critici. −10% sui punti elaborati, si rigioca con gli stessi personaggi.",
+  },
+  {
+    id: PENALTY_TAGS.RAGE_QUIT,
+    name: "Rage Quit",
+    percent: 30,
+    color: "red",
+    description:
+      "Abbandono della partita senza accordo con il gruppo. −30% sui punti elaborati.",
+  },
+  {
+    id: PENALTY_TAGS.RULE_VIOLATION,
+    name: "Violazione Regole",
+    percent: 90,
+    color: "purple",
+    description:
+      "Infrazione delle regole della campagna. −90% sui punti elaborati.",
+  },
+];
+
+/**
+ * Get the metadata of a bonus or penalty tag
+ * @param {string} tagId - Tag id
+ * @returns {Object|null} Tag metadata
+ */
+export function getModifierInfo(tagId) {
+  return (
+    BONUS_INFO.find((tag) => tag.id === tagId) ||
+    PENALTY_INFO.find((tag) => tag.id === tagId) ||
+    null
+  );
+}
 
 /**
  * Get bonus multiplier for a player
@@ -264,6 +342,21 @@ export function getPenaltyMultiplier(penaltyTags = []) {
 }
 
 /**
+ * Get the score to display for a match participant.
+ * Prefers the final score, then the processed score, then the raw score.
+ * @param {Object} participant - Match participant
+ * @returns {number} Score to display
+ */
+export function getParticipantScore(participant) {
+  if (!participant) return 0;
+  if (participant.finalScore !== undefined) return participant.finalScore;
+  if (participant.processedScore !== undefined) {
+    return participant.processedScore;
+  }
+  return participant.score || 0;
+}
+
+/**
  * Calculate final scores with bonus and penalty tags applied
  * @param {Object} processedScores - Processed scores { userId: score }
  * @param {Object} participants - Match participants with bonus and penalty tags
@@ -279,12 +372,15 @@ export function calculateFinalScores(processedScores, participants) {
 
     const bonusMultiplier = getBonusMultiplier(bonusTags);
     const penaltyMultiplier = getPenaltyMultiplier(penaltyTags);
+    const preferencePercent =
+      ((participant?.preferenceCount || 0) * PREFERENCE_BONUS_PERCENT) / 100;
 
     // Sum bonus and penalty percentages instead of multiplying
     // Example: +10% (1.10) and -15% (0.85) = -5% (0.95)
     const bonusPercentage = bonusMultiplier - 1.0; // Extract bonus percentage
     const penaltyPercentage = 1.0 - penaltyMultiplier; // Extract penalty percentage
-    const totalMultiplier = 1.0 + bonusPercentage - penaltyPercentage;
+    const totalMultiplier =
+      1.0 + bonusPercentage - penaltyPercentage + preferencePercent;
 
     finalScores[userId] = Math.round(processedScore * totalMultiplier);
   });

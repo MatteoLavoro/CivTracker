@@ -1,0 +1,3 @@
+[Dea dei tre mondi] {Abilità esclusiva}
+
+Permette di acquistare unità navali in cambio di [FaithIcon] Fede. Le unità religiose non pagano un costo per imbarcarsi o sbarcare. +2 [FaithIcon] Fede dai Centri cittadini adiacenti a caselle di costa o di lago.

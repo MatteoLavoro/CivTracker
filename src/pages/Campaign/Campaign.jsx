@@ -19,16 +19,16 @@ import {
   initializeDraft,
   togglePlayerReady,
   toggleDirectReady,
+  togglePreferenceReady,
   executeDraft,
   activateDirectChoice,
   submitAllBanVotes,
   finalizeBans,
   selectFinalLeader,
   chooseDirectLeader,
+  saveDraftSuggestion,
   createMatch,
-  updateMatchTurns,
   completeMatch,
-  updateMatchPenalties,
   voteForCampaignStatus,
   revokeStatusVote,
   migrateMatchParticipantsPhotoURL,
@@ -41,9 +41,7 @@ import {
   VictoryInfoModal,
   RulesModal,
   CompleteMatchModal,
-  PenaltyModal,
   LeaderConfirmModal,
-  TextInputModal,
   DraftModal,
   DirectChoiceModal,
   ChoiceMethodModal,
@@ -53,6 +51,7 @@ import {
   LeaderPoolModal,
 } from "../../components/common";
 import { preloadImages } from "../../utils/imagePreloader";
+import { DRAFT_COUNTDOWN_SECONDS } from "../../utils/draftUtils";
 import "./Campaign.css";
 
 /**
@@ -78,15 +77,24 @@ export function Campaign() {
   const [leaderToSelect, setLeaderToSelect] = useState(null);
 
   // Match system state
-  const [turnsModalOpen, setTurnsModalOpen] = useState(false);
   const [completeMatchModalOpen, setCompleteMatchModalOpen] = useState(false);
-  const [penaltyModalOpen, setPenaltyModalOpen] = useState(false);
-  const [scoreModalOpen, setScoreModalOpen] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
-  const [currentTurns, setCurrentTurns] = useState(0);
-  const [currentScore, setCurrentScore] = useState(0);
-  const [currentParticipantId, setCurrentParticipantId] = useState(null);
+  // Tracks whether this user currently holds a match edit lock
+  const lockHeldRef = useRef(false);
+  // Tracks which countdown already triggered the draft/direct activation
+  const draftStartedRef = useRef(null);
+  const directStartedRef = useRef(null);
+
+  // Release the edit lock if the user leaves the page while editing
+  useEffect(() => {
+    return () => {
+      if (lockHeldRef.current && user?.uid) {
+        lockHeldRef.current = false;
+        releaseMatchEditLock(campaignId, user.uid);
+      }
+    };
+  }, [campaignId, user?.uid]);
 
   // Load campaign data with real-time updates
   const {
@@ -114,10 +122,9 @@ export function Campaign() {
 
   // Migrate match participants to include photoURL (one-time fix for old matches)
   useEffect(() => {
-    if (campaign && campaignId) {
-      migrateMatchParticipantsPhotoURL(campaignId);
-    }
-  }, [campaign?.id, campaignId]);
+    if (!campaignId) return;
+    migrateMatchParticipantsPhotoURL(campaignId);
+  }, [campaignId]);
 
   // Load all leaders
   const {
@@ -130,16 +137,15 @@ export function Campaign() {
   const isMember = campaign && user && campaign.members?.includes(user.uid);
 
   // Map leaderId → tier letter for draft badge display
+  const tierListTiers = tierlistDoc?.tiers;
   const leaderTierMap = useMemo(() => {
-    if (!tierlistDoc?.tiers) return {};
-    const map = {};
-    ["S", "A", "B", "C", "D", "E", "F"].forEach((tier) => {
-      (tierlistDoc.tiers[tier] || []).forEach((id) => {
-        map[id] = tier;
-      });
-    });
-    return map;
-  }, [tierlistDoc?.tiers]);
+    if (!tierListTiers) return {};
+    return Object.fromEntries(
+      ["S", "A", "B", "C", "D", "E", "F"].flatMap((tier) =>
+        (tierListTiers[tier] || []).map((leaderId) => [leaderId, tier]),
+      ),
+    );
+  }, [tierListTiers]);
 
   // Get draft state
   const draft = campaign?.draft || null;
@@ -186,18 +192,22 @@ export function Campaign() {
       const now = Date.now();
       const elapsed = Math.floor((now - startTime) / 1000);
 
-      // If 5 seconds have passed, execute draft immediately
-      if (elapsed >= 5) {
-        executeDraft(campaignId, campaign.members);
+      // Execute the draft only once per countdown
+      if (draftStartedRef.current === draft.countdownStartAt) return;
+
+      const runDraft = () => {
+        draftStartedRef.current = draft.countdownStartAt;
+        executeDraft(campaignId, campaign.members).then((result) => {
+          if (result?.error) alert(result.error);
+        });
+      };
+
+      // If the countdown is over, execute the draft immediately
+      if (elapsed >= DRAFT_COUNTDOWN_SECONDS) {
+        runDraft();
       } else {
         // Otherwise wait for the remaining time
-        const timeout = setTimeout(
-          () => {
-            executeDraft(campaignId, campaign.members);
-          },
-          (5 - elapsed) * 1000,
-        );
-
+        const timeout = setTimeout(runDraft, (DRAFT_COUNTDOWN_SECONDS - elapsed) * 1000);
         return () => clearTimeout(timeout);
       }
     }
@@ -209,7 +219,7 @@ export function Campaign() {
     campaign?.members,
   ]);
 
-  // Activate direct choice after countdown (5 s)
+  // Activate direct choice after the countdown
   useEffect(() => {
     if (
       draftPhase === "countdown" &&
@@ -220,14 +230,22 @@ export function Campaign() {
       const now = Date.now();
       const elapsed = Math.floor((now - startTime) / 1000);
 
-      if (elapsed >= 5) {
-        activateDirectChoice(campaignId);
+      // Activate direct choice only once per countdown
+      if (directStartedRef.current === draft.countdownStartAt) return;
+
+      const runDirectChoice = () => {
+        directStartedRef.current = draft.countdownStartAt;
+        activateDirectChoice(campaignId).then((result) => {
+          if (result?.error) alert(result.error);
+        });
+      };
+
+      if (elapsed >= DRAFT_COUNTDOWN_SECONDS) {
+        runDirectChoice();
       } else {
         const timeout = setTimeout(
-          () => {
-            activateDirectChoice(campaignId);
-          },
-          (5 - elapsed) * 1000,
+          runDirectChoice,
+          (DRAFT_COUNTDOWN_SECONDS - elapsed) * 1000,
         );
         return () => clearTimeout(timeout);
       }
@@ -270,7 +288,7 @@ export function Campaign() {
         finalizeBans(campaignId, campaign.members);
       }
     }
-  }, [draftPhase, campaign?.members, campaignId, user?.uid]);
+  }, [draftPhase, draft?.mode, campaign?.members, campaignId, user?.uid]);
 
   // Redirect if not a member or campaign doesn't exist
   useEffect(() => {
@@ -312,7 +330,7 @@ export function Campaign() {
   const handleVoteForStatus = async (desiredStatus) => {
     if (!user) return;
 
-    const { statusChanged, error } = await voteForCampaignStatus(
+    const { error } = await voteForCampaignStatus(
       campaignId,
       user.uid,
       desiredStatus,
@@ -321,8 +339,6 @@ export function Campaign() {
     if (error) {
       console.error("Errore voto stato:", error);
       alert(error);
-    } else if (statusChanged) {
-      // Status changed successfully
     }
   };
 
@@ -345,7 +361,7 @@ export function Campaign() {
   const handleCreateMatch = async () => {
     if (!campaign || !user) return;
 
-    const { success, error } = await createMatch(
+    const { error } = await createMatch(
       campaignId,
       campaign.members,
       campaign.memberDetails,
@@ -355,41 +371,6 @@ export function Campaign() {
       console.error("Errore creazione partita:", error);
       alert(error);
     }
-  };
-
-  const handleUpdateTurnsRequest = (matchId, currentTurns) => {
-    setCurrentMatchId(matchId);
-    setCurrentTurns(currentTurns);
-    setTurnsModalOpen(true);
-  };
-
-  const handleUpdateTurnsConfirm = async (turnsValue) => {
-    if (!currentMatchId) return;
-
-    const { error } = await updateMatchTurns(
-      campaignId,
-      currentMatchId,
-      turnsValue,
-    );
-
-    if (error) {
-      console.error("Errore aggiornamento turni:", error);
-      alert("Errore nell'aggiornamento dei turni. Riprova.");
-    }
-
-    setTurnsModalOpen(false);
-    setCurrentMatchId(null);
-  };
-
-  const handleUpdateScoreConfirm = async (scoreValue) => {
-    if (!currentMatchId || !currentParticipantId) return;
-
-    // TODO: Implement score update functionality
-
-    setScoreModalOpen(false);
-    setCurrentMatchId(null);
-    setCurrentParticipantId(null);
-    setCurrentScore(0);
   };
 
   const handleCompleteMatch = async (matchId) => {
@@ -416,6 +397,7 @@ export function Campaign() {
       return;
     }
 
+    lockHeldRef.current = true;
     setSelectedMatch(match);
     setCurrentMatchId(matchId);
     setCompleteMatchModalOpen(true);
@@ -432,6 +414,7 @@ export function Campaign() {
       matchData.bonusTags || {},
       matchData.winnerId,
       matchData.victoryType,
+      matchData.penaltyTags || {},
     );
 
     if (error) {
@@ -440,6 +423,7 @@ export function Campaign() {
     } else {
       // Release lock after successful completion
       if (user) {
+        lockHeldRef.current = false;
         await releaseMatchEditLock(campaignId, user.uid);
       }
       setCompleteMatchModalOpen(false);
@@ -452,41 +436,12 @@ export function Campaign() {
   const handleCloseCompleteMatchModal = async () => {
     // Release lock before closing
     if (user && currentMatchId) {
+      lockHeldRef.current = false;
       await releaseMatchEditLock(campaignId, user.uid);
     }
     setCompleteMatchModalOpen(false);
     setCurrentMatchId(null);
     setSelectedMatch(null);
-  };
-
-  // Penalty handlers
-  const handlePenalty = (matchId) => {
-    // Find the match
-    const match = campaign?.matches?.find((m) => m.id === matchId);
-    if (!match || !user) return;
-
-    setSelectedMatch(match);
-    setCurrentMatchId(matchId);
-    setPenaltyModalOpen(true);
-  };
-
-  const handlePenaltyConfirm = async (penaltyData) => {
-    if (!currentMatchId) return;
-
-    const { error } = await updateMatchPenalties(
-      campaignId,
-      currentMatchId,
-      penaltyData.penaltyTags,
-    );
-
-    if (error) {
-      console.error("Errore aggiornamento penalità:", error);
-      alert("Errore nell'aggiornamento delle penalità. Riprova.");
-    } else {
-      setPenaltyModalOpen(false);
-      setCurrentMatchId(null);
-      setSelectedMatch(null);
-    }
   };
 
   const handleToggleReady = async () => {
@@ -499,6 +454,23 @@ export function Campaign() {
     if (!campaign || !user) return;
     const isReady = draft?.directReadyPlayers?.includes(user.uid) || false;
     await toggleDirectReady(campaignId, user.uid, !isReady, campaign.members);
+  };
+
+  const handleTogglePreferenceReady = async () => {
+    if (!campaign || !user) return;
+    const isReady =
+      draft?.preferenceReadyPlayers?.includes(user.uid) || false;
+    await togglePreferenceReady(
+      campaignId,
+      user.uid,
+      !isReady,
+      campaign.members,
+    );
+  };
+
+  const handleSaveSuggestion = async (suggestion) => {
+    if (!campaign) return { success: false };
+    return saveDraftSuggestion(campaignId, suggestion);
   };
 
   const handleChooseDirectLeader = async (leaderId) => {
@@ -515,9 +487,9 @@ export function Campaign() {
     return { error: null };
   };
 
-  const handleSubmitBan = async (banMap) => {
+  const handleSubmitBan = async (banMap, preferences = null) => {
     if (!campaign || !user) return;
-    await submitAllBanVotes(campaignId, user.uid, banMap);
+    await submitAllBanVotes(campaignId, user.uid, banMap, preferences);
   };
 
   const handleSelectLeader = async (leaderId) => {
@@ -603,6 +575,8 @@ export function Campaign() {
     !!myDirectChoice && !currentMatch?.draftCompleted;
   const readyPlayersCount = draft?.readyPlayers?.length || 0;
   const directReadyPlayersCount = draft?.directReadyPlayers?.length || 0;
+  const preferenceReadyPlayersCount =
+    draft?.preferenceReadyPlayers?.length || 0;
   const totalPlayersCount = campaign?.members?.length || 0;
 
   if (loading || leadersLoading) {
@@ -774,13 +748,13 @@ export function Campaign() {
               onOpenChoiceMethod={handleOpenChoiceMethodModal}
               onContinueChoice={handleContinueChoice}
               onCompleteMatch={handleCompleteMatch}
-              onPenalty={handlePenalty}
               isCurrentMatch={match.id === currentMatch?.id}
               isChoiceStarted={choiceStarted}
               hasUserCompletedDraft={hasUserCompletedDraft}
               hasUserCompletedDirectChoice={hasUserCompletedDirectChoice}
               readyPlayersCount={readyPlayersCount}
               directReadyPlayersCount={directReadyPlayersCount}
+              preferenceReadyPlayersCount={preferenceReadyPlayersCount}
               totalPlayersCount={totalPlayersCount}
               draftMode={draftMode}
               draftPhase={draftPhase}
@@ -861,9 +835,11 @@ export function Campaign() {
         user={user}
         countdownStartAt={draft?.countdownStartAt}
         onToggleReady={handleToggleReady}
+        onTogglePreferenceReady={handleTogglePreferenceReady}
         onSubmitBan={handleSubmitBan}
         onSelectLeader={handleSelectLeader}
         tierMap={leaderTierMap}
+        confirmSelectOpen={confirmSelectOpen}
       />
 
       {/* Direct Choice Modal */}
@@ -887,8 +863,10 @@ export function Campaign() {
         draft={draft}
         user={user}
         onToggleDraftReady={handleToggleReady}
+        onTogglePreferenceReady={handleTogglePreferenceReady}
         onToggleDirectReady={handleToggleDirectReady}
         onCountdownComplete={handleCountdownComplete}
+        onSaveSuggestion={handleSaveSuggestion}
       />
 
       {/* Confirm Select Leader Modal */}
@@ -904,45 +882,6 @@ export function Campaign() {
         }
       />
 
-      {/* Update Turns Modal */}
-      <TextInputModal
-        isOpen={turnsModalOpen}
-        onClose={() => {
-          setTurnsModalOpen(false);
-          setCurrentMatchId(null);
-        }}
-        onConfirm={handleUpdateTurnsConfirm}
-        title="Aggiorna Turni"
-        label="Numero di Turni"
-        placeholder="Es: 300"
-        confirmLabel="Salva"
-        defaultValue={currentTurns > 0 ? currentTurns.toString() : ""}
-        customValidation={(value) => {
-          const num = parseInt(value);
-          return !isNaN(num) && num > 0 && num <= 9999;
-        }}
-      />
-
-      {/* Update Score Modal */}
-      <TextInputModal
-        isOpen={scoreModalOpen}
-        onClose={() => {
-          setScoreModalOpen(false);
-          setCurrentMatchId(null);
-          setCurrentParticipantId(null);
-        }}
-        onConfirm={handleUpdateScoreConfirm}
-        title="Aggiorna Punteggio"
-        label="Punteggio"
-        placeholder="Es: 450"
-        confirmLabel="Salva"
-        defaultValue={currentScore > 0 ? currentScore.toString() : ""}
-        customValidation={(value) => {
-          const num = parseInt(value);
-          return !isNaN(num) && num >= 0 && num <= 9999;
-        }}
-      />
-
       {/* Complete Match Modal */}
       <CompleteMatchModal
         key={`complete-${selectedMatch?.id || "empty"}`}
@@ -952,19 +891,6 @@ export function Campaign() {
         onConfirm={handleCompleteMatchConfirm}
         leaders={leaders}
         victoryCounts={victoryCounts}
-      />
-
-      {/* Penalty Modal */}
-      <PenaltyModal
-        key={`penalty-${selectedMatch?.id || "empty"}`}
-        isOpen={penaltyModalOpen}
-        onClose={() => {
-          setPenaltyModalOpen(false);
-          setCurrentMatchId(null);
-          setSelectedMatch(null);
-        }}
-        match={selectedMatch}
-        onConfirm={handlePenaltyConfirm}
       />
     </div>
   );

@@ -1,0 +1,3 @@
+[Gerege] {Abilità esclusiva}
+
+Uno slot Politica economica extra con qualsiasi governo. Quando stabilisci per la prima volta una [TradingPostIcon] Base commerciale nella città di un'altra civiltà ricevi un momento [EurekaIcon] Eureka e un' [InspirationIcon] Ispirazione casuali.

@@ -1,149 +1,220 @@
-// Rules Modal Component - Game Rules
-import { Shuffle, Trophy, Flag, Ban, Shield, Medal } from "lucide-react";
+// Rules Modal - Game rules and scoring reference
+import {
+  Trophy,
+  Shuffle,
+  Swords,
+  ClipboardList,
+  Coins,
+  Ban,
+  Clock,
+  ArrowRight,
+  Medal,
+  ShieldAlert,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { Modal } from "./Modal";
+import { BONUS_INFO, PENALTY_INFO } from "../../utils/scoreUtils";
 import "./RulesModal.css";
 
-/**
- * RulesModal component
- * Displays comprehensive game rules with organized sections
- * @param {boolean} isOpen - Modal open state
- * @param {Function} onClose - Close handler
- */
+const FLOW_STEPS = [
+  {
+    icon: ClipboardList,
+    title: "Si crea la partita",
+    text: "Dalla campagna in corso si aggiunge una nuova partita: partecipanti e punteggi iniziali vengono preparati automaticamente.",
+  },
+  {
+    icon: Shuffle,
+    title: "Draft dei leader",
+    text: "Ogni giocatore riceve 5 leader e gli avversari ne bannano uno. Poi si sceglie tra i rimanenti. In alternativa si può usare la Scelta Diretta, in ordine di arrivo.",
+  },
+  {
+    icon: Swords,
+    title: "Si gioca",
+    text: "Al termine si registrano turni, punteggi grezzi, esito, bonus e malus direttamente dal modale di modifica partita.",
+  },
+  {
+    icon: Trophy,
+    title: "Punteggi e classifica",
+    text: "Il sistema calcola i punti elaborati e finali. La classifica somma i punti finali di tutte le partite completate.",
+  },
+];
+
 export function RulesModal({ isOpen, onClose }) {
-  const rules = [
-    {
-      id: "assignment",
-      title: "Assegnazione Personaggi",
-      icon: Shuffle,
-      iconColor: "gold",
-      sections: [
-        {
-          text: "Si estraggono cinque personaggi casuali e gli avversari ne scartano uno, lasciando al giocatore la scelta finale tra i due rimanenti.",
-        },
-        {
-          text: "Segue una fase di studio di 15 minuti per definire una strategia mirata e approfondita.",
-          highlight: true,
-        },
-      ],
-    },
-    {
-      id: "scoring",
-      title: "Punteggi",
-      icon: Trophy,
-      iconColor: "gold",
-      sections: [
-        {
-          text: "Il sistema privilegia la vittoria sul punteggio, premiando maggiormente i trionfi più rari in base allo storico delle partite.",
-          highlight: true,
-        },
-      ],
-    },
-    {
-      id: "special-cases",
-      title: "Casi Speciali",
-      icon: Flag,
-      iconColor: "orange",
-      sections: [
-        {
-          text: "Forfait: Dichiarabile entro un limite prestabilito, assegna al vincitore un quarto dei punti standard.",
-        },
-        {
-          text: "Eliminazione: In caso di eliminazione il punteggio assegnato è pari a 0.",
-        },
-        {
-          text: "Reroll: Concesso solo per spawn o eventi critici, con penalità pari al forfait. Si rigioca con gli stessi personaggi.",
-        },
-      ],
-    },
-    {
-      id: "prohibitions",
-      title: "Divieti",
-      icon: Ban,
-      iconColor: "red",
-      sections: [
-        {
-          text: "È vietato lo scambio di città tra giocatori.",
-          highlight: true,
-        },
-      ],
-    },
-    {
-      id: "survivor-bonus",
-      title: "Bonus 'Sopravvissuto'",
-      icon: Shield,
-      iconColor: "gold",
-      badge: "Anti-Teaming",
-      sections: [
-        {
-          text: "Il vincitore ottiene +10% per ogni avversario che lo ha aggredito, se la guerra è rimasta attiva per massimo 30 turni.",
-          highlight: true,
-        },
-      ],
-    },
-    {
-      id: "second-place-bonus",
-      title: "Bonus 'Secondo Posto'",
-      icon: Medal,
-      iconColor: "silver",
-      badge: "Incentivo al 2° Posto",
-      sections: [
-        {
-          text: "Il secondo classificato riceve un bonus del 15% sul punteggio finale.",
-          highlight: true,
-        },
-      ],
-    },
-  ];
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Regole del Gioco">
+    <Modal isOpen={isOpen} onClose={onClose} title="Regole del Gioco" wide>
       <div className="rules-content">
-        <div className="rules-intro">
-          <p>
-            Sistema di regole bilanciato per garantire un'esperienza di gioco
-            equa, competitiva e strategica.
-          </p>
+        {/* Hero */}
+        <div className="rules-hero">
+          <div className="rules-hero-icon">
+            <Trophy size={30} />
+          </div>
+          <div className="rules-hero-text">
+            <h3>Una lega, non solo partite</h3>
+            <p>
+              CivTracker tiene insieme draft, risultati e punteggi della
+              campagna. Le regole qui sotto sono quelle applicate
+              dall&apos;app.
+            </p>
+          </div>
         </div>
 
-        <div className="rules-list">
-          {rules.map((rule) => {
-            const IconComponent = rule.icon;
-            return (
-              <div key={rule.id} className="rule-card">
-                <div className="rule-header">
-                  <div
-                    className={`rule-icon-wrapper rule-icon-${rule.iconColor}`}
-                  >
-                    <IconComponent size={24} />
+        {/* Flow */}
+        <section className="rules-section">
+          <h4 className="rules-section-title">
+            <ArrowRight size={16} />
+            Come funziona una partita
+          </h4>
+          <div className="rules-flow">
+            {FLOW_STEPS.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div className="rules-step" key={step.title}>
+                  <div className="rules-step-top">
+                    <span className="rules-step-number">{index + 1}</span>
+                    <div className="rules-step-icon">
+                      <Icon size={18} />
+                    </div>
                   </div>
-                  <div className="rule-title-wrapper">
-                    <h3 className="rule-title">{rule.title}</h3>
-                    {rule.badge && (
-                      <span className="rule-badge">{rule.badge}</span>
-                    )}
-                  </div>
+                  <strong>{step.title}</strong>
+                  <p>{step.text}</p>
                 </div>
+              );
+            })}
+          </div>
+        </section>
 
-                <div className="rule-body">
-                  {rule.sections.map((section, idx) => (
-                    <p
-                      key={idx}
-                      className={`rule-text ${section.highlight ? "rule-text-highlight" : ""}`}
-                    >
-                      {section.text}
-                    </p>
-                  ))}
-                </div>
+        {/* Scoring */}
+        <section className="rules-section">
+          <h4 className="rules-section-title">
+            <Coins size={16} />
+            Punteggi
+          </h4>
+          <div className="rules-score-card">
+            <div className="rules-score-stats">
+              <div className="rules-stat">
+                <span className="rules-stat-value">200</span>
+                <span className="rules-stat-label">
+                  punti in palio per una vittoria normale
+                </span>
               </div>
-            );
-          })}
-        </div>
+              <div className="rules-stat">
+                <span className="rules-stat-value">50–150</span>
+                <span className="rules-stat-label">
+                  punti vittoria, in base alla rarità dell&apos;esito
+                </span>
+              </div>
+              <div className="rules-stat">
+                <span className="rules-stat-value">100</span>
+                <span className="rules-stat-label">
+                  punti in palio per forfait o sconfitta
+                </span>
+              </div>
+            </div>
+            <div className="rules-score-formula">
+              <span>Punteggio finale</span>
+              <code>elaborato × (1 + bonus − malus)</code>
+            </div>
+            <p className="rules-score-note">
+              Il vincitore riceve i punti vittoria (50–150 in base a quanto è
+              raro quell&apos;esito); i punti rimanenti vengono distribuiti in
+              proporzione ai punteggi grezzi. I punti vittoria si aggiornano con
+              lo storico, quindi una nuova partita può ricalcolare le
+              precedenti.
+            </p>
+          </div>
+        </section>
+
+        {/* Bonuses and maluses */}
+        <section className="rules-section">
+          <div className="rules-modifiers">
+            <div className="rules-modifier-panel rules-modifier-bonus">
+              <div className="rules-modifier-header">
+                <Medal size={18} />
+                <h4>Bonus</h4>
+                <span className="rules-modifier-badge">cumulabili</span>
+              </div>
+              <div className="rules-modifier-list">
+                {BONUS_INFO.map((bonus) => (
+                  <div className="rules-modifier-row" key={bonus.id}>
+                    <span className="rules-modifier-value is-bonus">
+                      +{bonus.percent}%
+                    </span>
+                    <div>
+                      <strong>{bonus.name}</strong>
+                      <p>{bonus.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rules-modifier-panel rules-modifier-malus">
+              <div className="rules-modifier-header">
+                <ShieldAlert size={18} />
+                <h4>Malus</h4>
+                <span className="rules-modifier-badge">cumulabili</span>
+              </div>
+              <div className="rules-modifier-list">
+                {PENALTY_INFO.map((penalty) => (
+                  <div className="rules-modifier-row" key={penalty.id}>
+                    <span className="rules-modifier-value is-malus">
+                      −{penalty.percent}%
+                    </span>
+                    <div>
+                      <strong>{penalty.name}</strong>
+                      <p>{penalty.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Rules */}
+        <section className="rules-section">
+          <h4 className="rules-section-title">
+            <Ban size={16} />
+            Regole della campagna
+          </h4>
+          <ul className="rules-list">
+            <li>
+              <CheckCircle2 size={15} className="rules-list-icon ok" />
+              <span>
+                <strong>Forfait:</strong> dichiarabile entro il limite
+                concordato. Assegna al vincitore una vittoria ridotta a 50
+                punti.
+              </span>
+            </li>
+            <li>
+              <CheckCircle2 size={15} className="rules-list-icon ok" />
+              <span>
+                <strong>Reroll mappa:</strong> concesso solo per spawn o eventi
+                critici, si rigioca con gli stessi personaggi e comporta un
+                malus del 10%.
+              </span>
+            </li>
+            <li>
+              <XCircle size={15} className="rules-list-icon no" />
+              <span>
+                <strong>Divieto:</strong> è vietato lo scambio di città tra
+                giocatori.
+              </span>
+            </li>
+            <li>
+              <Clock size={15} className="rules-list-icon info" />
+              <span>
+                <strong>Studio:</strong> dopo il draft sono consigliati 15
+                minuti per definire la strategia prima di iniziare.
+              </span>
+            </li>
+          </ul>
+        </section>
 
         <div className="rules-outro">
-          <p>
-            Regole progettate per prevenire il teaming e favorire una
-            competizione equilibrata. Buona partita!
-          </p>
+          <Trophy size={16} />
+          <span>Buona partita e che vinca il migliore.</span>
         </div>
       </div>
     </Modal>

@@ -1,0 +1,11 @@
+[Libertà dorata] {Abilità esclusiva}
+
+Quando completi un Accampamento o un Forte in territorio amico scateni una Bomba culturale nelle caselle adiacenti. Uno slot per politiche militari nel governo attuale viene convertito in uno slot jolly.
+
+[Ussaro alato] {Unità speciali}
+
+Unità esclusiva della Polonia, di epoca rinascimentale, che sostituisce il Corazziere. Quando in battaglia attacca e infligge più danni di quelli subiti dall'unità nemica che si difende, quell'unità è spinta fuori della sua casella. Le unità nemiche che non possono ritirarsi subiscono danni aggiuntivi.
+
+[Sukiennice] {Infrastruttura speciale}
+
+Edificio esclusivo polacco. Le [TradeRouteIcon] Rotte commerciali internazionali che partono da questa città forniscono +2 [ProductionIcon] Produzione; le [TradeRouteIcon] Rotte commerciali interne forniscono +4 [GoldIcon] Oro. +1 capacità [TradeRouteIcon] Rotte commerciali se la città non ha già un edificio Faro.

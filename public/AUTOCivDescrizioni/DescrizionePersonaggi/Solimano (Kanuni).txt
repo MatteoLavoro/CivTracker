@@ -1,0 +1,7 @@
+[Gran Visir] {Abilità esclusiva}
+
+Governatore esclusivo con abilità militari e diplomatiche. Quando scopri la tecnologia Armi da fuoco ottieni l'unità esclusiva Giannizzero e un Titolo Governatore.
+
+[Giannizzero] {Unità speciali}
+
+Unità esclusiva ottomana di epoca rinascimentale che sostituisce il Soldato con moschetto. Entra in gioco con una promozione gratuita. Più forte e meno costosa del Soldato con moschetto. Per addestrare un Giannizzero una città deve avere almeno popolazione 2. Una città fondata dagli ottomani che addestra un Giannizzero perde un punto di popolazione.

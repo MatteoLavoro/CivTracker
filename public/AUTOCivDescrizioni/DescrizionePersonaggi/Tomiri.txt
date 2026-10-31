@@ -1,0 +1,3 @@
+[Uccisore di Ciro] {Abilità esclusiva}
+
+Tutte le unità ottengono un bonus di +5 alla [StrengthIcon] Forza di combattimento quando attaccano unità ferite. Quando eliminano un'unità, curano fino a 30 PF.

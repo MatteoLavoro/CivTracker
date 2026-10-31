@@ -1,0 +1,3 @@
+[Sacro Romano Imperatore] {Abilità esclusiva}
+
+Slot Politica militare extra. +7 alla [StrengthIcon] Forza di combattimento quando attacchi le città-stato.

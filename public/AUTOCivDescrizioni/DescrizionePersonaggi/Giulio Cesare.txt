@@ -1,0 +1,3 @@
+[Veni, Vidi, Vici] {Abilità esclusiva}
+
++200 [GoldIcon] Oro ogni volta che conquisti una città per la prima volta o +100 [GoldIcon] Oro quando guadagni [GoldIcon] Oro da un Avamposto barbarico. La quantità di [GoldIcon] Oro ottenuta in entrambi i casi diventa +500 [GoldIcon] Oro dopo la scoperta dell'Acciaio (a velocità standard).

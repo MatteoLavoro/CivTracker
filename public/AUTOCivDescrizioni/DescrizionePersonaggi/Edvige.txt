@@ -1,0 +1,3 @@
+[Unione Lituana] {Abilità esclusiva}
+
+La religione fondata dalla Polonia diventa quella di maggioranza nelle città adiacenti che perdono una casella per una Bomba culturale polacca. I Luoghi Santi ottengono un bonus alla [FaithIcon] Fede standard dai distretti adiacenti. Tutte le [RelicIcon] Reliquie e le [RelicIcon] Reliquie Eroiche forniscono un bonus alla [FaithIcon] Fede (+2), alla [CultureIcon] Cultura (+2) e all' [GoldIcon] Oro (+4).

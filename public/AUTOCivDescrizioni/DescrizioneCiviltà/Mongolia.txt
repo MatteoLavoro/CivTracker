@@ -1,0 +1,14 @@
+[Örtöö] {Abilità esclusiva}
+
+Avviare una [TradeRouteIcon] Rotta commerciale crea immediatamente una [TradingPostIcon] Base commerciale nella città destinazione. Ricevi un livello extra di [DiplomaticVisibilityIcon] Visibilità diplomatica se possiedi una [TradingPostIcon] Base commerciale in una qualsiasi città di una civiltà. Tutte le unità mongole raddoppiano il normale bonus alla [StrengthIcon] Forza di combattimento quando il loro livello di [DiplomaticVisibilityIcon] Visibilità diplomatica è superiore a quello dell'avversario.
+
+[Keshig] {Unità speciali}
+
+Unità esclusiva mongola di cavalleria di epoca medievale con attacco a distanza. Può scortare unità civili e di supporto alla sua normale velocità di [MovementIcon] movimento.
+
+[Ordu] {Infrastruttura speciale}
+
+Edificio esclusivo mongolo. Fornisce un'abilità che dà +1 al [MovementIcon] movimento di tutte le unità di cavalleria leggera e pesante addestrate in questa città. +25% all'esperienza ottenuta in combattimento da tutte le unità di cavalleria e d'assedio addestrate in questa città.
++10 alle scorte delle risorse strategiche (a velocità standard).
+
+Non può essere costruita in un distretto Accampamento che comprende già una Caserma.

@@ -1,0 +1,3 @@
+[Colonna Traiana] {Abilità esclusiva}
+
+Tutte le città partono con un edificio extra nel Centro cittadino (in epoca antica questo è il Monumento).

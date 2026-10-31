@@ -32,6 +32,8 @@ import {
   CampaignInfoModal,
 } from "../../components/common";
 import { preloadImages } from "../../utils/imagePreloader";
+import { getParticipantScore } from "../../utils/scoreUtils";
+import { isValidCampaignCode } from "../../utils/campaignUtils";
 import "./Home.css";
 
 const SORT_OPTIONS = [
@@ -40,6 +42,22 @@ const SORT_OPTIONS = [
   { value: "lastAccess", label: "Ultimo accesso" },
   { value: "created", label: "Data creazione" },
 ];
+
+/**
+ * Read a JSON value from localStorage, falling back on parse errors
+ * @param {string|null} key - Storage key
+ * @param {*} fallback - Value returned when missing or invalid
+ * @returns {*} Stored value or fallback
+ */
+function readStoredJson(key, fallback) {
+  if (!key) return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 /**
  * Home Page
@@ -57,17 +75,41 @@ export function Home() {
   const [isJoining, setIsJoining] = useState(false);
 
   // Recent campaign IDs, localStorage-backed (most recent first)
-  const [recentCampaignIds, setRecentCampaignIds] = useState([]);
+  const storageSuffix = user?.uid || "anonymous";
+  const [recentCampaignIds, setRecentCampaignIds] = useState(() => {
+    const stored = readStoredJson(`civtracker_recent_${storageSuffix}`, []);
+    return Array.isArray(stored) ? stored : [];
+  });
   // Last access timestamps { campaignId: timestamp }
-  const [lastAccessMap, setLastAccessMap] = useState({});
+  const [lastAccessMap, setLastAccessMap] = useState(() => {
+    const stored = readStoredJson(
+      `civtracker_last_access_${storageSuffix}`,
+      {},
+    );
+    return stored && typeof stored === "object" && !Array.isArray(stored)
+      ? stored
+      : {};
+  });
   // Sort type for "Tutte" section
   const [sortType, setSortType] = useState("alpha");
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const sortMenuRef = useRef(null);
 
   // Collapse state for collapsible sections (default expanded)
-  const [favoritesExpanded, setFavoritesExpanded] = useState(true);
-  const [recentsExpanded, setRecentsExpanded] = useState(true);
+  const [favoritesExpanded, setFavoritesExpanded] = useState(() => {
+    const stored = readStoredJson(
+      `civtracker_sect_fav_${storageSuffix}`,
+      true,
+    );
+    return typeof stored === "boolean" ? stored : true;
+  });
+  const [recentsExpanded, setRecentsExpanded] = useState(() => {
+    const stored = readStoredJson(
+      `civtracker_sect_rec_${storageSuffix}`,
+      true,
+    );
+    return typeof stored === "boolean" ? stored : true;
+  });
 
   // Calculate player rankings for a campaign
   const calculatePlayerRankings = (campaign) => {
@@ -96,13 +138,7 @@ export function Home() {
       completedMatches.forEach((match) => {
         const participant = match.participants?.[memberId];
         if (participant) {
-          const score =
-            participant.finalScore !== undefined
-              ? participant.finalScore
-              : participant.processedScore !== undefined
-                ? participant.processedScore
-                : participant.score || 0;
-          totalScore += score;
+          totalScore += getParticipantScore(participant);
         }
       });
 
@@ -149,31 +185,6 @@ export function Home() {
       }
     }
   }, [campaigns]);
-
-  // Load recents and last access from localStorage on mount
-  useEffect(() => {
-    if (!user?.uid) return;
-    try {
-      const storedRecents = localStorage.getItem(
-        `civtracker_recent_${user.uid}`,
-      );
-      if (storedRecents) setRecentCampaignIds(JSON.parse(storedRecents));
-      const storedAccess = localStorage.getItem(
-        `civtracker_last_access_${user.uid}`,
-      );
-      if (storedAccess) setLastAccessMap(JSON.parse(storedAccess));
-      const storedFavExp = localStorage.getItem(
-        `civtracker_sect_fav_${user.uid}`,
-      );
-      if (storedFavExp !== null) setFavoritesExpanded(JSON.parse(storedFavExp));
-      const storedRecExp = localStorage.getItem(
-        `civtracker_sect_rec_${user.uid}`,
-      );
-      if (storedRecExp !== null) setRecentsExpanded(JSON.parse(storedRecExp));
-    } catch {
-      // ignore parse errors
-    }
-  }, [user?.uid]);
 
   // Close sort dropdown on outside click
   useEffect(() => {
@@ -272,10 +283,7 @@ export function Home() {
   const handleLeaveCampaign = async () => {
     if (!selectedCampaign || !user) return;
 
-    const { success, error } = await leaveCampaign(
-      selectedCampaign.id,
-      user.uid,
-    );
+    const { error } = await leaveCampaign(selectedCampaign.id, user.uid);
 
     if (error) {
       console.error("Errore uscita campagna:", error);
@@ -289,10 +297,7 @@ export function Home() {
   const handleUpdateCampaignName = async (newName) => {
     if (!selectedCampaign) return;
 
-    const { success, error } = await updateCampaignName(
-      selectedCampaign.id,
-      newName,
-    );
+    const { error } = await updateCampaignName(selectedCampaign.id, newName);
 
     if (error) {
       console.error("Errore aggiornamento nome:", error);
@@ -308,7 +313,7 @@ export function Home() {
     const isCurrentlyImportant = importantFor.includes(user.uid);
     const newImportantStatus = !isCurrentlyImportant;
 
-    const { success, error } = await toggleCampaignImportant(
+    const { error } = await toggleCampaignImportant(
       campaign.id,
       user.uid,
       newImportantStatus,
@@ -415,7 +420,10 @@ export function Home() {
       currentMatch.status === "in-progress" &&
       !currentMatch.draftCompleted &&
       (draft.phase !== "waiting" ||
-        (draft.readyPlayers && draft.readyPlayers.length > 0));
+        (draft.readyPlayers && draft.readyPlayers.length > 0) ||
+        (draft.preferenceReadyPlayers &&
+          draft.preferenceReadyPlayers.length > 0) ||
+        (draft.directReadyPlayers && draft.directReadyPlayers.length > 0));
 
     return (
       <div
@@ -669,9 +677,45 @@ export function Home() {
                   <div className="section-divider-line" />
                 </div>
                 <div className="section-content">
-                  <div className="campaigns-grid">
-                    {allCampaignsSorted.map(renderCampaignCard)}
-                  </div>
+                  {campaignsError && campaigns.length === 0 ? (
+                    <div className="home-message" role="alert">
+                      <p>Impossibile caricare le campagne.</p>
+                      <p className="home-message-hint">
+                        Controlla la connessione e ricarica la pagina.
+                      </p>
+                    </div>
+                  ) : campaigns.length === 0 ? (
+                    <div className="home-message">
+                      <LayoutGrid size={28} className="home-message-icon" />
+                      <p>Non hai ancora nessuna campagna.</p>
+                      <p className="home-message-hint">
+                        Creane una nuova oppure unisciti con il codice di un
+                        amico.
+                      </p>
+                      <div className="home-message-actions">
+                        <button
+                          className="home-message-btn home-message-btn--primary"
+                          type="button"
+                          onClick={() => setCreateCampaignModalOpen(true)}
+                        >
+                          <Plus size={16} />
+                          Crea campagna
+                        </button>
+                        <button
+                          className="home-message-btn"
+                          type="button"
+                          onClick={() => setJoinCampaignModalOpen(true)}
+                        >
+                          <UserPlus size={16} />
+                          Unisciti
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="campaigns-grid">
+                      {allCampaignsSorted.map(renderCampaignCard)}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -707,13 +751,7 @@ export function Home() {
         maxLength={8}
         minLength={8}
         confirmLabel="Unisciti"
-        customValidation={(code) => {
-          // Check if code doesn't match any existing campaign
-          const existingCampaign = campaigns.find(
-            (c) => c.code?.toUpperCase() === code.toUpperCase(),
-          );
-          return !existingCampaign;
-        }}
+        customValidation={(code) => isValidCampaignCode(code)}
       />
 
       {/* Campaign Info Modal */}

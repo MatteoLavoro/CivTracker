@@ -1,0 +1,9 @@
+[Qhapaq Nan] {Abilità esclusiva}
+
+Le [TradeRouteIcon] Rotte commerciali interne rendono +1 [FoodIcon] Cibo per ogni casella di montagna nella città di origine. La scoperta del Progresso Civico Commercio internazionale sblocca il miglioramento Qhapaq Nan.
+
+[Qhapaq Nan] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Qhapaq Nan, esclusivo di Pachacuti.
+
+Agisce come un portale per il movimento attraverso una catena montuosa, permettendo alle unità di entrarvi e di uscire da un altro portale al costo di 2 punti [MovementIcon] movimento. Le [TradeRouteIcon] Rotte commerciali che lo attraversano possono moltiplicare l' [GoldIcon] Oro ottenuto dai distretti nella città di destinazione. Può essere costruito solo su una casella di montagna adiacente. Non è possibile rimuovere o saccheggiare questo miglioramento.

@@ -1,10 +1,13 @@
 // Modal Component - Generic reusable modal with centralized history management
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useId, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { X, ChevronLeft, Check, AlertTriangle } from "lucide-react";
 import { useModal } from "../../contexts";
+import { useBodyScrollLock } from "../../hooks";
 import "./Modal.css";
 
+// Modal history is centralized in ModalContext: one sentinel entry covers the
+// whole modal stack, so opening/closing nested modals cannot leave orphans.
 /**
  * Generic Modal Component
  *
@@ -38,20 +41,30 @@ export function Modal({
   className = "",
   wide = false,
 }) {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 768,
+  );
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const initialScrollY = useRef(0);
   const onCloseRef = useRef(onClose);
+  const closeButtonRef = useRef(null);
+  const confirmCloseButtonRef = useRef(null);
+  const confirmActionRef = useRef(null);
+  const previouslyFocusedRef = useRef(null);
   const { registerNestedClose, modalDepth, hasNestedModals } = useModal();
+  const titleId = useId();
+
+  useBodyScrollLock(isOpen);
 
   // Update onClose ref when it changes
   useEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
 
-  // Check if mobile
+  // Check if mobile (only while the modal is open)
   useEffect(() => {
+    if (!isOpen) return;
+
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -59,7 +72,7 @@ export function Modal({
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  }, [isOpen]);
 
   // Detect keyboard on mobile
   useEffect(() => {
@@ -89,31 +102,28 @@ export function Modal({
   useEffect(() => {
     if (!isOpen) return;
 
-    // Register close callback with ModalContext
+    // Register close callback with ModalContext. The provider owns the single
+    // history sentinel, so no pushState is needed here.
     const unregister = registerNestedClose(() => {
       onCloseRef.current();
     });
 
-    // Add history entry when modal opens
-    window.history.pushState({ nestedModal: true }, "");
-
-    // Prevent body scroll
-    initialScrollY.current = window.scrollY;
-    document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${initialScrollY.current}px`;
-    document.body.style.width = "100%";
+    // Move focus inside the dialog and remember where it was before
+    previouslyFocusedRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    closeButtonRef.current?.focus({ preventScroll: true });
 
     // Cleanup
     return () => {
       unregister();
 
-      // Restore body scroll
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      window.scrollTo(0, initialScrollY.current);
+      // Restore focus to the element that opened the modal
+      const previous = previouslyFocusedRef.current;
+      if (previous && typeof previous.focus === "function") {
+        previous.focus({ preventScroll: true });
+      }
     };
   }, [isOpen, registerNestedClose]);
 
@@ -121,22 +131,30 @@ export function Modal({
   useEffect(() => {
     if (!showConfirmModal) return;
 
-    // Register confirmation modal with ModalContext
+    // Register confirmation modal with ModalContext (same sentinel)
     const unregister = registerNestedClose(() => {
       setShowConfirmModal(false);
     });
 
-    // Add history entry for confirmation modal
-    window.history.pushState({ confirmationModal: true }, "");
+    // Move focus to the least destructive action of the confirmation dialog
+    confirmCloseButtonRef.current?.focus({ preventScroll: true });
+
+    // Keep the action that opened the confirmation to restore focus later
+    const actionElement = confirmActionRef.current;
 
     return () => {
       unregister();
+      actionElement?.focus({ preventScroll: true });
     };
   }, [showConfirmModal, registerNestedClose]);
 
-  // Handle close (go back in history)
+  // Handle close (go back in history if our sentinel is on top)
   const handleClose = useCallback(() => {
-    window.history.back();
+    if (window.history.state?.dshModalSentinel) {
+      window.history.back();
+    } else {
+      onCloseRef.current();
+    }
   }, []);
 
   // Handle confirm button click
@@ -154,7 +172,11 @@ export function Modal({
   const handleDangerousConfirm = useCallback(() => {
     footer?.onConfirm?.();
     // Close confirmation modal via history (goes back one step)
-    window.history.back();
+    if (window.history.state?.dshModalSentinel) {
+      window.history.back();
+    } else {
+      setShowConfirmModal(false);
+    }
   }, [footer]);
 
   if (!isOpen) return null;
@@ -165,9 +187,17 @@ export function Modal({
   const baseZIndex = 1000 + (modalDepth + nestedCount) * 10;
 
   const modalContent = (
-    <div className="modal-overlay" style={{ zIndex: baseZIndex }}>
+    <div
+      className="modal-overlay"
+      style={{ zIndex: baseZIndex }}
+      aria-hidden={showConfirmModal || undefined}
+    >
       <div
         className={`modal-container ${isMobile ? "modal-mobile" : "modal-desktop"} ${wide ? "modal-wide" : ""} ${className}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
       >
         {/* Header */}
         <div className="modal-header">
@@ -179,21 +209,27 @@ export function Modal({
                   onClick={handleClose}
                   aria-label="Indietro"
                   type="button"
+                  ref={closeButtonRef}
                 >
                   <ChevronLeft size={20} />
                 </button>
-                <h2 className="modal-title">{title}</h2>
+                <h2 className="modal-title" id={titleId}>
+                  {title}
+                </h2>
                 <div className="modal-spacer" />
               </>
             ) : (
               <>
                 <div className="modal-spacer" />
-                <h2 className="modal-title">{title}</h2>
+                <h2 className="modal-title" id={titleId}>
+                  {title}
+                </h2>
                 <button
                   className="modal-close-btn"
                   onClick={handleClose}
                   aria-label="Chiudi"
                   type="button"
+                  ref={closeButtonRef}
                 >
                   <X size={20} />
                 </button>
@@ -222,6 +258,7 @@ export function Modal({
                   disabled={footer.disabled}
                   aria-label={footer.label || "Conferma"}
                   type="button"
+                  ref={confirmActionRef}
                 >
                   {footer.icon ? (
                     typeof footer.icon === "function" ? (
@@ -240,6 +277,7 @@ export function Modal({
                   onClick={handleConfirmClick}
                   disabled={footer.disabled}
                   type="button"
+                  ref={confirmActionRef}
                 >
                   {footer.label || "Conferma"}
                 </button>
@@ -256,6 +294,10 @@ export function Modal({
     <div className="modal-overlay" style={{ zIndex: baseZIndex + 10 }}>
       <div
         className={`modal-container ${isMobile ? "modal-mobile" : "modal-desktop"} confirm-modal-danger`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${titleId}-confirm`}
+        tabIndex={-1}
       >
         {/* Header */}
         <div className="modal-header">
@@ -267,21 +309,27 @@ export function Modal({
                   onClick={() => window.history.back()}
                   aria-label="Indietro"
                   type="button"
+                  ref={confirmCloseButtonRef}
                 >
                   <ChevronLeft size={20} />
                 </button>
-                <h2 className="modal-title">Conferma</h2>
+                <h2 className="modal-title" id={`${titleId}-confirm`}>
+                  Conferma
+                </h2>
                 <div className="modal-spacer" />
               </>
             ) : (
               <>
                 <div className="modal-spacer" />
-                <h2 className="modal-title">Conferma</h2>
+                <h2 className="modal-title" id={`${titleId}-confirm`}>
+                  Conferma
+                </h2>
                 <button
                   className="modal-close-btn"
                   onClick={() => window.history.back()}
                   aria-label="Chiudi"
                   type="button"
+                  ref={confirmCloseButtonRef}
                 >
                   <X size={20} />
                 </button>

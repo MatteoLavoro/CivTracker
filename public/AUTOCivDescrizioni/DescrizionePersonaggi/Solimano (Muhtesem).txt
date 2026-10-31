@@ -1,0 +1,3 @@
+[Il Magnifico] {Abilità esclusiva}
+
++15% a [ScienceIcon] Scienza e [CultureIcon] Cultura quando si trova in un' Età dell'oro o eroica. Quando non si trova in un' Età dell'oro o eroica, +4 alla [StrengthIcon] Forza di combattimento contro le civiltà che anch'esse non sono in un' Età dell'oro o eroica.

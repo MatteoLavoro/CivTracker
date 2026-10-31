@@ -126,7 +126,8 @@ export function Dev() {
             <h2 className="dev-section-title">Database Seeding</h2>
             <p className="dev-section-description">
               Popola il database con le descrizioni dei personaggi e delle
-              civiltà dalla cartella <code>public/CivDescrizioni</code>.
+              civiltà generate da civilopedia nella cartella{" "}
+              <code>public/AUTOCivDescrizioni</code>.
             </p>
 
             <div className="dev-buttons">
@@ -210,8 +211,15 @@ export function Dev() {
                 automaticamente "[ScienceIcon] Scienza")
               </li>
               <li>
+                <strong>Cartella AUTO:</strong> le descrizioni in{" "}
+                <code>public/AUTOCivDescrizioni</code> sono generate dallo
+                script <code>scripts/civilopedia/scrape.mjs</code> e validate
+                contro quelle manuali (vedi{" "}
+                <code>comparison-report.md</code>).
+              </li>
+              <li>
                 <strong>Nuovi file:</strong> Se hai appena aggiunto nuovi file
-                .txt nella cartella <code>public/CivDescrizioni</code>, devi{" "}
+                .txt nella cartella <code>public/AUTOCivDescrizioni</code>, devi{" "}
                 <strong>riavviare il server dev</strong> (ferma con Ctrl+C e
                 riavvia con <code>npm run dev</code>)
               </li>

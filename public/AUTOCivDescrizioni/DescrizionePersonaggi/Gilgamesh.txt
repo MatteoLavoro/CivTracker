@@ -1,0 +1,3 @@
+[L'eredità di Enkidu] {Abilità esclusiva}
+
+Incremento del 25% alla [ProductionIcon] Produzione durante l'acquisizione degli Eroi; inoltre gli Eroi hanno un' Aspettativa di vita più lunga del 20%.

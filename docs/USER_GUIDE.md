@@ -399,6 +399,22 @@ Il **draft** assegna leader casuali ai giocatori prima della partita.
 - Solo player: Skip automatico fase banning
 - Leader pool personalizzata per evitare ripetizioni
 
+#### Metodi di scelta
+
+Dal modal **Scegli Metodo** puoi attivare:
+
+1. **Draft Classico** — 5 leader, ban e scelta finale.
+2. **Draft Preferenze** — come il classico, ma a ogni ban scegli anche una
+   preferenza **dal pool dell'avversario che stai bannando**. Ogni preferenza
+   vale **+10%** sui punti finali del giocatore che sceglierà quel leader; le
+   preferenze sono cumulabili e il bonus è automatico (non rimovibile). Se il
+   leader preferito viene bannato, non potrà essere scelto e la preferenza non
+   produrrà bonus.
+3. **Scelta Diretta** — il primo che sceglie un leader disponibile lo ottiene.
+
+Nel riquadro **Nuovi Metodi** puoi inviare un suggerimento: è modificabile
+durante l'attesa ma viene bloccato durante il countdown.
+
 ### Completare una Partita
 
 Quando finisci una partita nel gioco:

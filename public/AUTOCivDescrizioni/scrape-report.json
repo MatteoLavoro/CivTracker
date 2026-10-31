@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-10-31T16:32:56.612Z",
+  "leaderCount": 77,
+  "civCount": 50,
+  "errors": [],
+  "unknownIcons": {
+    "governor": 20,
+    "resource_horses": 1,
+    "lifespan": 5,
+    "glory_golden_age": 16,
+    "range": 6,
+    "ranged": 2
+  }
+}

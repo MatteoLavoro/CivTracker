@@ -2,12 +2,23 @@ import { useState, useEffect } from "react";
 import { X, Download, Share, Plus } from "lucide-react";
 import "./InstallPrompt.css";
 
+function detectPlatform() {
+  if (typeof window === "undefined") return null;
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  if (/iphone|ipad|ipod/.test(userAgent)) return "ios";
+  if (/android/.test(userAgent)) return "android";
+  return null;
+}
+
 export const InstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [platform, setPlatform] = useState(null);
+  const [platform, setPlatform] = useState(detectPlatform);
 
   useEffect(() => {
+    // Don't show the prompt on desktop
+    if (!platform) return;
+
     // Check if user has already seen the prompt
     const hasSeenPrompt = localStorage.getItem("pwa-install-prompt-seen");
 
@@ -21,23 +32,11 @@ export const InstallPrompt = () => {
       return;
     }
 
-    // Detect platform
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    const isAndroid = /android/.test(userAgent);
-    const isMobile = isIOS || isAndroid;
+    let timer;
 
-    if (!isMobile) {
-      // Don't show on desktop
-      return;
-    }
-
-    if (isIOS) {
-      setPlatform("ios");
+    if (platform === "ios") {
       // Show immediately on iOS since there's no beforeinstallprompt event
-      setTimeout(() => setShowPrompt(true), 1000);
-    } else if (isAndroid) {
-      setPlatform("android");
+      timer = setTimeout(() => setShowPrompt(true), 1000);
     }
 
     // Listen for the beforeinstallprompt event (Android/Chrome)
@@ -45,18 +44,20 @@ export const InstallPrompt = () => {
       e.preventDefault();
       setDeferredPrompt(e);
       setPlatform("android");
-      setTimeout(() => setShowPrompt(true), 1000);
+      clearTimeout(timer);
+      timer = setTimeout(() => setShowPrompt(true), 1000);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     return () => {
+      clearTimeout(timer);
       window.removeEventListener(
         "beforeinstallprompt",
         handleBeforeInstallPrompt,
       );
     };
-  }, []);
+  }, [platform]);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {

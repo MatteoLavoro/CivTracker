@@ -1,0 +1,3 @@
+[Mercanti del Sahel] {Abilità esclusiva}
+
+Le [TradeRouteIcon] Rotte commerciali internazionali guadagnano +1 [GoldIcon] Oro per ogni casella di deserto pianeggiante nella città d'origine. +1 capacità [TradeRouteIcon] Rotte commerciali ogni volta che entri in un'Età dell'oro.

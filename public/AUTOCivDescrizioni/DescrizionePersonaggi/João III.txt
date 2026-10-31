@@ -1,0 +1,3 @@
+[Porta do Cerco] {Abilità esclusiva}
+
+Tutte le unità hanno +1 al raggio visivo. +1 alla capacità [TradeRouteIcon] Rotte commerciali quando incontri una civiltà. Diritto di Passaggio con tutte le città-stato.

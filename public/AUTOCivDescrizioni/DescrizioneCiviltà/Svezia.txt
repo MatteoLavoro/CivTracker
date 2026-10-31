@@ -1,0 +1,13 @@
+[Premio Nobel] {Abilità esclusiva}
+
+La Svezia guadagna 50 [DiplomaticFavorIcon] Supporto diplomatico quando ottiene un Grande Personaggio (a velocità standard). Inoltre ottiene +1 punto [GreatPersonIcon] Grande Ingegnere dalle Fabbriche e +1 punto [ScientistIcon] Grande Scienziato dalle Università. La presenza della Svezia nella partita aggiunge tre competizioni esclusive del Congresso Mondiale a partire dall'epoca industriale.
+
+[Karoliner] {Unità speciali}
+
+Unità esclusiva svedese di epoca rinascimentale che sostituisce l'unità Picca e Moschetto, rispetto a cui è più veloce. +3 alla [StrengthIcon] Forza di combattimento per ogni punto [MovementIcon] movimento inutilizzato.
+
+[Museo all'aperto] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare un Museo all'aperto, un miglioramento esclusivo svedese.
+
+Fornisce +2 Lealtà per turno nella sua città. +2 [CultureIcon] Cultura e +2 [TourismIcon] Turismo per ogni tipo di terreno (neve, tundra, deserto, pianura o prateria) su cui è stata fondata almeno una città svedese. Massimo uno per città. Le caselle che contengono un Museo all'aperto non possono essere assegnate a un'altra città.

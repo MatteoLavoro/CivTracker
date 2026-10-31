@@ -1,0 +1,3 @@
+[Età del vapore] {Abilità esclusiva}
+
++10% alla [ProductionIcon] Produzione nelle città per ogni edificio della Zona industriale. +2 [ProductionIcon] Produzione per tutte le risorse strategiche.

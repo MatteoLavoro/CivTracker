@@ -18,7 +18,7 @@ Documentazione completa dei componenti riutilizzabili di CivTracker.
   - [VictoryInfoModal](#victoryinfomodal)
   - [RulesModal](#rulesmodal)
   - [CompleteMatchModal](#completematchmodal)
-  - [BonusInfoModal](#bonusinfomodal)
+  - [BonusMalusModal](#bonusmalusmodal)
   - [DraftModal](#draftmodal)
   - [LeaderConfirmModal](#leaderconfirmmodal)
   - [MatchRow](#matchrow)
@@ -553,33 +553,45 @@ Modal complesso per completare una partita con tutti i dettagli.
 
 ---
 
-### BonusInfoModal
+### BonusMalusModal
 
-**Path:** `src/components/common/BonusInfoModal.jsx`
+**Path:** `src/components/common/BonusMalusModal.jsx`
 
-Modal multi-purpose per bonus tags (info/assign/overflow).
+Modal unificato per bonus e malus delle partite (info/assign), con tab
+separate per le due categorie.
 
 #### Props
 
-| Prop               | Type     | Default  | Descrizione                      |
-| ------------------ | -------- | -------- | -------------------------------- |
-| `isOpen`           | boolean  | -        | Stato aperto/chiuso              |
-| `onClose`          | function | -        | Handler chiusura                 |
-| `mode`             | string   | `'info'` | 'info' / 'assign' / 'overflow'   |
-| `currentBonusTags` | Array    | `[]`     | Bonus attuali (per assign mode)  |
-| `onAssign`         | function | `null`   | Handler assegnazione (array ids) |
-| `onRemove`         | function | `null`   | Handler rimozione (index)        |
+| Prop                 | Type     | Default  | Descrizione                        |
+| -------------------- | -------- | -------- | ---------------------------------- |
+| `isOpen`             | boolean  | -        | Stato aperto/chiuso                |
+| `onClose`            | function | -        | Handler chiusura                   |
+| `mode`               | string   | `'info'` | 'info' / 'assign'                  |
+| `participantName`    | string   | `''`     | Nome mostrato nel titolo           |
+| `currentBonusTags`   | Array    | `[]`     | Bonus attuali (per assign mode)    |
+| `currentPenaltyTags` | Array    | `[]`     | Malus attuali (per assign mode)    |
+| `onAssign`           | function | `null`   | Handler `{ bonusTags, penaltyTags }` |
 
 #### Modes
 
-- **info**: Visualizza tutti i bonus disponibili con descrizioni
-- **assign**: Permette selezione multipla di bonus
-- **overflow**: Mostra lista bonus assegnati (compatta)
+- **info**: Visualizza tutti i bonus/malus disponibili con descrizioni
+- **assign**: Permette selezione multipla (anche più copie dello stesso tag)
 
-#### Bonus Tags
+#### Tag supportati
+
+**Bonus**
 
 - **second-place** (+15%): Secondo posto
 - **survivor** (+10%): In guerra con giocatore <30 turni (multiplo)
+
+**Malus**
+
+- **map-reroll** (−10%): Reroll mappa
+- **rage-quit** (−30%): Abbandono partita
+- **rule-violation** (−90%): Violazione regole
+
+Le stesse etichette/percentuali sono definite in `src/utils/scoreUtils.js`
+(`BONUS_INFO`, `PENALTY_INFO`) e riusate dal modale Regole.
 
 ---
 

@@ -7,20 +7,31 @@
 
 .leader-tooltip {
   background: linear-gradient(
-    135deg,
-    rgba(20, 30, 40, 0.98) 0%,
-    rgba(15, 25, 35, 0.98) 100%
+    160deg,
+    rgba(22, 33, 44, 0.98) 0%,
+    rgba(13, 22, 31, 0.99) 100%
   );
   backdrop-filter: blur(20px);
-  border: 2px solid rgba(212, 175, 55, 0.4);
-  border-radius: 12px;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--leader-primary, rgba(212, 175, 55, 0.45)) 32%,
+      rgba(255, 255, 255, 0.08)
+    );
+  border-radius: 14px;
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(212, 175, 55, 0.2);
+    0 14px 34px rgba(0, 0, 0, 0.55),
+    0 0 22px
+      color-mix(
+        in srgb,
+        var(--leader-primary, rgba(212, 175, 55, 0.4)) 12%,
+        transparent
+      );
   max-width: 400px;
   min-width: 300px;
   z-index: 10000;
   pointer-events: none;
+  overflow: hidden;
   animation: tooltip-fade-in 0.2s ease-out;
 }
 
@@ -37,45 +48,42 @@
 
 /* Header */
 .leader-tooltip-header {
-  padding: 0.875rem 1rem 0.625rem;
+  padding: 1rem 1.15rem 0.7rem;
   background: linear-gradient(
     180deg,
-    rgba(212, 175, 55, 0.05) 0%,
-    transparent 100%
+    color-mix(
+        in srgb,
+        var(--leader-primary, rgba(212, 175, 55, 0.4)) 16%,
+        transparent
+      )
+      0%,
+    transparent 92%
   );
 }
 
 .leader-tooltip-title {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0;
 }
 
-.leader-tooltip-title::before,
-.leader-tooltip-title::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  min-width: 8px;
-  background: rgba(212, 175, 55, 0.4);
-}
-
 .leader-tooltip-title-text {
-  font-size: 1.0625rem;
+  font-size: 1.08rem;
   font-weight: 700;
-  color: rgba(212, 175, 55, 1);
-  text-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  color: rgba(246, 233, 196, 0.98);
   letter-spacing: 0.3px;
-  padding: 2px 8px;
-  border-left: 1.5px solid rgba(212, 175, 55, 0.45);
-  border-right: 1.5px solid rgba(212, 175, 55, 0.45);
-  white-space: nowrap;
+  line-height: 1.3;
+  padding: 0;
+  border: none;
+  white-space: normal;
+  text-align: center;
   flex-shrink: 0;
 }
 
 /* Content */
 .leader-tooltip-content {
-  padding: 1rem 1.25rem;
+  padding: 0.8rem 1.15rem 1.05rem;
   color: white;
 }
 
@@ -90,7 +98,7 @@
 
 /* Ability */
 .leader-tooltip-ability {
-  margin-bottom: 1rem;
+  margin-bottom: 0.95rem;
 }
 
 .leader-tooltip-ability:last-child {
@@ -100,19 +108,49 @@
 .leader-tooltip-ability-header {
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
-  font-size: 0.9375rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.leader-tooltip-ability-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-right: 0.45rem;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--leader-primary, rgba(212, 175, 55, 0.45)) 55%,
+      rgba(255, 255, 255, 0.12)
+    );
+  background: rgba(10, 20, 30, 0.85);
+}
+
+.leader-tooltip-ability-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.leader-tooltip-ability-icon.fallback {
+  color: rgba(212, 175, 55, 0.9);
 }
 
 .leader-tooltip-ability-header strong {
   font-weight: 600;
-  color: rgba(255, 215, 0, 1);
-  letter-spacing: 0.3px;
+  color: rgba(246, 233, 196, 0.98);
+  letter-spacing: 0.2px;
 }
 
 .leader-tooltip-ability-separator {
-  margin: 0 0.5rem;
-  color: rgba(212, 175, 55, 0.6);
+  margin: 0 0.4rem;
+  color: rgba(165, 155, 130, 0.5);
   font-weight: 400;
 }
 
@@ -120,13 +158,13 @@
   font-style: italic;
   font-weight: 500;
   color: rgba(150, 150, 150, 1);
-  font-size: 0.875rem;
+  font-size: 0.78rem;
 }
 
 .leader-tooltip-ability-description {
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: rgba(220, 220, 220, 1);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: rgba(208, 214, 220, 0.94);
 }
 
 /* Inline icons in description */

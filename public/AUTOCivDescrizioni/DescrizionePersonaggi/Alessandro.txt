@@ -1,0 +1,7 @@
+[Fino ai confini del mondo] {Abilità esclusiva}
+
+Le città non patiscono la stanchezza di guerra. Tutte le unità militari guariscono completamente quando questo giocatore cattura una città che contiene una Meraviglia.
+
+[Etèro] {Unità speciali}
+
+Unità di cavalleria pesante, esclusiva della Macedonia, che sostituisce il Guerriero a cavallo. Bonus +5 aggiuntivo alla [StrengthIcon] Forza di combattimento quando è adiacente a un Grande Generale. +5 punti Grande Generale quando uccide un'unità nemica. Entra in gioco con una promozione gratuita.

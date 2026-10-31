@@ -1,0 +1,1332 @@
+{
+  "generatedAt": "2026-10-31T15:43:07.590Z",
+  "threshold": 0.95,
+  "groups": [
+    {
+      "kind": "leaders",
+      "manualCount": 29,
+      "autoCount": 77,
+      "missingAuto": [],
+      "average": 1,
+      "passed": 29,
+      "total": 29,
+      "files": [
+        {
+          "name": "Abraham Lincoln",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Proclama di Emancipazione",
+              "matchedName": "Proclama di Emancipazione",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Ba Trieu",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Scacciare gli aggressori",
+              "matchedName": "Scacciare gli aggressori",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Basilio II",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Porfirogenito",
+              "matchedName": "Porfirogenito",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Tagma",
+              "matchedName": "Tagma",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Caterina de' Medici (La Magnifica)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "La magnificenza di Caterina",
+              "matchedName": "La magnificenza di Caterina",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Caterina de' Medici (Regina Nera)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Lo Squadrone Volante di Caterina",
+              "matchedName": "Lo Squadrone Volante di Caterina",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Cleopatra (Egiziana)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "La sposa del Mediterraneo",
+              "matchedName": "La sposa del Mediterraneo",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Cleopatra (Tolemaica)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "L'arrivo di Hapi",
+              "matchedName": "L'arrivo di Hapi",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Eleonora d'Aquitania (Francia)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Corte dell'Amore",
+              "matchedName": "Corte dell'Amore",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Hammurabi",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Ninu Ilu Sirum",
+              "matchedName": "Ninu Ilu Sirum",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "John Curtin",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Baluardo di civiltà",
+              "matchedName": "Baluardo di civiltà",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Kublai Khan (Cina)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Gerege",
+              "matchedName": "Gerege",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Menelik II",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Consiglio dei ministri",
+              "matchedName": "Consiglio dei ministri",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Montezuma",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Doni per il Tlatoani",
+              "matchedName": "Doni per il Tlatoani",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Mvemba a Nzinga",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Convertito religioso",
+              "matchedName": "Convertito religioso",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Pedro II",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Magnanimo",
+              "matchedName": "Magnanimo",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Poundmaker",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Condizioni favorevoli",
+              "matchedName": "Condizioni favorevoli",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Qin Shi Huang (Mandato Divino)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Primo imperatore",
+              "matchedName": "Primo imperatore",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Qin Shi Huang (Unificatore)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "I trentasei stratagemmi",
+              "matchedName": "I trentasei stratagemmi",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Ramses II",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Abu Simbel",
+              "matchedName": "Abu Simbel",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Saladino (Sultano)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "La Rettitudine della Fede",
+              "matchedName": "La Rettitudine della Fede",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Saladino (Visir)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Il Vittorioso",
+              "matchedName": "Il Vittorioso",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Sejong",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Hangul",
+              "matchedName": "Hangul",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Seondeok",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Hwarang",
+              "matchedName": "Hwarang",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Shaka",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Amabutho",
+              "matchedName": "Amabutho",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Teddy Roosevelt (L'alce)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Antichità e Parchi",
+              "matchedName": "Antichità e Parchi",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Teddy Roosevelt (Rough Rider)",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Il corollario di Roosevelt",
+              "matchedName": "Il corollario di Roosevelt",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Rough Rider",
+              "matchedName": "Rough Rider",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Wilfrid Laurier",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "L'ultimo West",
+              "matchedName": "L'ultimo West",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Wu Zetian",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Manuale delle trappole",
+              "matchedName": "Manuale delle trappole",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Yongle",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Lijia",
+              "matchedName": "Lijia",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "civs",
+      "manualCount": 34,
+      "autoCount": 50,
+      "missingAuto": [],
+      "average": 0.9899,
+      "passed": 32,
+      "total": 33,
+      "files": [
+        {
+          "name": "Mali",
+          "score": 0.667,
+          "average": 1,
+          "coverage": 0.667,
+          "abilities": [
+            {
+              "name": "Canzoni del griot",
+              "matchedName": "Canzoni del griot",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Ipaspista",
+              "matchedName": null,
+              "score": 0
+            },
+            {
+              "name": "Suguba",
+              "matchedName": "Suguba",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "America",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Padri fondatori",
+              "matchedName": "Padri fondatori",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "P-51 Mustang",
+              "matchedName": "P-51 Mustang",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Studio cinematografico",
+              "matchedName": "Studio cinematografico",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Arabia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "L'ultimo Profeta",
+              "matchedName": "L'ultimo Profeta",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Mamelucco",
+              "matchedName": "Mamelucco",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Madrasa",
+              "matchedName": "Madrasa",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Australia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Il paese agli antipodi",
+              "matchedName": "Il paese agli antipodi",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Digger",
+              "matchedName": "Digger",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Allevamento nell'Outback",
+              "matchedName": "Allevamento nell'Outback",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Aztechi",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "La leggenda dei Cinque Soli",
+              "matchedName": "La leggenda dei Cinque Soli",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Guerriero aquila",
+              "matchedName": "Guerriero aquila",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Tlachtli",
+              "matchedName": "Tlachtli",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Babilonia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Enuma Anu Enlil",
+              "matchedName": "Enuma Anu Enlil",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Sabum Kibittum",
+              "matchedName": "Sabum Kibittum",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Palgum",
+              "matchedName": "Palgum",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Bisanzio",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Taxis",
+              "matchedName": "Taxis",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Dromone",
+              "matchedName": "Dromone",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Ippodromo",
+              "matchedName": "Ippodromo",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Brasile",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Amazzonia",
+              "matchedName": "Amazzonia",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Carnevale",
+              "matchedName": "Carnevale",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Copacabana",
+              "matchedName": "Copacabana",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Minas Gerais",
+              "matchedName": "Minas Gerais",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Canada",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Le quattro facce della pace",
+              "matchedName": "Le quattro facce della pace",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Mountine",
+              "matchedName": "Mountie",
+              "nameScore": 0.875,
+              "score": 1
+            },
+            {
+              "name": "Campo da hokey",
+              "matchedName": "Campo da hockey",
+              "nameScore": 0.933,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Cina",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Ciclo dinastico",
+              "matchedName": "Ciclo dinastico",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Tigre accucciata",
+              "matchedName": "Tigre accucciata",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Grande Muraglia",
+              "matchedName": "Grande Muraglia",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Congo",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Nkisi",
+              "matchedName": "Nkisi",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Ngao Mbeba",
+              "matchedName": "Ngao Mbeba",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Mbanza",
+              "matchedName": "Mbanza",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Corea",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Tre Regni",
+              "matchedName": "Tre Regni",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Hwacha",
+              "matchedName": "Hwacha",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Seowon",
+              "matchedName": "Seowon",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Cree",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Nîhithaw",
+              "matchedName": "Nîhithaw",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Okihtcitaw",
+              "matchedName": "Okihtcitaw",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Mekewap",
+              "matchedName": "Mekewap",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Didone",
+          "skipped": true,
+          "reason": "non è una civiltà"
+        },
+        {
+          "name": "Egitto",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Iteru",
+              "matchedName": "Iteru",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Arciere Maryannu su carro",
+              "matchedName": "Arciere Maryannu su carro",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Sfinge",
+              "matchedName": "Sfinge",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Etiopia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Eredità di Axum",
+              "matchedName": "Eredità di Axum",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Cavalleria Oromo",
+              "matchedName": "Cavalleria Oromo",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Chiesa nella roccia",
+              "matchedName": "Chiesa nella roccia",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Fenicia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Colonie nel Mediterraneo",
+              "matchedName": "Colonie nel Mediterraneo",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Bireme",
+              "matchedName": "Bireme",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Kothon",
+              "matchedName": "Kothon",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Francia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Grand Tour",
+              "matchedName": "Grand Tour",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Garde Impériale",
+              "matchedName": "Garde Impériale",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Château",
+              "matchedName": "Château",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Gallia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Cultura di Hallstatt",
+              "matchedName": "Cultura di Hallstatt",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Gesate",
+              "matchedName": "Gesate",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Oppidum",
+              "matchedName": "Oppidum",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Georgia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Forza nell'unità",
+              "matchedName": "Forza nell'unità",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Khevsur",
+              "matchedName": "Khevsur",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Tsikhe",
+              "matchedName": "Tsikhe",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Germania",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Città libere imperiali",
+              "matchedName": "Città libere imperiali",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "U-Boot",
+              "matchedName": "U-Boot",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Hansa",
+              "matchedName": "Hansa",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Giappone",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Restaurazione Meiji",
+              "matchedName": "Restaurazione Meiji",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Samurai",
+              "matchedName": "Samurai",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Fabbrica di elettronica",
+              "matchedName": "Fabbrica di elettronica",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Gran Colombia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Ejército Patriota",
+              "matchedName": "Ejército Patriota",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Comandante General",
+              "matchedName": "Comandante General",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Llanero",
+              "matchedName": "Llanero",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Hacienda",
+              "matchedName": "Hacienda",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Grecia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "La Repubblica di Platone",
+              "matchedName": "La Repubblica di Platone",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Oplita",
+              "matchedName": "Oplita",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Acropoli",
+              "matchedName": "Acropoli",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Impero Ottomano",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Grande Bombarda Turca",
+              "matchedName": "Grande Bombarda Turca",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Corsaro barbaresco",
+              "matchedName": "Corsaro barbaresco",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Gran Bazaar",
+              "matchedName": "Gran Bazaar",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Inca",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Mit'a",
+              "matchedName": "Mit'a",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Warak'aq",
+              "matchedName": "Warak'aq",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Fattoria a terrazze",
+              "matchedName": "Fattoria a terrazze",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "India",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Dharma",
+              "matchedName": "Dharma",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Varu",
+              "matchedName": "Varu",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Pozzo a gradini",
+              "matchedName": "Pozzo a gradini",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Indonesia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Grande Nusantara",
+              "matchedName": "Grande Nusantara",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Jong",
+              "matchedName": "Jong",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Kampung",
+              "matchedName": "Kampung",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Inghilterra",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Officina del mondo",
+              "matchedName": "Officina del mondo",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Lupo di mare",
+              "matchedName": "Lupo di mare",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Cantiere della Marina Reale",
+              "matchedName": "Cantiere della Marina Reale",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Khmer",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Grandi baray",
+              "matchedName": "Grandi baray",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Domrey",
+              "matchedName": "Domrey",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Prasat",
+              "matchedName": "Prasat",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Macedonia",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Fusione ellenistica",
+              "matchedName": "Fusione ellenistica",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Ipaspista",
+              "matchedName": "Ipaspista",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Basilikoi Paides",
+              "matchedName": "Basilikoi Paides",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Maori",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Mana",
+              "matchedName": "Mana",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Toa",
+              "matchedName": "Toa",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Marae",
+              "matchedName": "Marae",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Pa",
+              "matchedName": "Pa",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Vietnam",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Delta del Fiume dei Nove Draghi",
+              "matchedName": "Delta del Fiume dei Nove Draghi",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Voi Chiến",
+              "matchedName": "Voi Chiến",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Thành",
+              "matchedName": "Thành",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        },
+        {
+          "name": "Zulù",
+          "score": 1,
+          "average": 1,
+          "coverage": 1,
+          "abilities": [
+            {
+              "name": "Isibongo",
+              "matchedName": "Isibongo",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Impi",
+              "matchedName": "Impi",
+              "nameScore": 1,
+              "score": 1
+            },
+            {
+              "name": "Ikanda",
+              "matchedName": "Ikanda",
+              "nameScore": 1,
+              "score": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "overall": {
+    "average": 0.9946,
+    "files": 62,
+    "passed": 61,
+    "passesThreshold": true
+  }
+}

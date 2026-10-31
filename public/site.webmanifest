@@ -1,13 +1,13 @@
 {
   "name": "CivTracker",
   "short_name": "CivTracker",
-  "description": "Track and manage your civilization data",
+  "description": "Gestisci campagne, draft dei leader, punteggi e classifiche di Civilization VI con i tuoi amici.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "orientation": "any",
+  "theme_color": "#0a1929",
+  "background_color": "#0a1929",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

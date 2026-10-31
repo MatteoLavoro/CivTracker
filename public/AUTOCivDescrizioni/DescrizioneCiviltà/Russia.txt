@@ -1,0 +1,13 @@
+[Madre Russia] {Abilità esclusiva}
+
+Quando fondi una nuova città ottieni territori extra. +1 [FaithIcon] Fede e +1 [ProductionIcon] Produzione dalla tundra. Le tue unità non ricevono danni dalle Tormente. Le unità delle civiltà che sono in guerra contro la Russia ricevono danno doppio dalle Tormente quando si trovano nel territorio russo.
+
+[Cosacco] {Unità speciali}
+
+Unità esclusiva russa di epoca industriale che sostituisce la Cavalleria. Più forte della controparte, guadagna +5 alla [StrengthIcon] Forza di combattimento se si trova all'interno o adiacente al proprio territorio d'origine. Può muoversi dopo aver attaccato, se ha ancora punti [MovementIcon] movimento.
+
+[Lavra] {Infrastruttura speciale}
+
+Un distretto esclusivo della Russia dedicato all'attività religiosa. Sostituisce il distretto Luogo Santo, ma è più economico da costruire.
+
+I confini della tua città crescono di una casella ogni volta che un Grande Personaggio viene consumato in questa città. Una Lavra fornisce ogni turno +1 punto [GreatPersonIcon] Grande Scrittore con un Santuario, +1 punto [GreatPersonIcon] Grande Artista con un Tempio e +1 punto [GreatPersonIcon] Grande Musicista con un Edificio di culto.

@@ -1,0 +1,3 @@
+[Circonfuso dalla Gloria] {Abilità esclusiva}
+
++5% alla [CultureIcon] Cultura per ogni città-stato di cui sei Sovrano.

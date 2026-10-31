@@ -1,0 +1,3 @@
+[Sogolon] {Abilità esclusiva}
+
+Reclutare Grandi Personaggi costa il 20% d' [GoldIcon] Oro in meno; inoltre il Mercato ottiene 2 slot per [GreatWorkWritingIcon] Capolavori Letterari nelle città fondate dal Mali. I [GreatWorkWritingIcon] Capolavori Letterari ricevono +4 [GoldIcon] Oro e +2 [ProductionIcon] Produzione.

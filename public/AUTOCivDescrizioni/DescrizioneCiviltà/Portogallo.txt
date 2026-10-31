@@ -1,0 +1,17 @@
+[Casa da Índia] {Abilità esclusiva}
+
+Le [TradeRouteIcon] Rotte commerciali internazionali devono avere origine da una città costiera e possono raggiungere solo città sulla costa o dotate di un Porto, ma forniscono +50% di tutte le rese. Le unità Commerciante hanno +50% al raggio d'azione sull'acqua e possono imbarcarsi non appena sono sbloccate.
+
+[Caracca] {Unità speciali}
+
+Unità navale da mischia, esclusiva portoghese, che sostituisce la Caravella. Entra in gioco con una promozione gratuita e il suo costo di mantenimento è ridotto. Ha due cariche che può spendere per costruire delle Feitorias.
+
+[Scuola di navigazione] {Infrastruttura speciale}
+
+Edificio esclusivo del Portogallo. +25% alla [ProductionIcon] Produzione per la costruzione di unità navali in questa città. +1 alla [ScienceIcon] Scienza per ogni due caselle di costa o di lago nella città. +1 punto [GeneralIcon] Grande Ammiraglio e +1 punto [ScientistIcon] Grande Scienziato per turno.
+
+[Feitoria] {Infrastruttura speciale}
+
+Sblocca la capacità della Caracca di costruire una Feitoria, un miglioramento esclusivo del Portogallo.
+
+Fornisce +4 [GoldIcon] Oro e +1 [ProductionIcon] Produzione. Le Rotte commerciali inviate nella città dal Portogallo forniscono +4 [GoldIcon] Oro e +1 [ProductionIcon] Produzione. Si può costruire solo in una casella adiacente a una risorsa bonus o di lusso, nel territorio che appartiene a un'altra civiltà o a una città-stato con cui è attivo il Diritto di Passaggio. Deve trovarsi in una casella di costa o di lago, adiacente alla terraferma e non adiacente a un'altra Feitoria. Una Feitoria non può mai essere rimossa.

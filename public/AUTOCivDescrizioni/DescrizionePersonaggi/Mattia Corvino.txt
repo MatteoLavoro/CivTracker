@@ -1,0 +1,7 @@
+[Re Corvo] {Abilità esclusiva}
+
+Le unità reclutate con la leva presso le città-stato ottengono un'abilità che conferisce loro +2 al [MovementIcon] movimento e +5 alla [StrengthIcon] Forza di combattimento. Aggiornare le unità ottenute con la leva costa il 75% [GoldIcon] d'Oro e risorse in meno. Se recluti le unità di una città-stato ricevi 2 [EnvoyIcon] Emissari presso quella città-stato. Quando scopri la tecnologia Castelli ottieni l'unità esclusiva Armata nera.
+
+[Armata Nera] {Unità speciali}
+
+Unità esclusiva ungherese di epoca medievale che sostituisce il Corsiero. +3 alla [StrengthIcon] Forza di combattimento per ogni unità di leva adiacente.

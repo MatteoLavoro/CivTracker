@@ -1,0 +1,3 @@
+[Radio Oranje] {Abilità esclusiva}
+
+Le [TradeRouteIcon] Rotte commerciali verso le proprie città forniscono +2 Lealtà per turno alla città di partenza. Le [TradeRouteIcon] Rotte commerciali che vanno verso o provengono da città straniere forniscono +2 [CultureIcon] Cultura.

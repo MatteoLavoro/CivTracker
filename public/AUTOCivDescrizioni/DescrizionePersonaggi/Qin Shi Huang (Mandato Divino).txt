@@ -1,0 +1,3 @@
+[Primo imperatore] {Abilità esclusiva}
+
+Quando costruisci una Meraviglia di epoca antica e classica puoi consumare una carica dei Costruttori per completare il 15% del costo originale della Meraviglia. I Costruttori ricevono una carica extra. La tecnologia Muratura sblocca i Canali.

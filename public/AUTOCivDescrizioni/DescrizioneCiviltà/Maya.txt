@@ -1,0 +1,13 @@
+[Mayab] {Abilità esclusiva}
+
+Gli insediamenti adiacenti all'acqua dolce e alla costa non ricevono ulteriori [CitizenIcon] Abitazioni; piuttosto, ogni Fattoria fornisce +1 [CitizenIcon] Abitazioni aggiuntive, +1 [ProductionIcon] Produzione per ogni Osservatorio adiacente e +1 [GoldIcon] Oro. +1 [AmenitiesIcon] Attrattiva per ogni risorsa di lusso adiacente al Centro cittadino.
+
+[Hul'che] {Unità speciali}
+
+Unità di epoca antica esclusiva dei Maya che sostituisce l'Arciere e dispone di un potente attacco a distanza. +5 alla [StrengthIcon] Forza di combattimento quando il suo avversario è ferito.
+
+[Osservatorio] {Infrastruttura speciale}
+
+Un distretto esclusivo dei Maya dedicato alle imprese scientifiche. Sostituisce il Campus, ma la sua costruzione costa meno.
+
+Bonus +2 alla [ScienceIcon] Scienza per ogni Piantagione adiacente. Bonus +1 alla [ScienceIcon] Scienza per ogni due Fattorie o distretti adiacenti.

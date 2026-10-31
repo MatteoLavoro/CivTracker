@@ -226,25 +226,38 @@ input[type="number"] {
   color: rgba(212, 175, 55, 1);
 }
 
-/* Overflow bonus tag */
-.bonus-overflow {
-  background: rgba(212, 175, 55, 0.15);
-  border-color: rgba(212, 175, 55, 0.4);
-  cursor: pointer;
+/* Malus color variants */
+.malus-color-orange {
+  background: rgba(251, 146, 60, 0.12);
+  border-color: rgba(251, 146, 60, 0.4);
 }
 
-.bonus-overflow:hover {
-  background: rgba(212, 175, 55, 0.25);
-  border-color: rgba(212, 175, 55, 0.6);
-  transform: translateY(-1px);
+.malus-color-orange .complete-match-bonus-icon {
+  color: rgba(251, 146, 60, 1);
 }
 
-.bonus-overflow .complete-match-bonus-icon {
-  color: rgba(212, 175, 55, 1);
+.malus-color-red {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
-.bonus-overflow .complete-match-bonus-remove {
-  display: none;
+.malus-color-red .complete-match-bonus-icon {
+  color: rgba(248, 113, 113, 1);
+}
+
+.malus-color-purple {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.malus-color-purple .complete-match-bonus-icon {
+  color: rgba(196, 155, 255, 1);
+}
+
+.complete-match-modifier-empty {
+  font-size: 0.8rem;
+  color: rgba(150, 150, 150, 1);
+  font-style: italic;
 }
 
 .complete-match-bonus-icon {
@@ -582,4 +595,11 @@ input[type="number"] {
   .complete-match-score-input {
     width: 100%;
   }
+}
+
+/* Draft preference bonus: automatic, not removable */
+.preference-locked {
+  cursor: default;
+  border-style: dashed;
+  opacity: 0.95;
 }

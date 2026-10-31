@@ -1,0 +1,3 @@
+[Bakuhan] {Abilità esclusiva}
+
+Le [TradeRouteIcon] Rotte commerciali internazionali hanno una resa di [TourismIcon] Turismo inferiore del -25%, ma le [TradeRouteIcon] Rotte commerciali interne forniscono +1 [CultureIcon] Cultura, +1 [ScienceIcon] Scienza e +2 [GoldIcon] Oro per ogni distretto specializzato nella città destinazione. Le città che si trovano entro 6 caselle dalla [CapitalIcon] capitale del Giappone sono leali al 100% e dopo la scoperta del Volo ricevono +1 [TourismIcon] Turismo per ogni distretto.

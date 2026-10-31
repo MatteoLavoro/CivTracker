@@ -1,0 +1,13 @@
+[Perla del Danubio] {Abilità esclusiva}
+
++50% alla [ProductionIcon] Produzione per la costruzione di distretti ed edifici al di là di un fiume rispetto a un Centro cittadino.
+
+[Ussaro] {Unità speciali}
+
+Unità esclusiva ungherese di epoca industriale che sostituisce la Cavalleria. +3 alla [StrengthIcon] Forza di combattimento per ogni alleanza attiva.
+
+[Bagno termale] {Infrastruttura speciale}
+
+Edificio esclusivo ungherese. Bonus di +2 [AmenitiesIcon] Attrattiva e +2 [ProductionIcon] Produzione esteso a ogni Centro cittadino in un raggio di 6 caselle. I bonus si applicano una sola volta a ogni città: la presenza di più copie di quest'edificio entro 6 caselle da un Centro cittadino non fornisce bonus aggiuntivi.
+
+Questa città riceve +3 [TourismIcon] Turismo e +2 [AmenitiesIcon] Attrattiva extra se all'interno dei suoi confini è presente almeno una Fenditura geotermica.

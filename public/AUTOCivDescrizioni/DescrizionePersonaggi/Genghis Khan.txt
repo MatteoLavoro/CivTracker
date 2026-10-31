@@ -1,0 +1,3 @@
+[Orda mongola] {Abilità esclusiva}
+
+Tutte le unità di cavalleria guadagnano +3 alla [StrengthIcon] Forza di combattimento e la possibilità di catturare le unità di cavalleria nemiche sconfitte.

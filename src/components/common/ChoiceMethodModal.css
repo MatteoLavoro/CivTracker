@@ -1,4 +1,4 @@
-﻿/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    Choice Method Modal
    ══════════════════════════════════════════════════════════════ */
 
@@ -99,6 +99,16 @@
   box-shadow: 0 3px 18px rgba(56, 189, 248, 0.32);
 }
 
+.cmm-countdown-badge.preference {
+  background: linear-gradient(
+    135deg,
+    rgba(230, 197, 106, 0.98),
+    rgba(170, 132, 42, 0.95)
+  );
+  color: #1c1606;
+  box-shadow: 0 3px 18px rgba(230, 197, 106, 0.3);
+}
+
 .cmm-countdown-hint {
   margin: 0;
   font-size: 0.875rem;
@@ -131,9 +141,9 @@
 
 .choice-method-columns {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: auto 1fr auto;
-  column-gap: 1rem;
+  column-gap: 0.8rem;
   row-gap: 0;
   /* Use modal-body standard padding to keep top/bottom spacing symmetrical */
   padding: 0;
@@ -176,6 +186,15 @@
   );
 }
 
+.choice-method-column.preference {
+  border-color: rgba(230, 197, 106, 0.32);
+}
+
+.choice-method-column.preference:hover {
+  border-color: rgba(230, 197, 106, 0.55);
+  box-shadow: 0 4px 24px rgba(230, 197, 106, 0.07);
+}
+
 .choice-method-column.future:hover {
   border-color: rgba(148, 163, 184, 0.42);
   box-shadow: 0 4px 24px rgba(148, 163, 184, 0.05);
@@ -205,6 +224,16 @@
 
 .cmcol-head .choice-method-badge.direct {
   box-shadow: 0 3px 14px rgba(56, 189, 248, 0.28);
+}
+
+.cmcol-head .choice-method-badge.preference {
+  background: linear-gradient(
+    135deg,
+    rgba(230, 197, 106, 0.95),
+    rgba(170, 132, 42, 0.92)
+  );
+  color: #1c1606;
+  box-shadow: 0 3px 14px rgba(230, 197, 106, 0.24);
 }
 
 .cmcol-head .choice-method-badge.future {
@@ -401,6 +430,91 @@
     rgba(71, 85, 105, 0.2) 20px
   );
   border: 1px dashed rgba(148, 163, 184, 0.35);
+}
+
+/* Suggestion box for future methods */
+.choice-method-suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  height: 100%;
+}
+
+.choice-method-suggestion label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(165, 175, 188, 0.8);
+}
+
+.choice-method-suggestion textarea {
+  flex: 1;
+  min-height: 110px;
+  resize: vertical;
+  padding: 0.65rem 0.7rem;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(8, 14, 22, 0.55);
+  color: rgba(232, 236, 240, 0.95);
+  font-family: inherit;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.choice-method-suggestion textarea:focus {
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+.choice-method-suggestion textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.choice-method-suggestion-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.choice-method-suggestion-foot > span {
+  font-size: 0.62rem;
+  color: rgba(130, 140, 152, 0.8);
+}
+
+.choice-method-suggestion-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(148, 163, 184, 0.1);
+  color: rgba(220, 228, 236, 0.92);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.choice-method-suggestion-save:hover:not(:disabled) {
+  background: rgba(148, 163, 184, 0.18);
+  border-color: rgba(148, 163, 184, 0.5);
+}
+
+.choice-method-suggestion-save:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.choice-method-suggestion-hint {
+  margin: 0;
+  font-size: 0.62rem;
+  line-height: 1.4;
+  color: rgba(130, 140, 152, 0.8);
 }
 
 /* ──────────────────────────────────────────────────────────────

@@ -1,0 +1,13 @@
+[Tutte le strade portano a Roma] {Abilità esclusiva}
+
+Tutte le città che fondi o conquisti partono con una Base commerciale. Se sono all'interno del raggio di una [TradeRouteIcon] Rotta commerciale con la tua [CapitalIcon] capitale, partono anche con una strada che le collega a essa. Le tue [TradeRouteIcon] Rotte commerciali fruttano +1 [GoldIcon] Oro quando attraversano le Basi commerciali nelle tue città.
+
+[Legione] {Unità speciali}
+
+Unità esclusiva romana da mischia, di epoca classica, che sostituisce lo Spadaccino. Può costruire un Forte romano.
+
+[Terme] {Infrastruttura speciale}
+
+Un distretto esclusivo di Roma dedicato alla crescita delle città. Sostituisce il distretto Acquedotto, ma è più economico da costruire.
+
+Porta in una città acqua dolce da un adiacente fiume, lago, oasi o montagna. Le città che non hanno ancora accesso all'acqua dolce ottengono fino a 6 [CitizenIcon] Abitazioni. Le città che hanno già accesso all'acqua ottengono invece +2 [CitizenIcon] Abitazioni. +1 [AmenitiesIcon] Attrattiva se costruito in una casella adiacente a una Fenditura geotermica. In ogni caso, le Terme forniscono un bonus aggiuntivo di +2 [CitizenIcon] Abitazioni e +1 [AmenitiesIcon] Attrattiva. Previene la perdita di [FoodIcon] Cibo durante le siccità. Il distretto dev'essere costruito adiacente al Centro cittadino. Gli Ingegneri militari possono consumare una carica per completare il 20% della sua costruzione.

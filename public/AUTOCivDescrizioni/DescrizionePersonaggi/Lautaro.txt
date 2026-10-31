@@ -1,0 +1,3 @@
+[Falco Veloce] {Abilità esclusiva}
+
++10 alla [StrengthIcon] Forza di combattimento contro Città libere o civiltà che si trovano in un'Età dell'oro o in un'Età eroica. Sconfiggere un'unità nemica all'interno dei confini di una città nemica fa perdere 20 Lealtà a quella città; 40 Lealtà se la città si trova in un'Età dell'oro o in un'Età eroica.

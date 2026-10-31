@@ -1,0 +1,3 @@
+[Guardia variaga] {Abilità esclusiva}
+
+Le unità reclutate con la leva costano il 75% in meno; inoltre quando uccidono un nemico le unità reclutate con la leva ricevono [CultureIcon] Cultura, [FaithIcon] Fede e [ScienceIcon] Scienza pari al 50% della [StrengthIcon] Forza di combattimento dell'unità sconfitta.

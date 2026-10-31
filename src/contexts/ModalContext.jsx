@@ -24,8 +24,56 @@ export const ModalProvider = ({ children }) => {
   const [modalStack, setModalStack] = useState([]);
   // Stack di callback onClose per modali annidati (gestiti localmente, non nel modalStack)
   const nestedCloseCallbacksRef = useRef([]);
+  // Un solo entry di history copre l'intero stack di modali: evita entry
+  // orfane quando un modale viene chiuso e un altro aperto nello stesso render
+  // (es. scelta metodo → draft), che rendevano il tasto Indietro inaffidabile.
+  const sentinelPushedRef = useRef(false);
   // Flag per indicare che un popstate è stato gestito da un modale
   const popstateHandledRef = useRef(false);
+
+  const ensureHistorySentinel = useCallback(() => {
+    if (
+      sentinelPushedRef.current ||
+      nestedCloseCallbacksRef.current.length === 0
+    ) {
+      return;
+    }
+    window.history.pushState({ dshModalSentinel: true }, "");
+    sentinelPushedRef.current = true;
+  }, []);
+
+  const releaseHistoryIfIdle = useCallback(() => {
+    // Deferred: if another modal opens in the same commit (or StrictMode
+    // remounts), the sentinel must stay alive for it.
+    setTimeout(() => {
+      if (
+        nestedCloseCallbacksRef.current.length > 0 ||
+        !sentinelPushedRef.current
+      ) {
+        return;
+      }
+      sentinelPushedRef.current = false;
+      if (window.history.state?.dshModalSentinel) {
+        window.history.back();
+      }
+    }, 0);
+  }, []);
+
+  // A page reload while a modal was open can leave an orphan sentinel in the
+  // current history entry. Clean it up instead of stacking another one.
+  useEffect(() => {
+    const state = window.history.state;
+    if (
+      state &&
+      (state.dshModalSentinel || state.nestedModal || state.confirmationModal)
+    ) {
+      const next = { ...state };
+      delete next.dshModalSentinel;
+      delete next.nestedModal;
+      delete next.confirmationModal;
+      window.history.replaceState(next, "");
+    }
+  }, []);
 
   const openModal = useCallback(
     (modalId, props = {}) => {
@@ -48,19 +96,30 @@ export const ModalProvider = ({ children }) => {
     setModalStack([]);
     nestedCloseCallbacksRef.current = [];
     document.body.classList.remove("modal-open");
+    if (sentinelPushedRef.current) {
+      sentinelPushedRef.current = false;
+      if (window.history.state?.dshModalSentinel) {
+        window.history.back();
+      }
+    }
   }, []);
 
   // Registra una callback onClose per modali annidati
-  const registerNestedClose = useCallback((callback) => {
-    nestedCloseCallbacksRef.current.push(callback);
-    // Ritorna una funzione per rimuovere la callback
-    return () => {
-      const index = nestedCloseCallbacksRef.current.indexOf(callback);
-      if (index > -1) {
-        nestedCloseCallbacksRef.current.splice(index, 1);
-      }
-    };
-  }, []);
+  const registerNestedClose = useCallback(
+    (callback) => {
+      nestedCloseCallbacksRef.current.push(callback);
+      ensureHistorySentinel();
+      // Ritorna una funzione per rimuovere la callback
+      return () => {
+        const index = nestedCloseCallbacksRef.current.indexOf(callback);
+        if (index > -1) {
+          nestedCloseCallbacksRef.current.splice(index, 1);
+        }
+        releaseHistoryIfIdle();
+      };
+    },
+    [ensureHistorySentinel, releaseHistoryIfIdle],
+  );
 
   // Chiude il modale più in alto (annidato o normale)
   const closeTopModal = useCallback(() => {
@@ -80,6 +139,9 @@ export const ModalProvider = ({ children }) => {
 
   useEffect(() => {
     const handlePopState = () => {
+      // The single sentinel entry has just been consumed (if it was ours)
+      sentinelPushedRef.current = false;
+
       // Prima prova a chiudere modali annidati, poi quelli normali
       if (nestedCloseCallbacksRef.current.length > 0) {
         const callback = nestedCloseCallbacksRef.current.pop();
@@ -91,6 +153,11 @@ export const ModalProvider = ({ children }) => {
             popstateHandledRef.current = false;
           }, 0);
           callback();
+
+          // Se restano altri modali, serve un nuovo sentinel per il prossimo back
+          if (nestedCloseCallbacksRef.current.length > 0) {
+            ensureHistorySentinel();
+          }
         }
       } else if (modalStack.length > 0) {
         popstateHandledRef.current = true;
@@ -102,7 +169,7 @@ export const ModalProvider = ({ children }) => {
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [modalStack.length, closeModal]);
+  }, [modalStack.length, closeModal, ensureHistorySentinel]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -131,6 +198,11 @@ export const ModalProvider = ({ children }) => {
     return nestedCloseCallbacksRef.current.length > 0;
   }, []);
 
+  // Numero di modali annidati attualmente registrati
+  const getNestedCount = useCallback(() => {
+    return nestedCloseCallbacksRef.current.length;
+  }, []);
+
   // Controlla se un popstate è stato appena gestito da un modale
   const wasPopstateHandled = useCallback(() => {
     return popstateHandledRef.current;
@@ -148,6 +220,7 @@ export const ModalProvider = ({ children }) => {
         closeTopModal,
         registerNestedClose,
         hasNestedModals,
+        getNestedCount,
         wasPopstateHandled,
         isModalOpen: (modalId) => modalStack.some((m) => m.id === modalId),
         getModalIndex: (modalId) =>

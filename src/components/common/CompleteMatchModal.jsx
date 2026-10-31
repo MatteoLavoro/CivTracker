@@ -8,16 +8,21 @@ import {
   Plus,
   Swords,
   Medal,
+  RotateCcw,
+  Flame,
+  ShieldAlert,
+  Star,
   X,
   ChevronRight,
 } from "lucide-react";
 import { Modal } from "./Modal";
 import { Avatar } from "./Avatar";
-import { BonusInfoModal } from "./BonusInfoModal";
+import { BonusMalusModal } from "./BonusMalusModal";
 import { WinnerSelectModal } from "./WinnerSelectModal";
 import { VictoryTypeSelectModal } from "./VictoryTypeSelectModal";
 import {
   BONUS_TAGS,
+  getModifierInfo,
   calculateProcessedScores,
   determineSecondPlace,
 } from "../../utils/scoreUtils";
@@ -53,16 +58,11 @@ export function CompleteMatchModal({
   const [turns, setTurns] = useState(match?.turns || 0);
   const [winnerId, setWinnerId] = useState(match?.winnerId || "");
   const [victoryType, setVictoryType] = useState(match?.victoryType || "");
-  const [showBonusInfo, setShowBonusInfo] = useState(false);
-  const [showBonusAssign, setShowBonusAssign] = useState(false);
+  const [showModifierInfo, setShowModifierInfo] = useState(false);
+  const [showModifierAssign, setShowModifierAssign] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
-  const [showOverflowBonusInfo, setShowOverflowBonusInfo] = useState(false);
-  const [overflowBonusList, setOverflowBonusList] = useState([]);
   const [showWinnerSelect, setShowWinnerSelect] = useState(false);
   const [showVictoryTypeSelect, setShowVictoryTypeSelect] = useState(false);
-
-  // Max visible bonus tags before showing "Altri bonus"
-  const MAX_VISIBLE_BONUS = 2;
 
   // Initialize scores from match using useMemo to avoid cascading renders
   const initialScores = useMemo(() => {
@@ -87,6 +87,18 @@ export function CompleteMatchModal({
   }, [match]);
 
   const [bonusTags, setBonusTags] = useState(initialBonusTags);
+
+  // Initialize malus tags: { userId: [tagId, tagId, ...] }
+  const initialPenaltyTags = useMemo(() => {
+    if (!match?.participants) return {};
+    const tags = {};
+    Object.entries(match.participants).forEach(([userId, participant]) => {
+      tags[userId] = participant.penaltyTags || [];
+    });
+    return tags;
+  }, [match]);
+
+  const [penaltyTags, setPenaltyTags] = useState(initialPenaltyTags);
 
   const victoryTypes = [
     {
@@ -141,19 +153,17 @@ export function CompleteMatchModal({
     setScores((prev) => ({ ...prev, [userId]: numValue }));
   };
 
-  const handleOpenBonusAssign = (userId) => {
+  const handleOpenModifierAssign = (userId) => {
     setCurrentUserId(userId);
-    setShowBonusAssign(true);
+    setShowModifierAssign(true);
   };
 
-  const handleAssignBonuses = (newBonusTags) => {
+  const handleAssignModifiers = ({ bonusTags: newBonuses, penaltyTags: newPenalties }) => {
     if (currentUserId) {
-      setBonusTags((prev) => ({
-        ...prev,
-        [currentUserId]: newBonusTags,
-      }));
+      setBonusTags((prev) => ({ ...prev, [currentUserId]: newBonuses }));
+      setPenaltyTags((prev) => ({ ...prev, [currentUserId]: newPenalties }));
     }
-    setShowBonusAssign(false);
+    setShowModifierAssign(false);
     setCurrentUserId(null);
   };
 
@@ -166,62 +176,45 @@ export function CompleteMatchModal({
     }));
   };
 
-  const getBonusIcon = (bonusId) => {
-    switch (bonusId) {
+  const handleRemoveSinglePenalty = (userId, indexToRemove) => {
+    setPenaltyTags((prev) => ({
+      ...prev,
+      [userId]: (prev[userId] || []).filter(
+        (_, index) => index !== indexToRemove,
+      ),
+    }));
+  };
+
+  const getModifierIcon = (tagId) => {
+    switch (tagId) {
       case BONUS_TAGS.SECOND_PLACE:
         return <Medal size={14} />;
       case BONUS_TAGS.SURVIVOR:
         return <Swords size={14} />;
+      case BONUS_TAGS.PREFERENCE:
+        return <Star size={14} />;
+      case "map-reroll":
+        return <RotateCcw size={14} />;
+      case "rage-quit":
+        return <Flame size={14} />;
+      case "rule-violation":
+        return <ShieldAlert size={14} />;
       default:
         return <Award size={14} />;
     }
   };
 
-  const getBonusName = (bonusId) => {
-    switch (bonusId) {
-      case BONUS_TAGS.SECOND_PLACE:
-        return "Secondo Posto";
-      case BONUS_TAGS.SURVIVOR:
-        return "Sopravvissuto";
-      default:
-        return "Bonus";
-    }
+  const getModifierName = (tagId) => {
+    return getModifierInfo(tagId)?.name || "Modificatore";
   };
 
-  const getBonusColor = (bonusId) => {
-    switch (bonusId) {
-      case BONUS_TAGS.SECOND_PLACE:
-        return "silver"; // Silver for second place
-      case BONUS_TAGS.SURVIVOR:
-        return "green"; // Green for survivor
-      default:
-        return "default";
-    }
+  const getModifierColor = (tagId) => {
+    return getModifierInfo(tagId)?.color || "default";
   };
 
-  const handleShowOverflowBonuses = (userId) => {
-    const tags = bonusTags[userId] || [];
-    setOverflowBonusList(tags);
-    setCurrentUserId(userId);
-    setShowOverflowBonusInfo(true);
-  };
-
-  const handleRemoveFromOverflow = (indexToRemove) => {
-    if (currentUserId) {
-      handleRemoveSingleBonus(currentUserId, indexToRemove);
-      // Update the overflow list
-      const updatedTags = bonusTags[currentUserId].filter(
-        (_, index) => index !== indexToRemove,
-      );
-      setOverflowBonusList(updatedTags);
-      // Close modal if no more bonuses
-      if (updatedTags.length === 0) {
-        setShowOverflowBonusInfo(false);
-        setOverflowBonusList([]);
-        setCurrentUserId(null);
-      }
-    }
-  };
+  const currentParticipant = currentUserId
+    ? participants.find(([userId]) => userId === currentUserId)?.[1]
+    : null;
 
   const handleSelectWinner = (userId) => {
     setWinnerId(userId);
@@ -325,11 +318,12 @@ export function CompleteMatchModal({
       }
     }
 
-    // Call confirm with all data including bonus tags
+    // Call confirm with all data including bonuses and maluses
     onConfirm({
       turns: turns || 0, // Allow 0 or empty turns
       scores,
       bonusTags: finalBonusTags,
+      penaltyTags,
       winnerId,
       victoryType,
     });
@@ -383,12 +377,12 @@ export function CompleteMatchModal({
                   <th>Punteggio Raw</th>
                   <th>
                     <div className="complete-match-bonus-header">
-                      <span>Bonus</span>
+                      <span>Bonus / Malus</span>
                       <button
                         type="button"
                         className="complete-match-info-btn"
-                        onClick={() => setShowBonusInfo(true)}
-                        title="Info bonus"
+                        onClick={() => setShowModifierInfo(true)}
+                        title="Info bonus e malus"
                       >
                         <Info size={16} />
                       </button>
@@ -397,7 +391,9 @@ export function CompleteMatchModal({
                 </tr>
               </thead>
               <tbody>
-                {participants.map(([userId, participant]) => (
+                {participants.map(([userId, participant]) => {
+                  const preferenceCount = participant.preferenceCount || 0;
+                  return (
                   <tr key={userId}>
                     {/* Player Name */}
                     <td>
@@ -431,24 +427,40 @@ export function CompleteMatchModal({
                       />
                     </td>
 
-                    {/* Bonus Tags */}
+                    {/* Bonus and malus tags */}
                     <td className="complete-match-bonus-td">
                       <div className="complete-match-bonus-cell">
                         <div className="complete-match-bonus-tags-container">
-                          {bonusTags[userId] && bonusTags[userId].length > 0 ? (
+                          {(bonusTags[userId]?.length || 0) +
+                            (penaltyTags[userId]?.length || 0) +
+                            preferenceCount >
+                          0 ? (
                             <div className="complete-match-bonus-tags">
-                              {bonusTags[userId]
-                                .slice(0, MAX_VISIBLE_BONUS)
-                                .map((tagId, index) => (
+                              {preferenceCount > 0 && (
+                                <div
+                                  className="complete-match-bonus-tag bonus-color-green preference-locked"
+                                  title="Bonus automatico del Draft Preferenze: non rimovibile"
+                                >
+                                  <span className="complete-match-bonus-icon">
+                                    <Star size={14} />
+                                  </span>
+                                  <span className="complete-match-bonus-text">
+                                    Preferenza ×{preferenceCount} (+
+                                    {preferenceCount * 10}%)
+                                  </span>
+                                </div>
+                              )}
+                              {(bonusTags[userId] || []).map(
+                                (tagId, index) => (
                                   <div
-                                    key={index}
-                                    className={`complete-match-bonus-tag bonus-color-${getBonusColor(tagId)}`}
+                                    key={`bonus-${index}`}
+                                    className={`complete-match-bonus-tag bonus-color-${getModifierColor(tagId)}`}
                                   >
                                     <span className="complete-match-bonus-icon">
-                                      {getBonusIcon(tagId)}
+                                      {getModifierIcon(tagId)}
                                     </span>
                                     <span className="complete-match-bonus-text">
-                                      {getBonusName(tagId)}
+                                      {getModifierName(tagId)}
                                     </span>
                                     <button
                                       type="button"
@@ -461,34 +473,45 @@ export function CompleteMatchModal({
                                       <X size={14} />
                                     </button>
                                   </div>
-                                ))}
-                              {bonusTags[userId].length > MAX_VISIBLE_BONUS && (
-                                <div
-                                  className="complete-match-bonus-tag bonus-overflow"
-                                  onClick={() =>
-                                    handleShowOverflowBonuses(userId)
-                                  }
-                                  title="Visualizza tutti i bonus"
-                                >
-                                  <span className="complete-match-bonus-icon">
-                                    <Award size={14} />
-                                  </span>
-                                  <span className="complete-match-bonus-text">
-                                    Altri{" "}
-                                    {bonusTags[userId].length -
-                                      MAX_VISIBLE_BONUS}{" "}
-                                    bonus
-                                  </span>
-                                </div>
+                                ),
+                              )}
+                              {(penaltyTags[userId] || []).map(
+                                (tagId, index) => (
+                                  <div
+                                    key={`malus-${index}`}
+                                    className={`complete-match-bonus-tag malus-color-${getModifierColor(tagId)}`}
+                                  >
+                                    <span className="complete-match-bonus-icon">
+                                      {getModifierIcon(tagId)}
+                                    </span>
+                                    <span className="complete-match-bonus-text">
+                                      {getModifierName(tagId)}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="complete-match-bonus-remove"
+                                      onClick={() =>
+                                        handleRemoveSinglePenalty(userId, index)
+                                      }
+                                      title="Rimuovi malus"
+                                    >
+                                      <X size={14} />
+                                    </button>
+                                  </div>
+                                ),
                               )}
                             </div>
-                          ) : null}
+                          ) : (
+                            <span className="complete-match-modifier-empty">
+                              Nessuno
+                            </span>
+                          )}
                         </div>
                         <button
                           type="button"
                           className="complete-match-bonus-add-btn"
-                          onClick={() => handleOpenBonusAssign(userId)}
-                          title="Aggiungi bonus"
+                          onClick={() => handleOpenModifierAssign(userId)}
+                          title="Aggiungi bonus o malus"
                         >
                           <Plus size={16} />
                           <span>Aggiungi</span>
@@ -496,7 +519,8 @@ export function CompleteMatchModal({
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -619,39 +643,29 @@ export function CompleteMatchModal({
         </div>
       </Modal>
 
-      {/* Nested Bonus Info Modal */}
-      <BonusInfoModal
-        key="bonus-info"
-        isOpen={showBonusInfo}
-        onClose={() => setShowBonusInfo(false)}
+      {/* Bonus/Malus info modal */}
+      <BonusMalusModal
+        key="modifier-info"
+        isOpen={showModifierInfo}
+        onClose={() => setShowModifierInfo(false)}
         mode="info"
       />
 
-      {/* Bonus Assignment Modal */}
-      <BonusInfoModal
-        key={`bonus-assign-${currentUserId}-${showBonusAssign}`}
-        isOpen={showBonusAssign}
+      {/* Bonus/Malus assignment modal */}
+      <BonusMalusModal
+        key={`modifier-assign-${currentUserId}-${showModifierAssign}`}
+        isOpen={showModifierAssign}
         onClose={() => {
-          setShowBonusAssign(false);
+          setShowModifierAssign(false);
           setCurrentUserId(null);
         }}
         mode="assign"
+        participantName={currentParticipant?.username || ""}
         currentBonusTags={currentUserId ? bonusTags[currentUserId] || [] : []}
-        onAssign={handleAssignBonuses}
-      />
-
-      {/* Overflow Bonus Info Modal */}
-      <BonusInfoModal
-        key="bonus-overflow-info"
-        isOpen={showOverflowBonusInfo}
-        onClose={() => {
-          setShowOverflowBonusInfo(false);
-          setOverflowBonusList([]);
-          setCurrentUserId(null);
-        }}
-        mode="overflow"
-        currentBonusTags={overflowBonusList}
-        onRemove={handleRemoveFromOverflow}
+        currentPenaltyTags={
+          currentUserId ? penaltyTags[currentUserId] || [] : []
+        }
+        onAssign={handleAssignModifiers}
       />
 
       {/* Winner Select Modal */}

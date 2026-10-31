@@ -1,0 +1,3 @@
+[Il Viaggio di Kupe] {Abilità esclusiva}
+
+Inizia la partita in una casella di oceano. Ottieni un Costruttore gratuito e +1 alla [CitizenIcon] popolazione alla fondazione della tua prima città. Il Palazzo riceve +3 [CitizenIcon] Abitazioni e +1 [AmenitiesIcon] Attrattiva. +2 [ScienceIcon] Scienza e +2 [CultureIcon] Cultura per turno prima della fondazione della prima città.

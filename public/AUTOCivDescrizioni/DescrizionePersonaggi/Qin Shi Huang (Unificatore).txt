@@ -1,0 +1,3 @@
+[I trentasei stratagemmi] {Abilità esclusiva}
+
+Le unità da mischia ricevono l'azione Converti barbari. Quest'azione converte le unità di barbari in unità tue, ma rimuove la tua unità da mischia coinvolta.

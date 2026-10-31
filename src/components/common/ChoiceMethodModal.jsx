@@ -1,15 +1,25 @@
-import { useEffect, useState } from "react";
-import { Check, Clock, Shuffle, Sparkles, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Check,
+  Shuffle,
+  Sparkles,
+  Star,
+  Zap,
+  Send,
+} from "lucide-react";
 import { Modal } from "./Modal";
 import { Avatar } from "./Avatar";
+import { useCountdown } from "../../hooks";
+import { DRAFT_COUNTDOWN_SECONDS } from "../../utils/draftUtils";
 import "./ChoiceMethodModal.css";
 
 /**
  * Intermediate modal to choose character selection method.
- * It coordinates ready states for:
+ * Coordinates ready states for:
  * - Classic draft
+ * - Preference draft (ban + one +10% preference per step)
  * - Direct choice
- * - Future methods (placeholder)
+ * - Future methods (with a suggestion box)
  */
 export function ChoiceMethodModal({
   isOpen,
@@ -18,11 +28,11 @@ export function ChoiceMethodModal({
   draft,
   user,
   onToggleDraftReady,
+  onTogglePreferenceReady,
   onToggleDirectReady,
   onCountdownComplete,
+  onSaveSuggestion,
 }) {
-  const [countdown, setCountdown] = useState(5);
-
   const members = campaign?.members || [];
   const memberDetails = campaign?.memberDetails || {};
   const draftPhase = draft?.phase || "waiting";
@@ -30,39 +40,43 @@ export function ChoiceMethodModal({
   const countdownStartAt = draft?.countdownStartAt || null;
 
   const draftReadyPlayers = draft?.readyPlayers || [];
+  const preferenceReadyPlayers = draft?.preferenceReadyPlayers || [];
   const directReadyPlayers = draft?.directReadyPlayers || [];
 
   const isDraftReady = draftReadyPlayers.includes(user?.uid);
+  const isPreferenceReady = preferenceReadyPlayers.includes(user?.uid);
   const isDirectReady = directReadyPlayers.includes(user?.uid);
 
   const countdownMethod =
     draftPhase === "countdown"
       ? draftMode === "direct"
         ? "direct"
-        : "draft"
+        : draftMode === "preference"
+          ? "preference"
+          : "draft"
       : null;
 
-  useEffect(() => {
-    if (!isOpen || draftPhase !== "countdown" || !countdownStartAt) {
-      setCountdown(5);
-      return;
-    }
-    let rafId;
-    const startMs = new Date(countdownStartAt).getTime();
-    const tick = () => {
-      const remaining = Math.max(0, 5 - (Date.now() - startMs) / 1000);
-      setCountdown(remaining);
-      if (remaining > 0) rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, [isOpen, draftPhase, countdownStartAt]);
+  const countdown = useCountdown(countdownStartAt, {
+    seconds: DRAFT_COUNTDOWN_SECONDS,
+    enabled: isOpen && draftPhase === "countdown",
+  });
+
+  const [suggestion, setSuggestion] = useState(draft?.suggestion || "");
+  const [savingSuggestion, setSavingSuggestion] = useState(false);
+  const [suggestionSaved, setSuggestionSaved] = useState(false);
+
+  const canWriteSuggestion = draftPhase === "waiting";
 
   // Auto-open the correct modal when countdown finishes (phase → active)
+  const onCountdownCompleteRef = useRef(onCountdownComplete);
+  useEffect(() => {
+    onCountdownCompleteRef.current = onCountdownComplete;
+  }, [onCountdownComplete]);
+
   useEffect(() => {
     if (!isOpen || draftPhase !== "active") return;
-    onCountdownComplete?.(draftMode);
-  }, [isOpen, draftPhase, draftMode, onCountdownComplete]);
+    onCountdownCompleteRef.current?.(draftMode);
+  }, [isOpen, draftPhase, draftMode]);
 
   const renderReadyList = (readyPlayers) => {
     return (
@@ -101,7 +115,12 @@ export function ChoiceMethodModal({
   };
 
   const getReadyButtonConfig = (method) => {
-    const isReady = method === "draft" ? isDraftReady : isDirectReady;
+    const isReady =
+      method === "draft"
+        ? isDraftReady
+        : method === "preference"
+          ? isPreferenceReady
+          : isDirectReady;
     const locked = isMethodLocked(method);
 
     if (draftPhase !== "waiting" && draftPhase !== "countdown") {
@@ -113,7 +132,6 @@ export function ChoiceMethodModal({
     }
 
     if (draftPhase === "countdown") {
-      // Overlay handles cancel; all buttons stay frozen in their visual state
       return {
         label: isReady ? "Non pronto" : "Pronto",
         className: `choice-method-btn ${isReady ? "ready" : ""} locked`,
@@ -137,14 +155,27 @@ export function ChoiceMethodModal({
   };
 
   const draftBtn = getReadyButtonConfig("draft");
+  const preferenceBtn = getReadyButtonConfig("preference");
   const directBtn = getReadyButtonConfig("direct");
 
   const handleCancelCountdown = () => {
     if (countdownMethod === "direct") {
       onToggleDirectReady?.();
+    } else if (countdownMethod === "preference") {
+      onTogglePreferenceReady?.();
     } else {
       onToggleDraftReady?.();
     }
+  };
+
+  const handleSaveSuggestion = async () => {
+    if (!canWriteSuggestion || !onSaveSuggestion || savingSuggestion) return;
+    setSavingSuggestion(true);
+    const result = await onSaveSuggestion(suggestion.trim());
+    setSavingSuggestion(false);
+    const ok = result?.success !== false;
+    setSuggestionSaved(ok);
+    if (ok) setTimeout(() => setSuggestionSaved(false), 2200);
   };
 
   if (!isOpen) return null;
@@ -167,11 +198,19 @@ export function ChoiceMethodModal({
             <div className="cmm-countdown-card">
               <div className="cmm-countdown-number">{Math.ceil(countdown)}</div>
               <span
-                className={`cmm-countdown-badge${countdownMethod === "direct" ? " direct" : ""}`}
+                className={`cmm-countdown-badge${
+                  countdownMethod === "direct"
+                    ? " direct"
+                    : countdownMethod === "preference"
+                      ? " preference"
+                      : ""
+                }`}
               >
                 {countdownMethod === "direct"
                   ? "Scelta Diretta"
-                  : "Draft Classico"}
+                  : countdownMethod === "preference"
+                    ? "Draft Preferenze"
+                    : "Draft Classico"}
               </span>
               <p className="cmm-countdown-hint">Tocca ovunque per annullare</p>
             </div>
@@ -220,6 +259,37 @@ export function ChoiceMethodModal({
             </div>
           </section>
 
+          {/* ─── Draft Preferenze ─── */}
+          <section className="choice-method-column preference">
+            <div className="cmcol-head">
+              <div className="choice-method-badge preference">
+                <Star size={17} />
+                Draft Preferenze
+              </div>
+              <p>
+                Come il classico, ma a ogni ban scegli anche una preferenza: se
+                poi scegli quel leader guadagni +10% per ogni preferenza.
+              </p>
+            </div>
+            <div className="cmcol-body">
+              {renderReadyList(preferenceReadyPlayers)}
+            </div>
+            <div className="cmcol-foot">
+              <div className="choice-method-count-pill">
+                {preferenceReadyPlayers.length}&thinsp;/&thinsp;{members.length}{" "}
+                pronti
+              </div>
+              <button
+                className={preferenceBtn.className}
+                onClick={onTogglePreferenceReady}
+                disabled={preferenceBtn.disabled}
+                type="button"
+              >
+                {preferenceBtn.label}
+              </button>
+            </div>
+          </section>
+
           {/* ─── Scelta Diretta ─── */}
           <section className="choice-method-column">
             <div className="cmcol-head">
@@ -251,7 +321,7 @@ export function ChoiceMethodModal({
             </div>
           </section>
 
-          {/* ─── Nuovi Metodi (futuro) ─── */}
+          {/* ─── Nuovi Metodi + suggerimento ─── */}
           <section className="choice-method-column future">
             <div className="cmcol-head">
               <div className="choice-method-badge future">
@@ -259,27 +329,56 @@ export function ChoiceMethodModal({
                 Nuovi Metodi
               </div>
               <p>
-                Nuovi sistemi di assegnazione dei personaggi arriveranno presto.
+                Idee per un nuovo sistema di scelta? Scrivi un suggerimento per
+                la prossima modalità.
               </p>
             </div>
             <div className="cmcol-body">
-              <div className="choice-method-ready-list placeholder">
-                {members.map((memberId) => {
-                  const member = memberDetails[memberId];
-                  return (
-                    <div key={memberId} className="choice-method-player-row">
-                      <Avatar
-                        photoURL={member?.photoURL}
-                        displayName={member?.username}
-                        email={null}
-                        size={28}
-                      />
-                      <span className="choice-method-player-name">
-                        {member?.username || "Sconosciuto"}
-                      </span>
-                    </div>
-                  );
-                })}
+              <div className="choice-method-suggestion">
+                <label htmlFor="draft-method-suggestion">
+                  Il tuo suggerimento
+                </label>
+                <textarea
+                  id="draft-method-suggestion"
+                  value={suggestion}
+                  onChange={(e) => setSuggestion(e.target.value)}
+                  maxLength={500}
+                  disabled={!canWriteSuggestion}
+                  placeholder={
+                    canWriteSuggestion
+                      ? "Es. un draft a squadre, con ruoli, con obiettivi…"
+                      : "Non modificabile durante il countdown"
+                  }
+                  rows={4}
+                />
+                <div className="choice-method-suggestion-foot">
+                  <span>{suggestion.length}/500</span>
+                  <button
+                    type="button"
+                    className="choice-method-suggestion-save"
+                    onClick={handleSaveSuggestion}
+                    disabled={
+                      !canWriteSuggestion ||
+                      savingSuggestion ||
+                      !suggestion.trim()
+                    }
+                  >
+                    {suggestionSaved ? (
+                      <>
+                        <Check size={14} /> Salvato
+                      </>
+                    ) : (
+                      <>
+                        <Send size={14} /> Invia
+                      </>
+                    )}
+                  </button>
+                </div>
+                <p className="choice-method-suggestion-hint">
+                  {canWriteSuggestion
+                    ? "Puoi scrivere mentre siete in attesa; il box si blocca durante il countdown."
+                    : "Il countdown è in corso: il suggerimento è temporaneamente bloccato."}
+                </p>
               </div>
             </div>
             <div className="cmcol-foot">

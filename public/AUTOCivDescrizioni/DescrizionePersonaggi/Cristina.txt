@@ -1,0 +1,8 @@
+[Minerva del Nord] {Abilità esclusiva}
+
+Gli edifici che hanno almeno tre slot Capolavoro e le Meraviglie che hanno almeno due slot Capolavoro diventano automaticamente a tema quando i loro slot sono tutti pieni. Può costruire la Biblioteca della Regina nella Piazza del Governo.
+
+[Biblioteca della Regina] {Infrastruttura speciale}
+
+Edificio esclusivo svedese, fornisce 2 slot per [GreatWorkWritingIcon] Scritti, [GreatWorkMusicIcon] Musica e qualsiasi tipo di [GreatWorkArtIcon] Capolavoro artistico.
+Fornisce +1 Titolo Governatore.

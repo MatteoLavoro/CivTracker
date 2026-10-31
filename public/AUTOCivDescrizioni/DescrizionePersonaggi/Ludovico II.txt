@@ -1,0 +1,3 @@
+[Re Cigno] {Abilità esclusiva}
+
+Le Meraviglie, anche quelle non finite, ricevono +2 [CultureIcon] Cultura per ogni distretto adiacente. Questa [CultureIcon] Cultura è visualizzata nelle rese della città. Tutti i bonus per la posizione alla [CultureIcon] Cultura forniscono anche [TourismIcon] Turismo dopo la scoperta dei Castelli.

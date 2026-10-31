@@ -1,0 +1,13 @@
+[Missioni epiche] {Abilità esclusiva}
+
+Quando disperdi un Avamposto barbarico, oltre ai consueti punti esperienza ricevi una ricompensa da Villaggio tribale. Il reclutamento delle unità di una città-stato costa la metà.
+
+[Carro sumero] {Unità speciali}
+
+Unità esclusiva sumera di epoca antica. Più forte di tutte le altre unità iniziali. Nessuna penalità contro unità specializzate contro la cavalleria. 4 [MovementIcon] movimento quando comincia la mossa in terreno aperto.
+
+[Ziqqurat] {Infrastruttura speciale}
+
+Sblocca l'abilità dei Costruttori di realizzare una Ziqqurat, esclusiva della Sumeria.
+
++2 [ScienceIcon] Scienza. +1 [CultureIcon] Cultura se accanto a un fiume. Non può essere costruito in collina.

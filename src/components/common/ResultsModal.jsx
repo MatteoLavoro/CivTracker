@@ -2,6 +2,7 @@
 import { Trophy } from "lucide-react";
 import { Modal } from "./Modal";
 import { Avatar } from "./Avatar";
+import { getParticipantScore } from "../../utils/scoreUtils";
 import "./ResultsModal.css";
 
 /**
@@ -28,13 +29,8 @@ export function ResultsModal({ isOpen, onClose, matches, memberDetails }) {
       const participant = match.participants?.[playerId];
       if (!participant) return { matchNumber: index + 1, score: null };
 
-      // Use finalScore, fallback to processedScore, fallback to raw score
-      const score =
-        participant.finalScore !== undefined
-          ? participant.finalScore
-          : participant.processedScore !== undefined
-            ? participant.processedScore
-            : participant.score || 0;
+      // Use final score, falling back to processed and then raw score
+      const score = getParticipantScore(participant);
 
       totalScore += score;
       return { matchNumber: index + 1, score };

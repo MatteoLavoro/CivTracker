@@ -1,0 +1,3 @@
+[Gloria del mondo, del Regno e della Fede] {Abilità esclusiva}
+
+Le vittorie in combattimento forniscono [FaithIcon] Cultura pari al 50% della Forza di combattimento dell'unità sconfitta (a velocità standard). Ogni [EnvoyIcon] Emissario inviato in una città-stato che segue la stessa religione di maggioranza conta come due [EnvoyIcon] Emissari (è necessario avere una religione di maggioranza).

@@ -1,0 +1,3 @@
+[Arthashastra] {Abilità esclusiva}
+
+Può dichiarare una guerra di espansione territoriale dopo aver ottenuto il Progresso civico Addestramento militare. +2 al [MovementIcon] movimento e +5 alla [StrengthIcon] Forza di combattimento per i primi 10 turni dopo aver dichiarato una guerra di espansione territoriale.
